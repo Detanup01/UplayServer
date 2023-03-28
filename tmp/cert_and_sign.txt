@@ -1,0 +1,5 @@
+openssl genrsa -out dmx_local.key 2048
+openssl req -sha256 -new -key dmx_local.key -out dmx_local.csr -subj '/CN=dmx.local.upc.ubisoft.com' -addext "subjectAltName = DNS:dmx.local.upc.ubisoft.com, DNS:www.dmx.local.upc.ubisoft.com"
+openssl x509 -req -sha256 -days 365 -in dmx_local.csr -signkey dmx_local.key -out dmx_local.crt
+certutil -mergepfx -p "dmx.local.upc.ubisoft.com" dmx_local.crt dmx_local.pfx
+"C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" sign /f "PATHTO.pfx" "DLLPATH" /p "PASSW"
