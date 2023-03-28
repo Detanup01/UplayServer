@@ -1,13 +1,17 @@
 # UplayServer
 Uplay Demux/API Server Emulator.
 
+ServerStarter:
+- [ ] Update for new files
+- [ ] Commands (addstore,restart,etc)
+
 Functions in Demux:
 - [x] Demux Req/Rsp Handling
 - [x] Other Proto Connection Handling
 - [x] SQLite database
-- [x] JWT Ownership 
-- [x] JWT Token/Ticket (Not fully Replica from Ubisoft [No compression])
+- [x] JWT
 - [x] Demux Auth
+- [x] Plugin function
 
 Functions in API:
 - [x] Handling HTTPS
@@ -15,11 +19,17 @@ Functions in API:
 
 EXTRA:
 - [x] Creating Custom .manifest file
-- [ ] Making Custom App
-- [ ] Test
+- [x] File compression handling (none,zstd,deflate,[lzham soon]) [>2GB supported!]
+- [ ] Making Custom App, Achivements,Store.
 
 DLL:
-- [ ] Dll that connect this server instead of Ubisoft one
+- [ ] All export
+- [ ] Using namepipes (same in ubisoft) to connect the client
+
+ClientKit:
+- [x] Using Modified UplayKit
+- [ ] Using Modified UbiServices
+- [ ] Using Modified CoreLib
 
 Client:
 - [ ] Custom-ish client instead of upc/UbisoftConnect
