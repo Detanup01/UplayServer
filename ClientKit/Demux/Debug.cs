@@ -1,4 +1,6 @@
-﻿namespace ClientKit.Demux
+﻿using System;
+
+namespace ClientKit.Demux
 {
     public class Debug
     {
@@ -8,7 +10,7 @@
             if (isDebug == true)
             {
                 Console.WriteLine(obj.ToString());
-                WriteDebug(obj.ToString());
+                //WriteDebug(obj.ToString());
             }
         }
         public static void PWDebug(object obj, string logname)
@@ -16,7 +18,7 @@
             if (isDebug == true)
             {
                 Console.WriteLine(obj.ToString());
-                WriteDebug(obj.ToString(), logname);
+                //WriteDebug(obj.ToString(), logname);
             }
         }
         public static void PrintDebug(object obj)
@@ -31,7 +33,8 @@
         {
             if (isDebug == true)
             {
-                File.AppendAllText(logname, strLog + "\n");
+                Console.WriteLine(strLog.ToString());
+                //File.AppendAllText(logname, strLog + "\n");
             }
         }
 
@@ -46,7 +49,8 @@
         {
             if (isDebug == true)
             {
-                File.WriteAllText(logname, text);
+                Console.WriteLine(text.ToString());
+                //File.WriteAllText(logname, text);
             }
         }
     }

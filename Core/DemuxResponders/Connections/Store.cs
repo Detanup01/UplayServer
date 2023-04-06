@@ -49,7 +49,7 @@ namespace Core.DemuxResponders
                         {
                             Storefront = new() { Configuration = "custom" },
                             Success = true
-                               
+
                         }
                     }
                 };

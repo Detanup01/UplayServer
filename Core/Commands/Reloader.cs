@@ -16,7 +16,7 @@ namespace Core.Commands
                 var file = cachefile.Replace("ServerFiles/CacheFiles\\", "");
                 if (file.Contains(".ownershipcache.txt"))
                 {
-                    file = file.Replace(".ownershipcache.txt","");
+                    file = file.Replace(".ownershipcache.txt", "");
                     Owners.MakeOwnershipFromTXT(file);
                 }
             }

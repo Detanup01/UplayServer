@@ -1,9 +1,8 @@
 ﻿using Google.Protobuf;
-using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using ICSharpCode.SharpZipLib.Zip.Compression;
-using System.Security.Cryptography;
+using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using System.Security.Cryptography.X509Certificates;
-using System.Text.RegularExpressions;
+using System.Text;
 using ZstdNet;
 
 namespace Core
@@ -31,25 +30,6 @@ namespace Core
         {
             return BitConverter.GetBytes(ByteSwapUInt((uint)rawMessage.Length)).Concat(rawMessage).ToArray();
         }
-        
-        /// <summary>
-        /// Validating Email Address
-        /// </summary>
-        /// <param name="email">The Email</param>
-        /// <returns>True | False</returns>
-        public static bool EmailValidation(string email)
-        {
-            Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
-            Match match = regex.Match(email);
-            if (match.Success)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
 
         public static void WriteFile(string strLog, string FileName)
         {
@@ -67,6 +47,11 @@ namespace Core
             return Convert.ToBase64String(plainTextBytes);
         }
 
+        public static string FromB64(string plainText)
+        {
+            return Encoding.UTF8.GetString(Convert.FromBase64String(plainText));
+        }
+
         public static string MakeNewID()
         {
             return $"{Randoming(8)}-{Randoming(4)}-{Randoming(4)}-{Randoming(4)}-{Randoming(12)}";
@@ -82,11 +67,7 @@ namespace Core
         public static string Randoming(int lenght)
         {
             Random res = new Random();
-
-            // String of alphabets 
             String str = "abcdef0123456789";
-
-            // Initializing the empty string
             String ran = "";
 
             for (int i = 0; i < lenght; i++)

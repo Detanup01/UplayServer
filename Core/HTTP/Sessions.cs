@@ -26,7 +26,7 @@ namespace Core.HTTP
                 auth = auth.Split(" t=")[1];
                 IsToken = true;
             }
-            
+
 
             var appId = headers["ubi-appid"];
             var id = "";

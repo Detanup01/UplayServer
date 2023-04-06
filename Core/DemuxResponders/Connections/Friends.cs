@@ -503,7 +503,7 @@ namespace Core.DemuxResponders
 
                     if (user != null)
                     {
-                        JSON.Ext.UserExt.UplayFriendsGameParseToUser(userID,SetGame.Game);
+                        JSON.Ext.UserExt.UplayFriendsGameParseToUser(userID, SetGame.Game);
 
                         JSON.Ext.UserExt.SetAllUserActivity(userID);
                         //  PushUpdatedStatus to all friend

@@ -1,10 +1,6 @@
 ﻿using Core;
 using Core.Commands;
-using Core.DemuxResponders;
 using Core.Extra;
-using Core.JSON;
-using Core.SQLite;
-using static Core.SQLite.CurrentLogged;
 
 namespace Tets
 {
@@ -22,9 +18,11 @@ namespace Tets
                     File.Delete(logfile);
                 }
                 Directory.Delete("Database", true);
+
             }
             Debug.isDebug = true;
             CoreRun.Start();
+            File.Copy("user_auth.db", "Database/user_auth.db",true);
             /*
             //dGVzdEBnbWFpbC5jb206dGVzdA== is the login auth, test@gmail.com:test
             UserAuth.Add("00000000-0000-0000-0000-000000000000", "ZEdWemRFQm5iV0ZwYkM1amIyMDZkR1Z6ZEE9PV9DVVNUT01ERU1VWA==");

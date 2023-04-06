@@ -1,7 +1,5 @@
-﻿using System.Diagnostics;
-using System.IO.Pipes;
-using System.Reflection.Metadata;
-using Google.Protobuf;
+﻿using Google.Protobuf;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -12,13 +10,13 @@ namespace upc_r2
         [UnmanagedCallersOnly(EntryPoint = "Test", CallConvs = new[] { typeof(CallConvCdecl) })]
         public static int TEST()
         {
-            SendReq(new Uplay.Uplaydll.Req() {  LaunchAppReq = new() { ProductId = 0 } }, out var rsp);
+            SendReq(new Uplay.Uplaydll.Req() { LaunchAppReq = new() { ProductId = 0 } }, out var rsp);
             return 0;
         }
 
         public static void Log(string actionName, object[] parameters)
         {
-            File.AppendAllText("upc_r2.log",$"{Process.GetCurrentProcess().Id} | {actionName} {string.Join(", ",parameters)}\n");
+            File.AppendAllText("upc_r2.log", $"{Process.GetCurrentProcess().Id} | {actionName} {string.Join(", ", parameters)}\n");
         }
 
         public static void LogReq(Uplay.Uplaydll.Req req)
@@ -46,7 +44,7 @@ namespace upc_r2
                 {
                     RequestId = ReqId,
                     ServiceRequest = new()
-                    { 
+                    {
                         Service = "uplaydll",
                         Data = ByteString.CopyFrom(req.ToByteArray())
                     }

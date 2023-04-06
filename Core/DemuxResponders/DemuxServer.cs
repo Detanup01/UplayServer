@@ -99,7 +99,7 @@ namespace Core.DemuxResponders
                         foreach (var client in Clients)
                         {
                             var state = GetState(client.Value, client.Key);
-                            if (state == TcpState.CloseWait || state == TcpState.Unknown || state == TcpState.TimeWait)
+                            if (state == TcpState.CloseWait || state == TcpState.Unknown)// || state == TcpState.TimeWait)
                             {
                                 KillClient(client.Value);
                             }
@@ -189,9 +189,17 @@ namespace Core.DemuxResponders
                 {
                     //State check
                     var state = GetState(client, ClientNumb);
-                    if (state == TcpState.CloseWait || state == TcpState.Unknown || state == TcpState.TimeWait)
+                    if (state == TcpState.CloseWait || state == TcpState.Unknown) //|| state == TcpState.TimeWait)
                     {
+                        Console.WriteLine("exit: ");
+                        Console.WriteLine(state);
                         break;
+                    }
+                    else
+                    {
+                        Directory.CreateDirectory("StateChecks");
+                        File.AppendAllText($"StateChecks/c_{ClientNumb}_{client.Client.RemoteEndPoint.ToString().Replace(":", "_").Replace(".", "_")}_clienthanlder.log", $"{state}\n");
+
                     }
 
                     bool IsDataAvailable = network.DataAvailable;
@@ -230,7 +238,7 @@ namespace Core.DemuxResponders
             }
             catch (Exception ex)
             {
-                Debug.PrintDebug("Exception got! "+ ex.ToString());
+                Debug.PrintDebug("Exception got! " + ex.ToString());
             }
 
             //KillClient(client); Here we wait to close the other!
@@ -296,9 +304,9 @@ namespace Core.DemuxResponders
                     int ReqNameLenght = int.Parse(System.Text.Encoding.UTF8.GetString(new byte[] { receivedData[1] }));
                     var bytename = receivedData.Skip(2).Take(ReqNameLenght).ToArray();
                     string protoname = System.Text.Encoding.UTF8.GetString(bytename);
-                    Debug.PrintDebug($"[DMXSERVER] Request Name: {protoname}" );
+                    Debug.PrintDebug($"[DMXSERVER] Request Name: {protoname}");
                     var bytes = receivedData.Skip(2 + ReqNameLenght).ToArray();
-                    Custom.Requests(ClientNumb,bytes,protoname);
+                    Custom.Requests(ClientNumb, bytes, protoname);
                     break;
                 default:
                     Debug.PWDebug("[DMXSERVER] Unknown First byte : " + first);

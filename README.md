@@ -3,7 +3,7 @@ Uplay Demux/API Server Emulator.
 
 ServerStarter:
 - [ ] Update for new files
-- [ ] Commands (addstore,restart,etc)
+- [x] Commands (addstore,restart,etc)
 
 Functions in Demux:
 - [x] Demux Req/Rsp Handling
@@ -29,7 +29,7 @@ DLL:
 ClientKit:
 - [x] Using Modified UplayKit
 - [x] Using Modified UbiServices
-- [ ] Using Modified CoreLib
+- [x] Using Modified CoreLib
 
 Client:
 - [ ] Custom-ish client instead of upc/UbisoftConnect

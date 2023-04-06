@@ -1,7 +1,4 @@
-﻿using Google.Protobuf;
-using System.Text;
-
-namespace Core.DemuxResponders
+﻿namespace Core.DemuxResponders
 {
     public class Custom
     {

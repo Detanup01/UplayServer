@@ -1,5 +1,5 @@
-﻿using System.Text;
-using ClientKit.UbiServices.Records;
+﻿using ClientKit.UbiServices.Records;
+using System.Text;
 using static ClientKit.UbiServices.Public.V3;
 
 namespace ClientKit.Lib
@@ -68,7 +68,7 @@ namespace ClientKit.Lib
 
         public static LoginJson? TryLoginWithArgs(string[] args)
         {
-            LoginJson? login = null; 
+            LoginJson? login = null;
             if (ParameterLib.HasParameter(args, "-ref"))
             {
                 var refticket = ParameterLib.GetParameter<string>(args, "-ref");

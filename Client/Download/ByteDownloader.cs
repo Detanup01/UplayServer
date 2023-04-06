@@ -1,6 +1,6 @@
-﻿using Google.Protobuf;
+﻿using ClientKit.Demux.Connection;
+using Google.Protobuf;
 using RestSharp;
-using ClientKit.Demux.Connection;
 using static Downloader.Saving;
 using UDFile = Uplay.Download.File;
 

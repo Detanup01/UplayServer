@@ -32,6 +32,7 @@ namespace Core.JSON
         {
             public uint branch_id { get; set; }
             public string branch_name { get; set; } = string.Empty;
+            public string branch_password { get; set; } = string.Empty;
         }
 
         public class RichPresence

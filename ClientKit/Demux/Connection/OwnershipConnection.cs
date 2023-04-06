@@ -116,6 +116,35 @@ namespace ClientKit.Demux.Connection
         }
         #endregion
         #region Functions
+        public InitializeRsp? Initialize(bool GetAssociations = true)
+        {
+            Req req = new()
+            {
+                RequestId = ReqId,
+                InitializeReq = new()
+                {
+                    GetAssociations = GetAssociations,
+                    ProtoVersion = 7,
+                    UseStaging = socket.TestConfig
+                }
+            };
+            ReqId += 1;
+            var rsp = SendRequest(req);
+            if (rsp != null)
+            {
+                isServiceSuccess = rsp.InitializeRsp.Success;
+                return rsp.InitializeRsp;
+            }
+            else
+            {
+                isServiceSuccess = false;
+                return null;
+            }
+        }
+
+
+
+
         /// <summary>
         /// Initializer
         /// </summary>

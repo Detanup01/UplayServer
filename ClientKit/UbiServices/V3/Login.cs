@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using ClientKit.UbiServices.Records;
+using Newtonsoft.Json;
 using RestSharp;
 using System.Text;
-using ClientKit.UbiServices.Records;
 
 namespace ClientKit.UbiServices.Public
 {
@@ -67,7 +67,7 @@ namespace ClientKit.UbiServices.Public
             RemMe rem = new()
             {
                 RememberMe = true
-            }; 
+            };
             request.AddBody(JsonConvert.SerializeObject(rem), ContentType.Json);
 
             return Rest.Post<LoginJson>(client, request);
@@ -101,7 +101,7 @@ namespace ClientKit.UbiServices.Public
                     Id = trustedId
                 }
             };
-            request.AddBody(JsonConvert.SerializeObject(rem),ContentType.Json);
+            request.AddBody(JsonConvert.SerializeObject(rem), ContentType.Json);
 
             return Rest.Post<LoginJson>(client, request);
         }

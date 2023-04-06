@@ -16,7 +16,7 @@ namespace Core.DemuxResponders
                 {
                     if (Upsteam.Request != null)
                     {
-                        ReqRSP.Requests(ClientNumb,Upsteam.Request);
+                        ReqRSP.Requests(ClientNumb, Upsteam.Request);
                         while (ReqRSP.IsIdDone == false)
                         {
 

@@ -30,11 +30,10 @@ namespace Core.JSON
             ownedGame.ProductAssociations.AddRange(product_associations);
             ownedGame.ActivationIds.AddRange(activation_ids);
             cache.OwnedGames.Add(ownedGame);
-            var mem = new MemoryStream();
-            cache.WriteTo(mem);
-            var writer = File.OpenWrite($"ServerFiles/CacheFiles/{UserId}.ownershipcache");
-            writer.Write(mem.ToArray());
-            writer.Close();
+            File.Delete($"ServerFiles/CacheFiles/{UserId}.ownershipcache");
+            var wr = File.OpenWrite($"ServerFiles/CacheFiles/{UserId}.ownershipcache");
+            ownedGame.WriteTo(wr);
+            wr.Close();
             File.WriteAllText($"ServerFiles/CacheFiles/{UserId}.ownershipcache.txt", cache.ToString());
         }
 
@@ -68,20 +67,21 @@ namespace Core.JSON
                 ownedGame.UbiServicesAppId = ownedgame.UbiservicesAppId;
                 cache.OwnedGames.Add(ownedGame);
             }
-            var mem = new MemoryStream();
-            cache.WriteTo(mem);
-            var writer = File.OpenWrite($"ServerFiles/CacheFiles/{UserId}.ownershipcache");
-            writer.Write(mem.ToArray());
-            writer.Close();
+            File.Delete($"ServerFiles/CacheFiles/{UserId}.ownershipcache");
+            var wr = File.OpenWrite($"ServerFiles/CacheFiles/{UserId}.ownershipcache");
+            cache.WriteTo(wr);
+            wr.Close();
             File.WriteAllText($"ServerFiles/CacheFiles/{UserId}.ownershipcache.txt", cache.ToString());
         }
 
         public static void MakeOwnershipFromTXT(string UserId)
         {
             var ownership = OwnershipCache.Parser.ParseJson(File.ReadAllText($"ServerFiles/CacheFiles/{UserId}.ownershipcache.txt"));
-            var writer = File.OpenWrite($"ServerFiles/CacheFiles/{UserId}.ownershipcache");
-            writer.Write(ownership.ToByteArray());
-            writer.Close();
+            Console.WriteLine(ownership.ToString());
+            File.Delete($"ServerFiles/CacheFiles/{UserId}.ownershipcache");
+            var wr = File.OpenWrite($"ServerFiles/CacheFiles/{UserId}.ownershipcache");
+            ownership.WriteTo(wr);
+            wr.Close();
         }
 
         public static void MakeOwnershipFromUser(string UserId, User.COwnership cOwnership)
@@ -102,11 +102,10 @@ namespace Core.JSON
                 ownedGame.ActivationType = OwnedGame.Types.ActivationType.Purchase;
                 cache.OwnedGames.Add(ownedGame);
             }
-            var mem = new MemoryStream();
-            cache.WriteTo(mem);
-            var writer = File.OpenWrite($"ServerFiles/CacheFiles/{UserId}.ownershipcache");
-            writer.Write(mem.ToArray());
-            writer.Close();
+            File.Delete($"ServerFiles/CacheFiles/{UserId}.ownershipcache");
+            var wr = File.OpenWrite($"ServerFiles/CacheFiles/{UserId}.ownershipcache");
+            cache.WriteTo(wr);
+            wr.Close();
             File.WriteAllText($"ServerFiles/CacheFiles/{UserId}.ownershipcache.txt", cache.ToString());
         }
 

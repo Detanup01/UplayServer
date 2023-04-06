@@ -34,7 +34,7 @@
         {
             if (isDebug == true)
             {
-                File.AppendAllText(logname, strLog+"\n");
+                File.AppendAllText(logname, strLog + "\n");
             }
         }
     }

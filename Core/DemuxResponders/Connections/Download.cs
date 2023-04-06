@@ -84,7 +84,7 @@ namespace Core.DemuxResponders
             {
                 List<UrlRsp.Types.UrlResponse> resp = new();
                 UrlRsp.Types.UrlResponse urlresp = new()
-                { 
+                {
                     DownloadUrls = { }
                 };
 

@@ -22,5 +22,14 @@
             public int branch_id { get; set; }
             public List<string> flags { get; set; }
         }
+
+        public class uplaypctiket
+        {
+            public string sub { get; set; }
+            public string iss { get; set; }
+            public long exp { get; set; }
+            public int uplay_id { get; set; }
+            public int platform { get; set; }
+        }
     }
 }

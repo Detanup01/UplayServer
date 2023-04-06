@@ -35,11 +35,6 @@ namespace Plugin
 
         }
 
-        public void DemuxParse(DemuxServer demux)
-        {
-
-        }
-
         public void DemuxParseInitFinish(DemuxServer demux)
         {
 
@@ -47,7 +42,7 @@ namespace Plugin
 
         public void DemuxDataReceived(int ClientNumb, SslStream sslStream, byte[] receivedData)
         {
-            
+
         }
 
         public void HttpRequest(HttpRequest request, HttpsSession session)
@@ -65,7 +60,7 @@ namespace Plugin
 
         public void DemuxDataReceivedCustom(int ClientNumb, byte[] receivedData, string Protoname)
         {
-            
+
         }
     }
 }

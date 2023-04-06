@@ -47,7 +47,7 @@ namespace Core.DemuxResponders
                 Rsp = new()
                 {
                     InitRsp = new()
-                    { 
+                    {
                         Result = InitResult.Success,
                         UplayPID = init.UplayId
                     }
@@ -67,7 +67,7 @@ namespace Core.DemuxResponders
                         OverlayEnabled = false,
                         Devmode = false,
                         SdkMonitoringConfig = new()
-                        { 
+                        {
                             SdkMonitoringEnabled = false,
                         }
                     }

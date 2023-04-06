@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json;
-using RestSharp;
-using ClientKit.UbiServices.Records;
-using ClientKit.Demux;
+﻿using ClientKit.Demux;
 using ClientKit.Demux.Connection;
 using ClientKit.Lib;
+using ClientKit.UbiServices.Records;
+using Newtonsoft.Json;
+using RestSharp;
 
 namespace Downloader
 {
@@ -69,7 +69,7 @@ namespace Downloader
             {
                 socket = new();
             }
-            
+
             socket.WaitInTimeMS = WaitTime;
             if (!socket.IsAuthed)
             {
@@ -163,7 +163,7 @@ namespace Downloader
                     File.WriteAllBytes(DLWorker.Config.ProductManifest + ".manifest", manifestBytes);
                     parsedManifest = Parsers.ParseManifestFile(DLWorker.Config.ProductManifest + ".manifest");
                 }
-                
+
             }
             #endregion
             #region Game from Argument

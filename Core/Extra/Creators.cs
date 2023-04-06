@@ -54,8 +54,8 @@ namespace Core
         {
             uncompressedLength = new();
             compressedbytes = new();
-            if (maxSize == 0) return; 
-            
+            if (maxSize == 0) return;
+
             var sr = File.OpenRead(FileName);
             int megabyte = 1024 * 1024;
             byte[] buffer = new byte[megabyte];

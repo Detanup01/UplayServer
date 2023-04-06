@@ -14,7 +14,7 @@ namespace ClientKit.UbiServices
             ToWrite += $"\nMessage: {ex.Message}";
             ToWrite += $"\nSource: {ex.Source}";
             ToWrite += $"\nHResult: {ex.HResult}";
-            ToWrite += $"\nHelpLink: {ex.HelpLink}"; 
+            ToWrite += $"\nHelpLink: {ex.HelpLink}";
             try
             {
                 ToWrite += $"\nTargetSite: {JsonConvert.SerializeObject(ex.TargetSite)}";

@@ -55,6 +55,28 @@ namespace Core
 
         }
 
+        public static string CreateUplayTicket(string UserId, uint uplayId, int platform, long exp = long.MinValue)
+        {
+            RSA rsa = RSA.Create();
+            rsa.FromXmlString(File.ReadAllText("cert/private.xml"));
+            File.WriteAllText("cert/private.xml", rsa.ToXmlString(true));
+            if (exp == long.MinValue)
+            {
+                exp = DateTimeOffset.UtcNow.AddHours(2).ToUnixTimeSeconds();
+            }
+            var token = JwtBuilder.Create()
+            .Subject(UserId)
+            .Issuer("ownership_service")
+            .WithAlgorithm(new RS256Algorithm(rsa, rsa))
+            .AddClaim("exp", exp)
+            .AddClaim("uplay_id", uplayId)
+            .AddClaim("branch_id", platform)
+            .Encode();
+
+            return token;
+
+        }
+
         /// <summary>
         /// Create Auth Token
         /// </summary>
@@ -68,7 +90,7 @@ namespace Core
         {
             RSA rsa = RSA.Create();
             rsa.FromXmlString(File.ReadAllText("cert/private.xml"));
-            File.WriteAllText("cert/private.xml", rsa.ToXmlString(true)); 
+            File.WriteAllText("cert/private.xml", rsa.ToXmlString(true));
             if (exp == long.MinValue)
             {
                 exp = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds();

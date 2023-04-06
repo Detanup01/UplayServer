@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace Core.JSON.Ext
+﻿namespace Core.JSON.Ext
 {
     public class UserExt : User
     {

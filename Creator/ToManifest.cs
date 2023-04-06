@@ -9,9 +9,9 @@ namespace Creator
         public static void MakeNewManifest(string prodId)
         {
             Manifest = new()
-            { 
+            {
                 IsCompressed = true,
-                Chunks = 
+                Chunks =
                 {
                     new Uplay.Download.Chunk()
                     {
@@ -21,7 +21,7 @@ namespace Creator
                         Type = Uplay.Download.Chunk.Types.ChunkType.Required,
                         UplayId = uint.Parse(prodId)
                     }
-                
+
                 }
             };
         }
@@ -68,7 +68,7 @@ namespace Creator
                         break;
                     default:
                         break;
-                
+
                 }
             }
 
@@ -85,7 +85,7 @@ namespace Creator
             }
             Manifest.Version = uint.Parse(sliceversion);
             var fileinfo = new FileInfo(filepath);
-            List<uint> uncomplenght = new(); 
+            List<uint> uncomplenght = new();
             List<byte[]> bytes = new();
             if (Manifest.IsCompressed)
             {
@@ -113,9 +113,9 @@ namespace Creator
                 }
             }
 
-            
 
-            var filename = fileinfo.FullName.Replace(basepath + "\\","");
+
+            var filename = fileinfo.FullName.Replace(basepath + "\\", "");
 
             Uplay.Download.File file = new()
             {
@@ -136,7 +136,7 @@ namespace Creator
                 if (sliceversion == "3")
                 {
                     Uplay.Download.Slice slice = new()
-                    { 
+                    {
                         DownloadSha1 = ByteString.CopyFrom(sliceid_b),
                         Size = uncompsize,
                         DownloadSize = (uint)slicebytes.Length

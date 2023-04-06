@@ -12,7 +12,7 @@
 
         public static void Run(string CommandName)
         {
-            if (Commands.TryGetValue(CommandName.Replace("!",""), out var action))
+            if (Commands.TryGetValue(CommandName.Replace("!", ""), out var action))
             {
                 action();
             }

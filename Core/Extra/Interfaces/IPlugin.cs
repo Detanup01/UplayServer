@@ -9,7 +9,6 @@ namespace Core.Extra.Interfaces
         string Name { get; }
         JSON.Plugin PluginExtra { get; }
         void Initialize();
-        void DemuxParse(DemuxResponders.DemuxServer demux);
         void DemuxParseInitFinish(DemuxResponders.DemuxServer demux);
         void DemuxDataReceived(int ClientNumb, SslStream sslStream, byte[] receivedData);
         void DemuxDataReceivedCustom(int ClientNumb, byte[] receivedData, string Protoname);

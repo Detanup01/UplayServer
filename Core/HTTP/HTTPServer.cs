@@ -60,7 +60,7 @@ namespace Core
 
             protected override void OnReceivedRequest(HttpRequest request)
             {
-                Extra.PluginHandle.PluginsHttpRequest(request,this);
+                Extra.PluginHandle.PluginsHttpRequest(request, this);
                 _request = request;
                 // Show HTTP request content
                 Dictionary<string, string> Headers = new();
@@ -121,7 +121,7 @@ namespace Core
                     {
                         SendResponseAsync(Response.MakeGetResponse(contentBytes, contentType));
                     }
-                    
+
                 }
                 else if ((request.Method == "POST") || (request.Method == "PUT"))
                 {

@@ -1,7 +1,7 @@
-﻿using Uplay.Download;
+﻿using ClientKit.Demux;
 using ClientKit.Demux.Connection;
 using ClientKit.Lib;
-using ClientKit.Demux;
+using Uplay.Download;
 
 namespace Downloader
 {

@@ -142,7 +142,7 @@ namespace Core.DemuxResponders
                     {
                         Push = new()
                         {
-                            
+
                             ClientOutdated = new()
                             {
 
@@ -236,7 +236,7 @@ namespace Core.DemuxResponders
 
                 if (authenticateReq.Token.HasUbiTicket)
                 {
-                    var job= JObject.Parse(jwt.GetUnkownJWTJson(authenticateReq.Token.UbiTicket));
+                    var job = JObject.Parse(jwt.GetUnkownJWTJson(authenticateReq.Token.UbiTicket));
                     var sid = job["sid"];
                     Console.WriteLine(sid);
                     var user_Id = UserToSession.GetUserIdBySessionId(sid.ToString());
@@ -274,7 +274,7 @@ namespace Core.DemuxResponders
                             Success = IsSuccess
                         }
                     }
-            };
+                };
 
             }
 

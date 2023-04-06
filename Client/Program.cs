@@ -1,10 +1,9 @@
-﻿using Google.Protobuf;
+﻿using ClientKit.Demux;
+using ClientKit.Demux.Connection;
+using ClientKit.UbiServices.Public;
+using Google.Protobuf;
 using System.IO.Pipes;
 using System.Reflection.Metadata;
-using System.Runtime.InteropServices;
-using ClientKit.UbiServices.Public;
-using ClientKit.Demux;
-using ClientKit.Demux.Connection;
 
 namespace Client
 {
@@ -12,18 +11,19 @@ namespace Client
     {
         static void Main(string[] args)
         {
+            ClientKit.UbiServices.Debug.isDebug = true;
+            ClientKit.Demux.Debug.isDebug = true;
             var reg = V3.Register("testuser", "testuser", "testuser");
             if (reg != null)
             {
                 var UserID = reg.UserId;
-
+                Console.WriteLine(UserID);
             }
             var login = V3.Login("testuser", "testuser");
             if (login != null)
             {
                 var ticket = login.Ticket;
-                ClientKit.UbiServices.Debug.isDebug = true;
-                ClientKit.Demux.Debug.isDebug = true;
+                Console.WriteLine(ticket);
                 Debug.isDebug = true;
                 Socket socket = new();
                 socket.PushVersion();
@@ -35,7 +35,11 @@ namespace Client
                     args = args.Append("-ticket").Append(ticket).ToArray();
                     Downloader.Program.Main(args, socket);
                 }
-
+                OwnershipConnection ownershipConnection = new(socket);
+                var x = ownershipConnection.Initialize();
+                var sig = x.OwnedGamesContainer.Signature.ToBase64();
+                var tmp = ownershipConnection.RegisterTempOwnershipToken(sig);
+                Console.WriteLine(tmp.ProductIds.Count);
                 Console.ReadLine();
                 socket.Close();
             }
@@ -99,10 +103,10 @@ namespace Client
             Console.WriteLine("Bye, World!");
          
          */
-       
+
         public static void VTest()
         {
-           var pipeServer = new NamedPipeServerStream("custom_r2_pipe", PipeDirection.InOut, 1, PipeTransmissionMode.Byte);
+            var pipeServer = new NamedPipeServerStream("custom_r2_pipe", PipeDirection.InOut, 1, PipeTransmissionMode.Byte);
             Console.WriteLine("server created");
             //new Thread(BTest).Start();
             pipeServer.WaitForConnection();
@@ -115,7 +119,7 @@ namespace Client
                 {
                     Console.WriteLine("4");
                     var _InternalReadedLenght = FormatLength(BitConverter.ToUInt32(buffer, 0));
-                    var _InternalReaded = new byte[(int)_InternalReadedLenght]; 
+                    var _InternalReaded = new byte[(int)_InternalReadedLenght];
                     Console.WriteLine(_InternalReadedLenght);
                     int readed = pipeServer.Read(_InternalReaded, 0, (int)_InternalReadedLenght);
                     Console.WriteLine(readed);

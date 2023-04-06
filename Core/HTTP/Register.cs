@@ -50,12 +50,12 @@ namespace Core.HTTP
                 Ownership = new()
                 {
                     OwnedGamesIds = { 0 },
-                    UbiPlus = 0        
+                    UbiPlus = 0
                 }
             };
 
             User.SaveUser(userId, user);
-            Owners.MakeOwnership(userId,0, new() { 0 }, new() { 0 });
+            Owners.MakeOwnership(userId, 0, new() { 0 }, new() { 0 });
 
             return JsonConvert.SerializeObject(new RegisterResponse()
             {

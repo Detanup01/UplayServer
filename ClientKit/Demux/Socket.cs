@@ -49,6 +49,7 @@ namespace ClientKit.Demux
         private const int BUFFERSIZE = 4;
         private byte[] ReadBuffer = null;
         private byte[]? InternalReaded = null;
+        private int _numbEventAttempt = 0;
         private Task RecieveTask;
         #endregion
         #region Basic
@@ -227,8 +228,19 @@ namespace ClientKit.Demux
                     }
                     else
                     {
-                        Debug.PWDebug("[Receive] Something isn't Right!", "recieve.log");
-                        TerminateConnection(0);
+                        Debug.PWDebug("nBytes is 0!", "recieve.log");
+                        if (_numbEventAttempt < 3)
+                        {
+                            _numbEventAttempt++;
+                            Receive();
+                            return;
+                        }
+                        else
+                        {
+                            Debug.PWDebug("[Receive] Something isn't Right!", "recieve.log");
+                            TerminateConnection(0);
+                        }
+
                     }
                 }
                 else

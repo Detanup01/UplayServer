@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
 using Uplay.Uplaydll;
 using static upc_r2.Enums;
 
@@ -25,7 +20,7 @@ namespace upc_r2
 
             Req req = new();
             {
-                
+
                 new InitProcessReq()
                 {
                     UplayId = uplayId,

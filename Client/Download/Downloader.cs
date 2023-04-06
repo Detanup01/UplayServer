@@ -1,6 +1,6 @@
-﻿using Google.Protobuf;
-using ClientKit.Demux;
+﻿using ClientKit.Demux;
 using ClientKit.Demux.Connection;
+using Google.Protobuf;
 using static Downloader.Saving;
 using File = System.IO.File;
 using UDFile = Uplay.Download.File;
@@ -274,14 +274,14 @@ namespace Downloader
                 }
 
             }
-            fs.Close(); 
+            fs.Close();
             Console.WriteLine($"\t\tFile {file.Name} finished");
             if (Config.DownloadAsChunks)
             {
                 //we delete the file because we arent even writing to it :)
                 File.Delete(fullPath);
             }
-            
+
         }
     }
 }

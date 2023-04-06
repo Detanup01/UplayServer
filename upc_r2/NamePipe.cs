@@ -94,7 +94,7 @@ namespace upc_r2
                             {
                                 if (downstream.Response.ServiceRsp != null)
                                 {
-                                    Log("SendReq", new object[] { "Success? " , downstream.Response.ServiceRsp.Success });
+                                    Log("SendReq", new object[] { "Success? ", downstream.Response.ServiceRsp.Success });
                                     rsp = Uplay.Uplaydll.Rsp.Parser.ParseFrom(downstream.Response.ServiceRsp.Data.ToArray());
                                 }
                                 break;
@@ -108,7 +108,7 @@ namespace upc_r2
             {
                 Log("SendReq", new object[] { ex.ToString() });
             }
-            
+
         }
     }
 }

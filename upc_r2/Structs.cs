@@ -27,7 +27,7 @@ namespace upc_r2
         public struct Emu
         {
             public string name;
-        
+
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -73,7 +73,7 @@ namespace upc_r2
             }
 
             GlobalContext.initialized = true;
-            var cl = GlobalContext.cb.ToList(); 
+            var cl = GlobalContext.cb.ToList();
             cl.Add(new cb_data(inCallback, inCallbackData, 0));
             GlobalContext.cb = cl.ToArray();
             return 0;
