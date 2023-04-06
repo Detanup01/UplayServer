@@ -5,9 +5,9 @@ root:
   background_image: bg0.jpg
   thumb_image: thumb0.jpg
   logo_image: logo0.png
-  help_url: http://uplaydb.com
-  homepage_url: http://uplaydb.com
-  forum_url: http://uplaydb.com
+  help_url: http://google.com
+  homepage_url: http://google.com
+  forum_url: http://google.com
   overlay_virtual_control_enabled: no
   icon_image: 0.ico
   start_game:
@@ -15,7 +15,7 @@ root:
       overlay_required: no
       overlay_shop_enabled: yes
       overlay_shop_default_enabled: no
-      overlay_shop_url: http://uplaydb.com
+      overlay_shop_url: http://google.com
       overlay_shop_sigma: yes
       overlay_product_activation_enabled: yes
       overlay_supported: yes
@@ -46,9 +46,9 @@ root:
   upn_enabled: true
   installer:
     game_identifier: Example
-    publisher: UplayDB
-    help_url: http://uplaydb.com
-    about_url: http://uplaydb.com
+    publisher: CustomUplay
+    help_url: http://google.com
+    about_url: http://google.com
   digital_distribution:
     version: 2
   cloud_saves: yes

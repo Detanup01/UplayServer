@@ -96,7 +96,6 @@ namespace Core
                 var sliceid = GenerateSliceID(arr);
                 uncompressedLength.Add((uint)fileData.Length);
                 sliceData.Add(arr);
-                Extra.Debug.PWDebug($"SliceId: {sliceid}. Compressed L: {arr.Length} MaxL: {maxSize}");
                 compressedbytes.Add(arr);
             }
             else
@@ -127,7 +126,6 @@ namespace Core
                     var sliceid = GenerateSliceID(arr);
                     uncompressedLength.Add((uint)copySlice.Length);
                     sliceData.Add(arr);
-                    Extra.Debug.PWDebug($"SliceId: {sliceid}. Compressed L: {arr.Length} MaxL: {maxSize}");
                     compressedbytes.Add(arr);
                 }
             }

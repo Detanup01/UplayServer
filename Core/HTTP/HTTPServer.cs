@@ -71,14 +71,15 @@ namespace Core
                 }
                 string key = request.Url;
                 key = Uri.UnescapeDataString(key);
-                Console.WriteLine("\n" + key);
+                //Console.WriteLine("\n" +  request.Method  + "\n"+ key);
                 // Process HTTP request methods
                 if (request.Method == "HEAD")
                     SendResponseAsync(Response.MakeHeadResponse());
                 else if (request.Method == "GET")
                 {
                     byte[] contentBytes = { };
-                    var content = File.ReadAllText("Web/index.html");
+                    var content = "";
+                    bool handled = false;
                     var contentType = "text/html; charset=UTF-8";
                     switch (key)
                     {
@@ -86,26 +87,31 @@ namespace Core
                             break;
                     }
                     //Dynamic HTTPs:
-                    if (key.Contains("/v2/applications/"))
+                    if (key.StartsWith("/v2/applications/"))
                     {
                         //HTTP.Applications.v2.GET
                     }
-                    if (key.Contains("/v1/applications/"))
+                    if (key.StartsWith("/v1/applications/"))
                     {
                         //HTTP.Applications.v1.GET
                     }
-                    if (key.Contains("/v1/spaces/"))
+                    if (key.StartsWith("/v1/spaces/"))
                     {
                         //HTTP.Spaces.v1.GET
                     }
-                    if (key.Contains("/download/"))
+                    if (key.StartsWith("/download/"))
                     {
                         contentBytes = DownloadHandler.DownloadHandlerCallback(key, out contentType);
+                        handled = true;
                     }
-                    if (key.Contains("/patch/"))
+                    if (key.StartsWith("/patch/"))
                     {
                         contentBytes = PatchHandler.PatchHandlerCallback(key, out contentType);
+                        handled = true;
                     }
+
+                    if (!handled)
+                        Console.WriteLine("\n" + request.Method + "\n" + key);
 
                     if (contentBytes.Length == 0)
                     {

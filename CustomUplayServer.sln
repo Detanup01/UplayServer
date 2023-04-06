@@ -5,7 +5,7 @@ VisualStudioVersion = 17.3.32811.315
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{BB28E51F-3E29-4BB8-A478-530AB842D5DA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{B61C9950-977E-449C-A625-AA7E928CCAB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "Server\Server.csproj", "{B61C9950-977E-449C-A625-AA7E928CCAB9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HttpsTester", "HttpsTester\HttpsTester.csproj", "{3ABA1519-6902-4C2F-A1ED-8945AE340853}"
 EndProject
@@ -17,9 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Creator", "Creator\Creator.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "upc_r2", "upc_r2\upc_r2.csproj", "{8EB98FB9-5701-4C99-A430-08DB56CF46C2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CUplayKit", "CUplayKit\CUplayKit.csproj", "{93E96079-6A6E-46F5-B83B-4F4087D52D66}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientKit", "ClientKit\ClientKit.csproj", "{93E96079-6A6E-46F5-B83B-4F4087D52D66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{3F88C7BA-8A74-4293-A8F3-DCFBD9AFB388}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "Client\Client.csproj", "{3F88C7BA-8A74-4293-A8F3-DCFBD9AFB388}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

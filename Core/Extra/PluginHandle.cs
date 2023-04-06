@@ -43,7 +43,7 @@ namespace Core.Extra
             }
         }
 
-        public static void DemuxParseInitFinish(DemuxResponsers.DemuxServer demux)
+        public static void DemuxParseInitFinish(DemuxResponders.DemuxServer demux)
         {
             foreach (var plugin in pluginsList)
             {

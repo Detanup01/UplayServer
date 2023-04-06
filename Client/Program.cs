@@ -2,16 +2,44 @@
 using System.IO.Pipes;
 using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
-using CUplayKit.UbiServices.Public;
-using CUplayKit.Demux;
-using CUplayKit.Demux.Connection;
+using ClientKit.UbiServices.Public;
+using ClientKit.Demux;
+using ClientKit.Demux.Connection;
 
 namespace Client
 {
     internal class Program
     {
         static void Main(string[] args)
-        { 
+        {
+            var reg = V3.Register("testuser", "testuser", "testuser");
+            if (reg != null)
+            {
+                var UserID = reg.UserId;
+
+            }
+            var login = V3.Login("testuser", "testuser");
+            if (login != null)
+            {
+                var ticket = login.Ticket;
+                ClientKit.UbiServices.Debug.isDebug = true;
+                ClientKit.Demux.Debug.isDebug = true;
+                Debug.isDebug = true;
+                Socket socket = new();
+                socket.PushVersion();
+                Console.WriteLine(socket.VersionCheck());
+                Console.WriteLine(socket.Authenticate(ticket));
+                Console.WriteLine(socket.IsAuthed);
+                if (args.Contains("install") || args.Contains("download"))
+                {
+                    args = args.Append("-ticket").Append(ticket).ToArray();
+                    Downloader.Program.Main(args, socket);
+                }
+
+                Console.ReadLine();
+                socket.Close();
+            }
+
             /*
             var x = callbacktest.getcontext();
             Console.WriteLine("yey context! " + x);

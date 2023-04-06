@@ -11,9 +11,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Extra\usages.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Extra\usages.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -28,6 +25,10 @@
     <PackageReference Include="System.Data.SQLite" Version="1.0.117" />
     <PackageReference Include="Uplay-Protobufs" Version="139.2.10843" />
     <PackageReference Include="ZstdNet" Version="1.4.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ServerFiles\Patch\0\" />
   </ItemGroup>
 
 </Project>
