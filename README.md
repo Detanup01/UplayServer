@@ -24,11 +24,11 @@ EXTRA:
 
 DLL:
 - [ ] All export
-- [ ] Using namepipes (same in ubisoft) to connect the client
+- [x] Using namepipes (same in ubisoft) to connect the client
 
 ClientKit:
 - [x] Using Modified UplayKit
-- [ ] Using Modified UbiServices
+- [x] Using Modified UbiServices
 - [ ] Using Modified CoreLib
 
 Client:
