@@ -1,0 +1,75 @@
+﻿version: 2.0
+root:
+  name: Example
+  sort_string: Example
+  background_image: bg0.jpg
+  thumb_image: thumb0.jpg
+  logo_image: logo0.png
+  help_url: http://uplaydb.com
+  homepage_url: http://uplaydb.com
+  forum_url: http://uplaydb.com
+  overlay_virtual_control_enabled: no
+  icon_image: 0.ico
+  start_game:
+    online:
+      overlay_required: no
+      overlay_shop_enabled: yes
+      overlay_shop_default_enabled: no
+      overlay_shop_url: http://uplaydb.com
+      overlay_shop_sigma: yes
+      overlay_product_activation_enabled: yes
+      overlay_supported: yes
+      executables:
+      - shortcut_name: Example
+        path:
+          relative: ExampleGameCustom.exe
+        trial:
+          arguments: -trial
+        working_directory:
+          register: HKEY_LOCAL_MACHINE\\SOFTWARE\\Ubisoft\\Launcher\\InstallsCustom\\0\\InstallDir
+          append: Bin
+        arguments: -online
+        icon_image: 0.ico
+      pc_bang: {}
+    offline:
+      executables:
+      - shortcut_name: Example
+        path:
+          relative: ExampleGameCustom.exe
+        trial:
+          arguments: -trial
+        working_directory:
+          register: HKEY_LOCAL_MACHINE\\SOFTWARE\\Ubisoft\\Launcher\\InstallsCustom\\0\\InstallDir
+          append: Bin
+        arguments: -offline
+        icon_image: 0.ico
+  upn_enabled: true
+  installer:
+    game_identifier: Example
+    publisher: UplayDB
+    help_url: http://uplaydb.com
+    about_url: http://uplaydb.com
+  digital_distribution:
+    version: 2
+  cloud_saves: yes
+  uplay:
+    achievements: Example0.zip
+    achievements_sync_id: E0
+  club:
+    enabled: no
+  news:
+    thread: E0
+  game_page_modules:
+    friends:
+      size: 1
+    streams:
+      size: 1
+  game_streaming_enabled: yes
+  crash_reporting:
+    space_id: 8e4bbc7d-a461-4174-443c-653162b3a7a0
+    app_id: 036d4290-b6f4-3611-eb42-a4974c3bed48
+  app_id: 036d4290-b6f4-3611-eb42-a4974c3bed48
+  space_id: 8e4bbc7d-a461-4174-443c-653162b3a7a0
+  dynamic_app_id: []
+  show_properties: yes
+localizations: {}

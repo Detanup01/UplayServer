@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DNNE" Version="2.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Uplay-Protobufs" Version="139.2.10843" />
+  </ItemGroup>
+	
+	<PropertyGroup>
+		<DnneAddGeneratedBinaryToProject>true</DnneAddGeneratedBinaryToProject>
+		<EnableDynamicLoading>true</EnableDynamicLoading>
+		<DnneNativeBinaryName>upc_r2</DnneNativeBinaryName>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<AssemblyName>$(MSBuildProjectName)_cs</AssemblyName>
+	</PropertyGroup>
+	
+  <ItemGroup>
+    <None Update="upc.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

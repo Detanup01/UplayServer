@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>dummydll_cs</AssemblyName>
+  </PropertyGroup>
+
+    <PropertyGroup>
+		<DnneAddGeneratedBinaryToProject>true</DnneAddGeneratedBinaryToProject>
+		<EnableDynamicLoading>true</EnableDynamicLoading>
+		<DnneNativeBinaryName>dummydll</DnneNativeBinaryName>
+    </PropertyGroup>
+	
+<ItemGroup>
+    <PackageReference Include="DNNE" Version="2.0.1" />
+    <PackageReference Include="Uplay-Protobufs" Version="138.0.10824" />
+  </ItemGroup>
+
+</Project>

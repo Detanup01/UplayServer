@@ -1,0 +1,8 @@
+{
+  "Base": {
+    "ReqLog": true,
+    "RspLog": true,
+    "PID": 0
+  }
+
+}
