@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.22.1" />
+    <PackageReference Include="LiteDB" Version="5.0.16" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="SharpZipLib" Version="1.4.2" />
+    <PackageReference Include="Uplay-Protobufs" Version="139.2.10843" />
+    <PackageReference Include="ZstdNet" Version="1.4.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Client\" />
+  </ItemGroup>
+
+</Project>

@@ -149,6 +149,46 @@ namespace Core.DemuxResponders
                 IsIdDone = true;
             }
 
+            public static void SwitchProductBranch(int ClientNumb, SwitchProductBranchReq switchProductBranchReq)
+            {
+                SwitchProductBranchRsp.Types.Result result = SwitchProductBranchRsp.Types.Result.Denied;
+                /*
+                var pid = unlockProductBranchReq.Branch.ProductId;
+                var pass = unlockProductBranchReq.Branch.Password;
+                UnlockProductBranchRsp.Types.Result result = UnlockProductBranchRsp.Types.Result.Denied;
+                UnlockProductBranchRsp.Types.ProductBranch productBranch = new();
+                var game = GameConfig.GetGameConfig(pid);
+                if (game != null)
+                {
+                    var branches = game.branches.product_branches;
+                    foreach (var branch in branches)
+                    {
+                        if (branch.branch_password == pass)
+                        {
+                            productBranch.BranchId = branch.branch_id;
+                            productBranch.BranchName = branch.branch_name;
+                            result = UnlockProductBranchRsp.Types.Result.Success;
+                            break;
+                        }
+                    }
+                }*/
+
+                Downstream = new()
+                {
+                    Response = new()
+                    {
+                        RequestId = ReqId,
+                        SwitchProductBranchRsp = new()
+                        { 
+                            Result = result,
+                            Products = new()
+                            { 
+                                OwnedGames_ = { }
+                            }
+                        }
+                    }
+                };
+            }
 
 
 
