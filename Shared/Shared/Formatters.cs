@@ -1,10 +1,15 @@
 ﻿using Google.Protobuf;
-using System.Reflection.Metadata;
 
 namespace SharedLib.Shared
 {
     public class Formatters
     {
+        /// <summary>
+        /// Format File Size
+        /// <br>.000 B, KB, MB, GB, TB</br>
+        /// </summary>
+        /// <param name="lsize">Size as ulong</param>
+        /// <returns></returns>
         public static string FormatFileSize(ulong lsize)
         {
             double size = lsize;
@@ -14,25 +19,34 @@ namespace SharedLib.Shared
             return size.ToString("0.000 " + new[] { "B", "KB", "MB", "GB", "TB" }[index]);
         }
 
+        /// <summary>
+        /// Format Message to Upsteam
+        /// </summary>
+        /// <param name="rawMessage"></param>
+        /// <returns></returns>
         public static byte[] FormatUpstream(byte[] rawMessage)
         {
-            BlobWriter blobWriter = new(4);
-            blobWriter.WriteUInt32BE((uint)rawMessage.Length);
-            var returner = blobWriter.ToArray().Concat(rawMessage).ToArray();
-            blobWriter.Clear();
-            return returner;
+            return BitConverter.GetBytes(FormatLength((uint)rawMessage.Length)).Concat(rawMessage).ToArray();
         }
 
+        /// <summary>
+        /// Get The length of the message
+        /// </summary>
+        /// <param name="length">Lenght as uint</param>
+        /// <returns>The Lenght</returns>
         public static uint FormatLength(uint length)
         {
-            BlobWriter blobWriter = new(4);
-            blobWriter.WriteUInt32BE(length);
-            var returner = BitConverter.ToUInt32(blobWriter.ToArray());
-            blobWriter.Clear();
-            return returner;
+            return ((length & 0x000000ff) << 24) +
+                   ((length & 0x0000ff00) << 8) +
+                   ((length & 0x00ff0000) >> 8) +
+                   ((length & 0xff000000) >> 24);
         }
 
-
+        /// <summary>
+        /// Get the HashChar from SliceId
+        /// </summary>
+        /// <param name="sliceId">The SliceId</param>
+        /// <returns>Hash Char</returns>
         public static char FormatSliceHashChar(string sliceId)
         {
             char[] base32 = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v' };
@@ -43,6 +57,12 @@ namespace SharedLib.Shared
             return base32[offset + halfOffset];
         }
 
+        /// <summary>
+        /// Format Protobuf Data
+        /// </summary>
+        /// <typeparam name="T">The Protobuf Class</typeparam>
+        /// <param name="bytes">Message as Bytes</param>
+        /// <returns>The Protobuf Message</returns>
         public static T? FormatData<T>(byte[] bytes) where T : IMessage<T>, new()
         {
             try
@@ -63,10 +83,17 @@ namespace SharedLib.Shared
             }
             catch (Exception ex)
             {
+                Ex.Handler(ex,"Shared_Formatter");
                 return default;
             }
         }
 
+        /// <summary>
+        /// Format Protobuf Data with No Length
+        /// </summary>
+        /// <typeparam name="T">The Protobuf Class</typeparam>
+        /// <param name="bytes">Message as Bytes</param>
+        /// <returns>The Protobuf Message</returns>
         public static T? FormatDataNoLength<T>(byte[] bytes) where T : IMessage<T>, new()
         {
             try
@@ -79,6 +106,7 @@ namespace SharedLib.Shared
             }
             catch (Exception ex)
             {
+                Ex.Handler(ex, "Shared_Formatter");
                 return default;
             }
         }

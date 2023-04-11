@@ -1,8 +1,10 @@
-﻿using Core.SQLite;
-using Google.Protobuf;
+﻿using Google.Protobuf;
 using Newtonsoft.Json.Linq;
+using SharedLib.Server.DB;
+using SharedLib.Server.Json;
+using SharedLib.Shared;
 using Uplay.Demux;
-using static Core.SQLite.CurrentLogged;
+using static SharedLib.Server.Enums;
 
 namespace Core.DemuxResponders
 {
@@ -14,8 +16,8 @@ namespace Core.DemuxResponders
             {
                 Globals.IdToUser.Remove(ClientNumb);
                 Globals.UserToId.Remove(Id);
-                Delete(Id);
-                UserDMX.Delete(Id);
+                Auth.DeleteCurrent(Id);
+                Auth.DeleteDMX(Id);
             }
         }
 
@@ -39,7 +41,7 @@ namespace Core.DemuxResponders
                 ByteString rspBytes = ByteString.Empty;
                 if (Globals.IdToUser.TryGetValue(ClientNumb, out string id))
                 {
-                    var ConnectName = UserDMX.GetConNameByUserAndId(id, data.ConnectionId);
+                    var ConnectName = Auth.GetConNameByUserAndId(id, data.ConnectionId);
                     if (Globals.Connections.Contains(ConnectName))
                     {
                         switch (ConnectName)
@@ -103,7 +105,7 @@ namespace Core.DemuxResponders
                             Data = new()
                             {
                                 ConnectionId = data.ConnectionId,
-                                Data = ByteString.CopyFrom(Utils.FormatUpstream(rspBytes.ToArray()))
+                                Data = ByteString.CopyFrom(Formatters.FormatUpstream(rspBytes.ToArray()))
                             }
                         }
                     };
@@ -184,7 +186,7 @@ namespace Core.DemuxResponders
                             Success = true,
                             LatestVersion = Globals.AcceptVersions.Last(),
                             PatchTrackId = req.PatchTrackId,
-                            PatchBaseUrl = Config.DMX.PatchBaseUrl
+                            PatchBaseUrl = ServerConfig.DMX.PatchBaseUrl
                         }
                     }
                 };
@@ -200,10 +202,10 @@ namespace Core.DemuxResponders
                 if (authenticateReq.Token.HasUbiToken)
                 {
                     //Todo Check Token Expire
-                    string userId = GetUserIdByToken(authenticateReq.Token.UbiToken.ToStringUtf8(), (int)TokenType.Ticket);
+                    string userId = Auth.GetUserIdByToken(authenticateReq.Token.UbiToken.ToStringUtf8(), TokenType.Ticket);
                     if (!string.IsNullOrEmpty(userId))
                     {
-                        if (!Preparing.BannedUsers.Contains(userId))
+                        if (!Prepare.BannedUsers.Contains(userId))
                         {
                             Globals.IdToUser.Add(ClientNumb, userId);
                             Globals.UserToId.Add(userId, ClientNumb);
@@ -218,10 +220,10 @@ namespace Core.DemuxResponders
 
                 if (authenticateReq.Token.HasOrbitToken)
                 {
-                    string userId = GetUserIdByToken(authenticateReq.Token.OrbitToken, (int)TokenType.Orbit);
+                    string userId = Auth.GetUserIdByToken(authenticateReq.Token.OrbitToken, TokenType.Orbit);
                     if (!string.IsNullOrEmpty(userId))
                     {
-                        if (!Preparing.BannedUsers.Contains(userId))
+                        if (!Prepare.BannedUsers.Contains(userId))
                         {
                             Globals.IdToUser.Add(ClientNumb, userId);
                             Globals.UserToId.Add(userId, ClientNumb);
@@ -239,17 +241,17 @@ namespace Core.DemuxResponders
                     var job = JObject.Parse(jwt.GetUnkownJWTJson(authenticateReq.Token.UbiTicket));
                     var sid = job["sid"];
                     Console.WriteLine(sid);
-                    var user_Id = UserToSession.GetUserIdBySessionId(sid.ToString());
+                    var user_Id = Auth.GetUserIdBySessionId(sid.ToString());
                     if (!string.IsNullOrEmpty(user_Id))
                     {
                         IsSuccess = true;
                         Globals.IdToUser.Add(ClientNumb, user_Id);
                         Globals.UserToId.Add(user_Id, ClientNumb);
                     }
-                    string userId = GetUserIdByToken(authenticateReq.Token.UbiTicket, (int)TokenType.Ticket);
+                    string userId = Auth.GetUserIdByToken(authenticateReq.Token.UbiTicket, TokenType.Ticket);
                     if (!string.IsNullOrEmpty(userId))
                     {
-                        if (!Preparing.BannedUsers.Contains(userId))
+                        if (!Prepare.BannedUsers.Contains(userId))
                         {
                             Globals.IdToUser.Add(ClientNumb, userId);
                             Globals.UserToId.Add(userId, ClientNumb);
@@ -289,16 +291,16 @@ namespace Core.DemuxResponders
                     {
 
                         IsSucces = true;
-                        uint LatestCon = UserDMX.GetLatestConIdByUser(id);
-                        uint con = UserDMX.GetConIdByUserAndName(id, OpenConnection.ServiceName);
+                        uint LatestCon = Auth.GetLatestConIdByUser(id);
+                        uint con = Auth.GetConIdByUserAndName(id, OpenConnection.ServiceName);
 
                         if (LatestCon == 0 && con == 0)
                         {
-                            UserDMX.Add(id, Id, OpenConnection.ServiceName);
+                            Auth.AddDMX(id, Id, OpenConnection.ServiceName);
                         }
                         if (LatestCon != 0)
                         {
-                            UserDMX.Add(id, LatestCon + 1, OpenConnection.ServiceName);
+                            Auth.AddDMX(id, LatestCon + 1, OpenConnection.ServiceName);
                             Id = LatestCon + 1;
                         }
                     }

@@ -5,14 +5,14 @@ namespace SharedLib.Server.DB
 {
     public class App
     {
-        public static string DBName = Prepare.DatabasePath + "App.db";
-        public static string AppAPI = "AppAPI";
-        public static string AppFlags = "AppFlags";
+        public readonly static string DBName = Prepare.DatabasePath + "App.db";
+        public readonly static string AppAPI = "AppAPI";
+        public readonly static string AppFlags = "AppFlags";
 
         /// <summary>
         /// Create App.db and filling with Basic data
         /// </summary>
-        public static void Create()
+        public static void Init()
         {
             using (var db = new LiteDatabase(DBName))
             {
@@ -28,7 +28,6 @@ namespace SharedLib.Server.DB
                     };
                     col.Insert(appAPI);
                 }
-                var cl = db.GetCollection<JAppFlags>(AppFlags);
             }
         }
 

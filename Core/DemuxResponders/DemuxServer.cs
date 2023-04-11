@@ -1,5 +1,7 @@
 ﻿using Core.Extra;
 using Google.Protobuf;
+using SharedLib.Server.Json;
+using SharedLib.Shared;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Security;
@@ -33,7 +35,7 @@ namespace Core.DemuxResponders
         {
             Directory.CreateDirectory("logs");
             Console.WriteLine("[DMXSERVER] Server Started");
-            tcpListener = new(IPAddress.Parse(Config.DemuxIp), Config.DemuxPort);
+            tcpListener = new(IPAddress.Parse(ServerConfig.DemuxIp), ServerConfig.DemuxPort);
             Clients = new();
             SslClients = new();
             NetClients = new();
@@ -207,7 +209,7 @@ namespace Core.DemuxResponders
                     {
                         byte[] buffer = new byte[4];
                         sslStream.Read(buffer, 0, 4);
-                        uint responseLength = Utils.ByteSwapUInt(BitConverter.ToUInt32(buffer, 0));
+                        uint responseLength = Formatters.FormatLength(BitConverter.ToUInt32(buffer, 0));
                         if (responseLength == 0)
                         {
                             // Means to break and shut down
@@ -317,14 +319,14 @@ namespace Core.DemuxResponders
             if (Which == 0 && Demux.PushRSP.Downstream != null)
             {
                 File.AppendAllText($"logs/client_{ClientNumb}_rsp.log", Demux.PushRSP.Downstream.ToString() + "\n");
-                sslStream.Write(Utils.FormatUpstream(Demux.PushRSP.Downstream.ToByteArray()));
+                sslStream.Write(Formatters.FormatUpstream(Demux.PushRSP.Downstream.ToByteArray()));
                 sslStream.Flush();
                 Demux.PushRSP.Downstream = null;
             }
             if (Which == 1 && Demux.ReqRSP.Downstream != null)
             {
                 File.AppendAllText($"logs/client_{ClientNumb}_rsp.log", Demux.ReqRSP.Downstream.ToString() + "\n");
-                sslStream.Write(Utils.FormatUpstream(Demux.ReqRSP.Downstream.ToByteArray()));
+                sslStream.Write(Formatters.FormatUpstream(Demux.ReqRSP.Downstream.ToByteArray()));
                 sslStream.Flush();
                 Demux.ReqRSP.Downstream = null;
             }
@@ -349,7 +351,7 @@ namespace Core.DemuxResponders
         {
             if (SslClients.TryGetValue(ClientNumber, out var sslStream))
             {
-                sslStream.Write(Utils.FormatUpstream(down.ToByteArray()));
+                sslStream.Write(Formatters.FormatUpstream(down.ToByteArray()));
                 sslStream.Flush();
             }
 
@@ -371,7 +373,7 @@ namespace Core.DemuxResponders
                         Data = message
                     }
                 };
-                sslStream.Write(Utils.FormatUpstream(downstream.ToByteArray()));
+                sslStream.Write(Formatters.FormatUpstream(downstream.ToByteArray()));
                 sslStream.Flush();
             }
         }
@@ -397,7 +399,7 @@ namespace Core.DemuxResponders
                     }
                 }
             };
-            sslStream.Write(Utils.FormatUpstream(downstream.ToByteArray()));
+            sslStream.Write(Formatters.FormatUpstream(downstream.ToByteArray()));
             sslStream.Flush();
         }
 

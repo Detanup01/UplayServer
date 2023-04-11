@@ -1,6 +1,7 @@
 ﻿using Core.DemuxResponders;
 using Core.Extra;
-using Core.SQLite;
+using SharedLib.Server.DB;
+using SharedLib.Server.Json;
 
 namespace Core
 {
@@ -9,13 +10,13 @@ namespace Core
         public static DemuxServer server = null;
         public static void Start(bool IsLocal = true)
         {
-            Preparing.MakeAll();
+            Prepare.MakeAll();
             jwt.CreateRSA();
             PluginHandle.LoadPlugins();
             HTTPServer.Start();
-            Console.WriteLine(Config.HTTPSUrl);
+            Console.WriteLine(ServerConfig.HTTPSUrl);
             server = new(IsLocal);
-            Console.WriteLine(Config.DemuxUrl);
+            Console.WriteLine(ServerConfig.DemuxUrl);
         }
 
         public static void Stop()

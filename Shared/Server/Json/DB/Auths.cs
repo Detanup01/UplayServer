@@ -8,23 +8,25 @@
         public Enums.TokenType type { get; set; }
     }
 
-    public class JAuth
+    public class JUA
     {
         public int Id { get; set; }
         public string userId { get; set; }
         public string authtoken { get; set; }
     }
 
-    public class JSession
+    public class JU2S
     {
         public int Id { get; set; }
         public string userId { get; set; }
         public string sessionId { get; set; }
     }
-    public class JCon
+
+    public class JDMX
     {
         public int Id { get; set; }
         public string userId { get; set; }
-        public string sessionId { get; set; }
+        public uint conId { get; set; }
+        public string conName { get; set; }
     }
 }

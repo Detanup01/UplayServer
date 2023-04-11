@@ -21,9 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientKit", "ClientKit\Clie
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "Client\Client.csproj", "{3F88C7BA-8A74-4293-A8F3-DCFBD9AFB388}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedLib", "Shared\SharedLib.csproj", "{C780C745-9DCE-4686-BD76-5435FC338B7C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedTest", "SharedTest\SharedTest.csproj", "{3016F813-9DBB-4451-B313-B517EEC3139A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedLib", "Shared\SharedLib.csproj", "{C780C745-9DCE-4686-BD76-5435FC338B7C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,10 +69,6 @@ Global
 		{C780C745-9DCE-4686-BD76-5435FC338B7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C780C745-9DCE-4686-BD76-5435FC338B7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C780C745-9DCE-4686-BD76-5435FC338B7C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3016F813-9DBB-4451-B313-B517EEC3139A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3016F813-9DBB-4451-B313-B517EEC3139A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3016F813-9DBB-4451-B313-B517EEC3139A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3016F813-9DBB-4451-B313-B517EEC3139A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

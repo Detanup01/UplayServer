@@ -1,8 +1,8 @@
-﻿using Core.JSON;
-using JWT.Algorithms;
+﻿using JWT.Algorithms;
 using JWT.Builder;
 using JWT.Exceptions;
 using Newtonsoft.Json;
+using SharedLib.Server.Json;
 using System.Security.Cryptography;
 
 namespace Core

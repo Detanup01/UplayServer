@@ -1,9 +1,10 @@
-﻿using Core.JSON;
-using Core.SQLite;
-using Google.Protobuf;
+﻿using Google.Protobuf;
 using Newtonsoft.Json;
 using System.Text;
 using Uplay.Ownership;
+using SharedLib.Shared;
+using SharedLib.Server.DB;
+using SharedLib.Server.Json;
 
 namespace Core.DemuxResponders
 {
@@ -29,11 +30,11 @@ namespace Core.DemuxResponders
                 var sigb64 = Signature.ToBase64();
                 if (user.Ownership.OwnedGamesIds.Count > 30)
                 {
-                    sigb64 = Utils.GetZstdB64(SignatureByte);
+                    sigb64 = CompressB64.GetZstdB64(SignatureByte);
                 }
 
-                var userId64 = Utils.GetZstdB64(UserId);
-                return ByteString.CopyFrom(Encoding.UTF8.GetBytes(Utils.Base64Encode(userId64 + "_OwnerSignature_" + sigb64)));
+                var userId64 = CompressB64.GetZstdB64(UserId);
+                return ByteString.CopyFrom(Encoding.UTF8.GetBytes(B64.FromB64(userId64 + "_OwnerSignature_" + sigb64)));
             }
             return ByteString.CopyFrom(Encoding.UTF8.GetBytes("T3duZXJTaWduYXR1cmVfSXNGYWlsZWQ="));
         }
@@ -41,17 +42,17 @@ namespace Core.DemuxResponders
         public static List<uint> FromOwnerSignature(string token)
         {
             List<uint> prodids = new();
-            var realtokenb = Utils.FromB64(token);
-            var realtoken = Utils.FromB64(realtokenb);
+            var realtokenb = B64.FromB64(token);
+            var realtoken = B64.FromB64(realtokenb);
             var tokensp = realtoken.Split("_OwnerSignature_");
             var userid64 = tokensp[0];
             var sig64 = tokensp[1];
-            var userId = Utils.FromB64(Utils.GetUnZstdB64(Convert.FromBase64String(userid64)));
+            var userId = B64.FromB64(CompressB64.GetUnZstdB64(Convert.FromBase64String(userid64)));
             var user = User.GetUser(userId);
             byte[] siglist = { };
             if (user.Ownership.OwnedGamesIds.Count > 30)
             {
-                siglist = Convert.FromBase64String(Utils.GetUnZstdB64(Convert.FromBase64String(sig64)));
+                siglist = Convert.FromBase64String(CompressB64.GetUnZstdB64(Convert.FromBase64String(sig64)));
             }
             else
             {
@@ -80,10 +81,10 @@ namespace Core.DemuxResponders
             var gameconfig = GameConfig.GetGameConfig(ProdId);
             if (gameconfig != null)
             {
-                var userId64 = Utils.GetZstdB64(UserId);
-                string gameconfigb64 = Utils.GetZstdB64(JsonConvert.SerializeObject(gameconfig));
+                var userId64 = CompressB64.GetZstdB64(UserId);
+                string gameconfigb64 = CompressB64.GetZstdB64(JsonConvert.SerializeObject(gameconfig));
 
-                return ByteString.CopyFrom(Encoding.UTF8.GetBytes(Utils.GetZstdB64(Utils.GetDeflateB64(userId64 + "_" + gameconfigb64))));
+                return ByteString.CopyFrom(Encoding.UTF8.GetBytes(CompressB64.GetZstdB64(CompressB64.GetDeflateB64(userId64 + "_" + gameconfigb64))));
             }
             return ByteString.CopyFrom(Encoding.UTF8.GetBytes("T3duZXJTaWduYXR1cmVfSXNGYWlsZWQ="));
         }
@@ -269,7 +270,7 @@ namespace Core.DemuxResponders
                     var user = User.GetUser(userID);
                     if (user != null)
                     {
-                        if (Config.DMX.GlobalOwnerShipCheck | user.Ownership.OwnedGamesIds.Contains(OwnershipToken.ProductId))
+                        if (ServerConfig.DMX.GlobalOwnerShipCheck | user.Ownership.OwnedGamesIds.Contains(OwnershipToken.ProductId))
                         {
                             var gameconfig = GameConfig.GetGameConfig(OwnershipToken.ProductId);
                             if (gameconfig != null)
@@ -310,7 +311,7 @@ namespace Core.DemuxResponders
                     var user = User.GetUser(userID);
                     if (user != null)
                     {
-                        if (Config.DMX.GlobalOwnerShipCheck || user.Ownership.OwnedGamesIds.Contains(SignOwnership.ProductId))
+                        if (ServerConfig.DMX.GlobalOwnerShipCheck || user.Ownership.OwnedGamesIds.Contains(SignOwnership.ProductId))
                         {
                             var gameconfig = GameConfig.GetGameConfig(SignOwnership.ProductId);
                             if (gameconfig != null)
@@ -349,7 +350,7 @@ namespace Core.DemuxResponders
                     }
                 };
 
-                if (Config.DMX.ownership.EnableManifestRequest)
+                if (ServerConfig.DMX.ownership.EnableManifestRequest)
                 {
                     Downstream.Response.DeprecatedGetLatestManifestsRsp.Result = DeprecatedGetLatestManifestsRsp.Types.Result.Success;
                     var prodlist = DeprecatedGetLatestManifests.DeprecatedProductIds.ToList();
@@ -365,7 +366,7 @@ namespace Core.DemuxResponders
                                 ProductId = proId,
                                 Manifest_ = gameconfig.latest_manifest
                             };
-                            if (File.Exists($"{Config.DMX.DownloadGamePath}{proId}/{gameconfig.latest_manifest}.manifest"))
+                            if (File.Exists($"{ServerConfig.DMX.DownloadGamePath}{proId}/{gameconfig.latest_manifest}.manifest"))
                             {
                                 manifest.Result = DeprecatedGetLatestManifestsRsp.Types.Manifest.Types.Result.Success;
                             }
@@ -405,12 +406,12 @@ namespace Core.DemuxResponders
                     {
                         var path = reg.RelativeFilePaths[j];
                         GetBatchDownloadUrlsRsp.Types.UrlResponse url = new();
-                        if (Directory.Exists($"{Config.DMX.DownloadGamePath}/{reg.ProductId}") && File.Exists($"{Config.DMX.DownloadGamePath}/{reg.ProductId}/{path}"))
+                        if (Directory.Exists($"{ServerConfig.DMX.DownloadGamePath}/{reg.ProductId}") && File.Exists($"{ServerConfig.DMX.DownloadGamePath}/{reg.ProductId}/{path}"))
                         {
                             url.Result = GetBatchDownloadUrlsRsp.Types.Result.Success;
                             url.DownloadUrls.Add(new GetBatchDownloadUrlsRsp.Types.DownloadUrls()
                             {
-                                Urls = { $"{Config.DMX.DownloadGameUrl}/{reg.ProductId}/{path}" }
+                                Urls = { $"{ServerConfig.DMX.DownloadGameUrl}/{reg.ProductId}/{path}" }
                             });
                         }
                         else
@@ -432,7 +433,7 @@ namespace Core.DemuxResponders
                     var user = User.GetUser(userID);
                     if (user != null)
                     {
-                        if (Config.DMX.GlobalOwnerShipCheck)
+                        if (ServerConfig.DMX.GlobalOwnerShipCheck)
                         {
                             ticket = jwt.CreateUplayTicket(userID, getUplayPCTicketReq.UplayId, (int)getUplayPCTicketReq.Platform);
                             isSucces = true;
@@ -526,7 +527,7 @@ namespace Core.DemuxResponders
             public static void OwnedGamePusher(int ClientNumb, OwnedGamePush OwnedGamePusher)
             {
                 string username = Globals.IdToUser[ClientNumb];
-                uint userCon = UserDMX.GetConIdByUserAndName(username, Name);
+                uint userCon = Auth.GetConIdByUserAndName(username, Name);
                 var bstr = OwnedGamePusher.ToByteString();
 
                 DemuxServer.SendToClientBSTR(ClientNumb, bstr, userCon);
@@ -535,7 +536,7 @@ namespace Core.DemuxResponders
             public static void UplayCoreGameInitializedPusher(int ClientNumb, UplayCoreGameInitializedPush UplayCoreGameInitializedPusher)
             {
                 string username = Globals.IdToUser[ClientNumb];
-                uint userCon = UserDMX.GetConIdByUserAndName(username, Name);
+                uint userCon = Auth.GetConIdByUserAndName(username, Name);
                 var bstr = UplayCoreGameInitializedPusher.ToByteString();
 
                 DemuxServer.SendToClientBSTR(ClientNumb, bstr, userCon);
@@ -544,7 +545,7 @@ namespace Core.DemuxResponders
             public static void SubscriptionPusher(int ClientNumb, SubscriptionPush SubscriptionPusher)
             {
                 string username = Globals.IdToUser[ClientNumb];
-                uint userCon = UserDMX.GetConIdByUserAndName(username, Name);
+                uint userCon = Auth.GetConIdByUserAndName(username, Name);
                 var bstr = SubscriptionPusher.ToByteString();
 
                 DemuxServer.SendToClientBSTR(ClientNumb, bstr, userCon);

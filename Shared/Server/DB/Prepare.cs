@@ -21,10 +21,8 @@
             //Banned
             BannedUsers = File.ReadAllLines(UserBannedList).ToList();
 
-            App.Create();
-
+            //  Other DB Init
+            App.Init();
         }
-
-
     }
 }

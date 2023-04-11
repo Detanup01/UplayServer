@@ -1,6 +1,6 @@
-﻿using Core.JSON;
-using Core.SQLite;
-using Google.Protobuf;
+﻿using Google.Protobuf;
+using SharedLib.Server.DB;
+using SharedLib.Server.Json;
 using Uplay.Friends;
 
 namespace Core.DemuxResponders
@@ -300,7 +300,7 @@ namespace Core.DemuxResponders
 
                         user.Activity.Status = (int)initialize.ActivityStatus;
                         User.SaveUser(userID, user);
-                        JSON.Ext.UserExt.SetAllUserActivity(userID);
+                        UserExt.SetAllUserActivity(userID);
                         foreach (var userfriend in user.Friends)
                         {
                             if (userfriend.Activity.Status == 1)
@@ -401,7 +401,7 @@ namespace Core.DemuxResponders
                     {
                         user.Activity.Status = (int)SetActivityStatus.ActivityStatus;
                         User.SaveUser(userID, user);
-                        JSON.Ext.UserExt.SetAllUserActivity(userID);
+                        UserExt.SetAllUserActivity(userID);
                         //  PushUpdatedStatus to all friend
                         IsSuccess = true;
                     }
@@ -472,7 +472,7 @@ namespace Core.DemuxResponders
                                 user.Activity.Key = SetRichPresence.PresenceState.PresenceTokens[0].Key;
                                 user.Activity.Value = SetRichPresence.PresenceState.PresenceTokens[0].Val;
                                 User.SaveUser(userID, user);
-                                JSON.Ext.UserExt.SetAllUserActivity(userID);
+                                UserExt.SetAllUserActivity(userID);
                                 //  PushUpdatedStatus to all friend
 
                             }
@@ -503,9 +503,9 @@ namespace Core.DemuxResponders
 
                     if (user != null)
                     {
-                        JSON.Ext.UserExt.UplayFriendsGameParseToUser(userID, SetGame.Game);
+                        UserExt.UplayFriendsGameParseToUser(userID, SetGame.Game);
 
-                        JSON.Ext.UserExt.SetAllUserActivity(userID);
+                        UserExt.SetAllUserActivity(userID);
                         //  PushUpdatedStatus to all friend
 
                         IsSuccess = true;
@@ -554,8 +554,8 @@ namespace Core.DemuxResponders
                     var userID = Globals.IdToUser[ClientNumb];
                     var friendId = DeclineFriendship.User.AccountId;
 
-                    bool UserFromFriend = JSON.Ext.UserExt.RemoveFromFriends(userID, friendId);
-                    bool FriendFromUser = JSON.Ext.UserExt.RemoveFromFriends(friendId, userID);
+                    bool UserFromFriend = UserExt.RemoveFromFriends(userID, friendId);
+                    bool FriendFromUser = UserExt.RemoveFromFriends(friendId, userID);
 
                     if (UserFromFriend && FriendFromUser)
                     {
@@ -676,8 +676,8 @@ namespace Core.DemuxResponders
 
                     var friendId = ClearRelationship.User.AccountId;
 
-                    bool UserFromFriend = JSON.Ext.UserExt.RemoveFromFriends(userID, friendId);
-                    bool FriendFromUser = JSON.Ext.UserExt.RemoveFromFriends(friendId, userID);
+                    bool UserFromFriend = UserExt.RemoveFromFriends(userID, friendId);
+                    bool FriendFromUser = UserExt.RemoveFromFriends(friendId, userID);
 
                     if (UserFromFriend && FriendFromUser)
                     {
@@ -762,9 +762,9 @@ namespace Core.DemuxResponders
                 {
                     var userID = Globals.IdToUser[ClientNumb];
 
-                    JSON.Ext.UserExt.UplayFriendsGameParseToUser(userID, JoinGameInvitation.Game);
+                    UserExt.UplayFriendsGameParseToUser(userID, JoinGameInvitation.Game);
 
-                    if (JSON.Ext.UserExt.IsUserExist(JoinGameInvitation.AccountIdTo))
+                    if (UserExt.IsUserExist(JoinGameInvitation.AccountIdTo))
                     {
                         Pusher.Pushes(ClientNumb, new()
                         {
@@ -798,7 +798,7 @@ namespace Core.DemuxResponders
                 bool IsSuccess = false;
                 if (UserInits[ClientNumb])
                 {
-                    if (JSON.Ext.UserExt.IsUserExist(DeclineGameInvite.AccountId))
+                    if (UserExt.IsUserExist(DeclineGameInvite.AccountId))
                     {
                         Pusher.Pushes(ClientNumb, new()
                         {
@@ -842,7 +842,7 @@ namespace Core.DemuxResponders
             {
                 if (Globals.IdToUser.TryGetValue(ClientNumb, out var username))
                 {
-                    uint userCon = UserDMX.GetConIdByUserAndName(username, Name);
+                    uint userCon = Auth.GetConIdByUserAndName(username, Name);
                     var bstr = pushUpdatedRelationship.ToByteString();
 
                     DemuxServer.SendToClientBSTR(ClientNumb, bstr, userCon);
@@ -853,7 +853,7 @@ namespace Core.DemuxResponders
             {
                 if (Globals.IdToUser.TryGetValue(ClientNumb, out var username))
                 {
-                    uint userCon = UserDMX.GetConIdByUserAndName(username, Name);
+                    uint userCon = Auth.GetConIdByUserAndName(username, Name);
                     var bstr = pushUpdatedStatus.ToByteString();
 
                     DemuxServer.SendToClientBSTR(ClientNumb, bstr, userCon);
@@ -864,7 +864,7 @@ namespace Core.DemuxResponders
             {
                 if (Globals.IdToUser.TryGetValue(ClientNumb, out var username))
                 {
-                    uint userCon = UserDMX.GetConIdByUserAndName(username, Name);
+                    uint userCon = Auth.GetConIdByUserAndName(username, Name);
                     var bstr = pushJoinGameInvitation.ToByteString();
 
                     DemuxServer.SendToClientBSTR(ClientNumb, bstr, userCon);
@@ -875,7 +875,7 @@ namespace Core.DemuxResponders
             {
                 if (Globals.IdToUser.TryGetValue(ClientNumb, out var username))
                 {
-                    uint userCon = UserDMX.GetConIdByUserAndName(username, Name);
+                    uint userCon = Auth.GetConIdByUserAndName(username, Name);
                     var bstr = pushRecentlyMetPlayers.ToByteString();
 
                     DemuxServer.SendToClientBSTR(ClientNumb, bstr, userCon);
@@ -886,7 +886,7 @@ namespace Core.DemuxResponders
             {
                 if (Globals.IdToUser.TryGetValue(ClientNumb, out var username))
                 {
-                    uint userCon = UserDMX.GetConIdByUserAndName(username, Name);
+                    uint userCon = Auth.GetConIdByUserAndName(username, Name);
                     var bstr = pushGameInviteDeclined.ToByteString();
 
                     DemuxServer.SendToClientBSTR(ClientNumb, bstr, userCon);
@@ -897,7 +897,7 @@ namespace Core.DemuxResponders
             {
                 if (Globals.IdToUser.TryGetValue(ClientNumb, out var username))
                 {
-                    uint userCon = UserDMX.GetConIdByUserAndName(username, Name);
+                    uint userCon = Auth.GetConIdByUserAndName(username, Name);
                     var bstr = pushNicknameUpdate.ToByteString();
 
                     DemuxServer.SendToClientBSTR(ClientNumb, bstr, userCon);
@@ -908,7 +908,7 @@ namespace Core.DemuxResponders
             {
                 if (Globals.IdToUser.TryGetValue(ClientNumb, out var username))
                 {
-                    uint userCon = UserDMX.GetConIdByUserAndName(username, Name);
+                    uint userCon = Auth.GetConIdByUserAndName(username, Name);
                     var bstr = pushIsFavoriteUpdate.ToByteString();
 
                     DemuxServer.SendToClientBSTR(ClientNumb, bstr, userCon);

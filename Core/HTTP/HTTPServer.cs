@@ -1,5 +1,6 @@
 ﻿using Core.HTTP;
 using NetCoreServer;
+using SharedLib.Server.Json;
 using System.Net;
 using System.Net.Sockets;
 using System.Security.Authentication;
@@ -12,7 +13,7 @@ namespace Core
         public static void Start()
         {
             var context = new SslContext(SslProtocols.Tls12, Utils.GetCert("services", "local-ubiservices.ubi.com"));
-            server = new HttpsBackendServer(context, IPAddress.Parse(Config.HTTPS_Ip), Config.HTTPS_Port);
+            server = new HttpsBackendServer(context, IPAddress.Parse(ServerConfig.HTTPS_Ip), ServerConfig.HTTPS_Port);
             Console.WriteLine("[HTTPS] Server Started");
             server.Start();
         }
