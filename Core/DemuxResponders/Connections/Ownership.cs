@@ -5,6 +5,7 @@ using Uplay.Ownership;
 using SharedLib.Shared;
 using SharedLib.Server.DB;
 using SharedLib.Server.Json;
+using System.Security.Cryptography;
 
 namespace Core.DemuxResponders
 {
@@ -144,53 +145,25 @@ namespace Core.DemuxResponders
                 if (req?.RegisterTemporaryOwnershipReq != null) { RegisterTemporaryOwnership(ClientNumb, req.RegisterTemporaryOwnershipReq); }
                 if (req?.RetryUplayCoreInitializeReq != null) { Console.WriteLine(ClientNumb + " " + req.RetryUplayCoreInitializeReq); }
                 if (req?.SignOwnershipReq != null) { SignOwnership(ClientNumb, req.SignOwnershipReq); }
-                if (req?.SwitchProductBranchReq != null) { Console.WriteLine(ClientNumb + " " + req.SwitchProductBranchReq); }
+                if (req?.SwitchProductBranchReq != null) { SwitchProductBranch(ClientNumb, req.SwitchProductBranchReq); }
                 if (req?.UnlockProductBranchReq != null) { UnlockProductBranch(ClientNumb, req.UnlockProductBranchReq); }
                 if (req?.WaiveGameWithdrawalRightsReq != null) { Console.WriteLine(ClientNumb + " " + req.WaiveGameWithdrawalRightsReq); }
                 IsIdDone = true;
             }
 
-            public static void SwitchProductBranch(int ClientNumb, SwitchProductBranchReq switchProductBranchReq)
+            public static void x(int ClientNumb, ConsumeOwnershipReq consumeOwnershipReq)
             {
-                SwitchProductBranchRsp.Types.Result result = SwitchProductBranchRsp.Types.Result.Denied;
-                /*
-                var pid = unlockProductBranchReq.Branch.ProductId;
-                var pass = unlockProductBranchReq.Branch.Password;
-                UnlockProductBranchRsp.Types.Result result = UnlockProductBranchRsp.Types.Result.Denied;
-                UnlockProductBranchRsp.Types.ProductBranch productBranch = new();
-                var game = GameConfig.GetGameConfig(pid);
-                if (game != null)
-                {
-                    var branches = game.branches.product_branches;
-                    foreach (var branch in branches)
-                    {
-                        if (branch.branch_password == pass)
-                        {
-                            productBranch.BranchId = branch.branch_id;
-                            productBranch.BranchName = branch.branch_name;
-                            result = UnlockProductBranchRsp.Types.Result.Success;
-                            break;
-                        }
-                    }
-                }*/
+                //  Game has been bought!
+
 
                 Downstream = new()
                 {
                     Response = new()
                     {
-                        RequestId = ReqId,
-                        SwitchProductBranchRsp = new()
-                        { 
-                            Result = result,
-                            Products = new()
-                            { 
-                                OwnedGames_ = { }
-                            }
-                        }
+                        RequestId = ReqId
                     }
                 };
             }
-
 
 
             #region Functions
@@ -511,6 +484,62 @@ namespace Core.DemuxResponders
                     }
                 };
             }
+
+            public static void SwitchProductBranch(int ClientNumb, SwitchProductBranchReq switchProductBranchReq)
+            {
+                OwnedGames ownedGames = new()
+                {
+                    OwnedGames_ = { }
+                };
+                SwitchProductBranchRsp.Types.Result result = SwitchProductBranchRsp.Types.Result.Denied;
+
+                if (Globals.IdToUser.TryGetValue(ClientNumb, out var userId))
+                {
+                    if (switchProductBranchReq.DefaultBranch != null)
+                    {
+                        ownedGames.OwnedGames_.Add(Owners.GetOwnershipGame(userId, switchProductBranchReq.DefaultBranch.ProductId, uint.MaxValue));
+                        result = SwitchProductBranchRsp.Types.Result.Success;
+                    }
+                    if (switchProductBranchReq.SpecifiedBranch != null)
+                    {
+                        var bId = switchProductBranchReq.SpecifiedBranch.BranchId;
+                        var pass = switchProductBranchReq.SpecifiedBranch.Password;
+                        var pid = switchProductBranchReq.SpecifiedBranch.ProductId;
+                        var game = GameConfig.GetGameConfig(pid, bId);
+                        if (game != null)
+                        {
+                            if (game.branches.current_branch_id == bId)
+                            {
+                                var branches = game.branches.product_branches;
+                                foreach (var branch in branches)
+                                {
+                                    if (branch.branch_password == pass)
+                                    {
+                                        ownedGames.OwnedGames_.Add(Owners.GetOwnershipGame(userId, pid, bId));
+                                        result = SwitchProductBranchRsp.Types.Result.Success;
+                                        break;
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
+
+                Downstream = new()
+                {
+                    Response = new()
+                    {
+                        RequestId = ReqId,
+                        SwitchProductBranchRsp = new()
+                        {
+                            Result = result,
+                            Products = ownedGames
+                        }
+                    }
+                };
+            }
+
 
             #endregion
         }

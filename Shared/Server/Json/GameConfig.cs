@@ -59,6 +59,8 @@ namespace SharedLib.Server.Json
 
         public static GameConfig? GetGameConfig(uint ProdId, uint BranchId)
         {
+            if (BranchId == uint.MaxValue | BranchId == uint.MinValue)
+                return GetGameConfig(ProdId);
             GameConfig? GameConfig = null;
             foreach (var file in Directory.GetFiles("ServerFiles/ProductConfigs"))
             {
@@ -72,11 +74,6 @@ namespace SharedLib.Server.Json
                     {
                         GameConfig = JsonConvert.DeserializeObject<GameConfig>(File.ReadAllText(file));
                     }
-                }
-                //fallback to basic one
-                else if (ProdId.ToString() == filename)
-                {
-                    GameConfig = JsonConvert.DeserializeObject<GameConfig>(File.ReadAllText(file));
                 }
             }
             return GameConfig;

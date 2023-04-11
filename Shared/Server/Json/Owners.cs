@@ -159,5 +159,37 @@ namespace SharedLib.Server.Json
 
             return ownedGames;
         }
+
+        public static Uplay.Ownership.OwnedGame GetOwnershipGame(string UserId, uint productId, uint branchId)
+        {
+            var owship = GetOwnership(UserId);
+            var og = owship.OwnedGames.Where(x=>x.ProductId == productId).FirstOrDefault();
+            Uplay.Ownership.OwnedGame ownedgame = new()
+            {
+                ProductId = og.ProductId,
+                ActivationIds = { og.ActivationIds },
+                ProductAssociations = { og.ActivationIds },
+                Owned = true,
+                State = 3,
+                GameCode = og.GameCode,
+                Balance = 0,
+                BrandId = 0,
+                EncryptionKey = string.Empty,
+                LockedBySubscription = false,
+                ActivationType = Uplay.Ownership.OwnedGame.Types.ActivationType.Purchase,
+                DenuvoActivationOverwrite = Uplay.Ownership.OwnedGame.Types.DenuvoActivationOverwrite.Default,
+                PackageOwnershipState = Uplay.Ownership.OwnedGame.Types.PackageOwnershipState.Full
+            };
+            var config = GameConfig.GetGameConfig(og.ProductId, branchId);
+            if (config != null)
+            {
+                ownedgame.ActiveBranchId = config.branches.active_branch_id;
+                ownedgame.Configuration = File.ReadAllText("ServerFiles/ProductConfigs/" + config.configuration);
+                ownedgame.LatestManifest = config.latest_manifest;
+                ownedgame.ActiveBranchId = config.branches.active_branch_id;
+            }
+
+            return ownedgame;
+        }
     }
 }

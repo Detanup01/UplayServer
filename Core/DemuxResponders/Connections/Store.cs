@@ -16,7 +16,7 @@ namespace Core.DemuxResponders
                 {
                     if (Upsteam.Request != null)
                     {
-                        ReqRSP.Requests(Upsteam.Request);
+                        ReqRSP.Requests(ClientNumb, Upsteam.Request);
                         while (ReqRSP.IsIdDone == false)
                         {
 
@@ -33,9 +33,13 @@ namespace Core.DemuxResponders
             public static Downstream Downstream = null;
             public static uint ReqId = 0;
             public static bool IsIdDone = false;
-            public static void Requests(Req req)
+            public static void Requests(int ClientNumb, Req req)
             {
+                ReqId = req.RequestId;
                 if (req?.InitializeReq != null) { Init(req.InitializeReq); }
+                if (req?.GetDataReq != null) { Init(req.InitializeReq); }
+                if (req?.GetStoreReq != null) { Init(req.InitializeReq); }
+                if (req?.IngameStoreCheckoutReq != null) { Init(req.InitializeReq); }
                 IsIdDone = true;
             }
 
@@ -49,6 +53,57 @@ namespace Core.DemuxResponders
                         {
                             Storefront = new() { Configuration = "custom" },
                             Success = true
+                        }
+                    }
+                };
+            }
+
+            public static void GetData(GetDataReq req)
+            {
+                Downstream = new()
+                {
+                    Response = new()
+                    {
+                        GetDataRsp = new()
+                        { 
+                            Result = StoreResult.StoreResponseFailure,
+                            StoreDataType = req.StoreDataType,
+                            Products = { }
+                        }
+                    }
+                };
+            }
+
+            public static void GetStore(GetStoreReq req)
+            {
+                Downstream = new()
+                {
+                    Response = new()
+                    {
+                        GetStoreRsp = new()
+                        {
+                            Result = StoreResult.StoreResponseFailure,
+                            StoreProducts = { }
+                        }
+                    }
+                };
+            }
+
+            public static void IngameStoreCheckout(IngameStoreCheckoutReq req)
+            {
+                Downstream = new()
+                {
+                    Response = new()
+                    {
+                        IngameStoreCheckoutRsp = new()
+                        {
+                            Result = StoreResult.StoreResponseFailure,
+                            CheckoutRsp = new()
+                            { 
+                                NewWindowFlag = false,
+                                RedirectLocaleCode = "en-us",
+                                Url = ""
+                            }
 
                         }
                     }
