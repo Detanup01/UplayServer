@@ -30,6 +30,7 @@ namespace SharedLib.Server.Json
             ownedGame.OrbitId = prodId;
             ownedGame.ProductAssociations.AddRange(product_associations);
             ownedGame.ActivationIds.AddRange(activation_ids);
+            ownedGame.CdKey = CDKey.GenerateKey(prodId);
             cache.OwnedGames.Add(ownedGame);
             File.Delete($"ServerFiles/CacheFiles/{UserId}.ownershipcache");
             var wr = File.OpenWrite($"ServerFiles/CacheFiles/{UserId}.ownershipcache");
@@ -169,6 +170,7 @@ namespace SharedLib.Server.Json
                 ProductId = og.ProductId,
                 ActivationIds = { og.ActivationIds },
                 ProductAssociations = { og.ActivationIds },
+                CdKey = og.CdKey,
                 Owned = true,
                 State = 3,
                 GameCode = og.GameCode,

@@ -13,10 +13,10 @@ namespace Plugin
 
         public string Name => "Plugin Example";
 
-        public Core.JSON.Plugin PluginExtra => new()
+        SharedLib.Server.Json.Plugin IPlugin.PluginExtra => new()
         {
             Mode = "Test",
-            PluginType = Core.JSON.Plugin.pluginType.Extra,
+            PluginType = SharedLib.Server.Json.Plugin.pluginType.Extra,
             Version = "0.0.0.1"
         };
 
@@ -44,6 +44,10 @@ namespace Plugin
         {
 
         }
+        public void DemuxDataReceivedCustom(int ClientNumb, byte[] receivedData, string Protoname)
+        {
+
+        }
 
         public void HttpRequest(HttpRequest request, HttpsSession session)
         {
@@ -56,11 +60,6 @@ namespace Plugin
         public void ShutDown()
         {
             Console.WriteLine("Goodbye!");
-        }
-
-        public void DemuxDataReceivedCustom(int ClientNumb, byte[] receivedData, string Protoname)
-        {
-
         }
     }
 }

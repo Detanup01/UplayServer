@@ -13,7 +13,7 @@ namespace Core.HTTP
         {
             contentType = "application/json; charset=UTF-8";
             var auth = headers["authorization"].Replace("Basic ", "");
-            var toauth = B64.ToB64(SHA256.HashData(Encoding.UTF8.GetBytes(auth)).ToString() + ServerConfig.SQL.AuthSalt);
+            var toauth = B64.ToB64(Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(auth))) + ServerConfig.SQL.AuthSalt);
 
             var userIdFromAuth = Auth.GetUserIdByAuth(toauth);
 
@@ -56,7 +56,6 @@ namespace Core.HTTP
 
             User.SaveUser(userId, user);
             Owners.MakeOwnership(userId, 0, new() { 0 }, new() { 0 });
-
             return JsonConvert.SerializeObject(new RegisterResponse()
             {
                 UserId = userId
