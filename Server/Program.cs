@@ -1,6 +1,6 @@
 ﻿using Core;
 using Core.Commands;
-using Core.Extra;
+using SharedLib.Shared;
 
 namespace Tets
 {
@@ -22,7 +22,7 @@ namespace Tets
             }
             Debug.isDebug = true;
             CoreRun.Start();
-            File.Copy("user_auth.db", "Database/user_auth.db",true);
+            //File.Copy("user_auth.db", "Database/user_auth.db",true);
             /*
             //dGVzdEBnbWFpbC5jb206dGVzdA== is the login auth, test@gmail.com:test
             UserAuth.Add("00000000-0000-0000-0000-000000000000", "ZEdWemRFQm5iV0ZwYkM1amIyMDZkR1Z6ZEE9PV9DVVNUT01ERU1VWA==");

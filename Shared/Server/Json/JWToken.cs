@@ -1,4 +1,4 @@
-﻿namespace Core.JSON
+﻿namespace SharedLib.Server.Json
 {
     public class JWToken
     {

@@ -1,4 +1,6 @@
-﻿namespace Core.HTTP
+﻿using SharedLib.Server.Json;
+
+namespace Core.HTTP
 {
     internal class DownloadHandler
     {
@@ -6,9 +8,9 @@
         {
             byte[] returner = { };
             url = url.Replace("/download", "");
-            if (File.Exists($"{Config.DMX.DownloadGamePath}{url}"))
+            if (File.Exists($"{ServerConfig.DMX.DownloadGamePath}{url}"))
             {
-                returner = File.ReadAllBytes($"{Config.DMX.DownloadGamePath}{url}");
+                returner = File.ReadAllBytes($"{ServerConfig.DMX.DownloadGamePath}{url}");
             }
             contentType = "application/octet-stream";
             return returner;

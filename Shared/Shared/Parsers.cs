@@ -1,7 +1,7 @@
 ﻿using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using System.Text;
 
-namespace Core.Extra
+namespace SharedLib.Shared
 {
     public class Parsers
     {
@@ -30,10 +30,7 @@ namespace Core.Extra
                 var signed = reader.ReadBytes(sign_lenght);
                 var byteString = Encoding.UTF8.GetString(signed);
                 Console.WriteLine("Sign Base64: \n" + byteString);
-                var realsign = Convert.FromBase64String(byteString);
-                var realbyteString = BitConverter.ToString(realsign).Replace("-", "");
-                Console.WriteLine("Sign Bytes: \n" + realbyteString);
-                File.WriteAllBytes(FileInput + ".sign", realsign);
+                File.WriteAllText(FileInput + ".64sign", byteString);
             }
             inputStream.Close();
         }
@@ -124,6 +121,7 @@ namespace Core.Extra
         #region OwnershipCache
         public static Uplay.OwnershipCache.OwnershipCache ParseOwnerShip(Stream inputStream)
         {
+            inputStream.Seek(262, SeekOrigin.Begin);
             var result = Uplay.OwnershipCache.OwnershipCache.Parser.ParseFrom(inputStream);
             inputStream.Close();
             return result;

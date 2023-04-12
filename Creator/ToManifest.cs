@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf;
+using static SharedLib.Shared.Formatters;
 
 namespace Creator
 {
@@ -142,7 +143,7 @@ namespace Creator
                         DownloadSize = (uint)slicebytes.Length
                     };
                     file.SliceList.Add(slice);
-                    var pathtowrite = $"{savetopath}/Download/{prodid}/slices_v3/{Core.Utils.FormatSliceHashChar(sliceid)}";
+                    var pathtowrite = $"{savetopath}/Download/{prodid}/slices_v3/{FormatSliceHashChar(sliceid)}";
                     Directory.CreateDirectory(pathtowrite);
                     File.WriteAllBytes(pathtowrite + "/" + sliceid, slicebytes);
                 }

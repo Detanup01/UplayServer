@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Core.JSON
+namespace SharedLib.Server.Json
 {
     public class GameConfig
     {
@@ -26,6 +26,7 @@ namespace Core.JSON
         {
             public List<CustomBranches> product_branches = new();
             public uint active_branch_id { get; set; } = 0;
+            public uint current_branch_id { get; set; } = 0;
         }
 
         public class CustomBranches
@@ -52,6 +53,28 @@ namespace Core.JSON
                     GameConfig = JsonConvert.DeserializeObject<GameConfig>(File.ReadAllText(file));
                 }
 
+            }
+            return GameConfig;
+        }
+
+        public static GameConfig? GetGameConfig(uint ProdId, uint BranchId)
+        {
+            if (BranchId == uint.MaxValue | BranchId == uint.MinValue)
+                return GetGameConfig(ProdId);
+            GameConfig? GameConfig = null;
+            foreach (var file in Directory.GetFiles("ServerFiles/ProductConfigs"))
+            {
+                var filename = file.Replace("_Config.json", "").Replace("ServerFiles/ProductConfigs\\", "");
+                if (filename.Contains('_'))
+                {
+                    var filesplit = filename.Split("_");
+                    var id = filesplit[0];
+                    var branch = filesplit[1];
+                    if (ProdId.ToString() == id && BranchId.ToString() == branch)
+                    {
+                        GameConfig = JsonConvert.DeserializeObject<GameConfig>(File.ReadAllText(file));
+                    }
+                }
             }
             return GameConfig;
         }

@@ -1,4 +1,5 @@
 ﻿using NetCoreServer;
+using SharedLib.Server.Json;
 using System.Net.Security;
 
 namespace Core.Extra.Interfaces
@@ -7,7 +8,7 @@ namespace Core.Extra.Interfaces
     {
         uint Priority { get; }
         string Name { get; }
-        JSON.Plugin PluginExtra { get; }
+        Plugin PluginExtra { get; }
         void Initialize();
         void DemuxParseInitFinish(DemuxResponders.DemuxServer demux);
         void DemuxDataReceived(int ClientNumb, SslStream sslStream, byte[] receivedData);

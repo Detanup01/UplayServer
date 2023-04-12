@@ -11,6 +11,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Remove="ServerFiles\ProductConfigs\0_10_Config.json" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Extra\usages.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -29,6 +32,10 @@
 
   <ItemGroup>
     <Folder Include="ServerFiles\Patch\0\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\SharedLib.csproj" />
   </ItemGroup>
 
 </Project>

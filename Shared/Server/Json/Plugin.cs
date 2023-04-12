@@ -1,4 +1,4 @@
-﻿namespace Core.JSON
+﻿namespace SharedLib.Server.Json
 {
     public class Plugin
     {
@@ -8,7 +8,7 @@
         public List<string>? dependencies { get; set; } = new();
         public enum pluginType
         {
-            Core,
+            Shared,
             Http,
             Demux,
             DemuxCustom,

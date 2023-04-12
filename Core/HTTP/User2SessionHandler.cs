@@ -1,5 +1,5 @@
-﻿using Core.SQLite;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using SharedLib.Server.DB;
 
 namespace Core.HTTP
 {
@@ -9,7 +9,7 @@ namespace Core.HTTP
         {
             var des_body = JsonConvert.DeserializeObject<Body>(body);
 
-            UserToSession.Add(des_body.UserId, des_body.SessionId);
+            Auth.AddU2S(des_body.UserId, des_body.SessionId);
 
             contentType = "application/json; charset=UTF-8";
             return "{\"ok\":true}";

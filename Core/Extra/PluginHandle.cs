@@ -1,4 +1,5 @@
 ﻿using Core.Extra.Interfaces;
+using SharedLib.Shared;
 using System.Net.Security;
 using System.Reflection;
 

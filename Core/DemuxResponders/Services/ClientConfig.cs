@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf;
+using SharedLib.Server.Json;
 using Uplay.ClientConfiguration;
 
 namespace Core.DemuxResponders
@@ -104,7 +105,7 @@ namespace Core.DemuxResponders
                             Success = true,
                             LatestVersion = Globals.AcceptVersions.Last(),
                             PatchTrackId = getPatchInfo.PatchTrackId,
-                            PatchBaseUrl = Config.DMX.PatchBaseUrl
+                            PatchBaseUrl = ServerConfig.DMX.PatchBaseUrl
                         }
                     }
                 };

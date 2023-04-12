@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf;
+using SharedLib.Server.Json;
 using Uplay.Utility;
 
 namespace Core.DemuxResponders
@@ -50,8 +51,8 @@ namespace Core.DemuxResponders
                     {
                         GeoipRsp = new()
                         {
-                            ContinentCode = Config.DMX.DefaultContinentCode,
-                            CountryCode = Config.DMX.DefaultCountryCode
+                            ContinentCode = ServerConfig.DMX.DefaultContinentCode,
+                            CountryCode = ServerConfig.DMX.DefaultCountryCode
                         }
                     }
                 };

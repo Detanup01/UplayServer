@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf;
+using SharedLib.Server.Json;
 using Uplay.DenuvoService;
 
 namespace Core.DemuxResponders
@@ -42,7 +43,7 @@ namespace Core.DemuxResponders
 
             public static void GameToken(int ClientNumb, GetGameTokenReq gameTokenReq)
             {
-                if (Config.DMX.GlobalOwnerShipCheck || jwt.Validate(gameTokenReq.OwnershipToken))
+                if (ServerConfig.DMX.GlobalOwnerShipCheck || jwt.Validate(gameTokenReq.OwnershipToken))
                 {
                     Downstream = new()
                     {
@@ -72,7 +73,7 @@ namespace Core.DemuxResponders
 
             public static void GameTimeToken(int ClientNumb, GetGameTimeTokenReq gameTimeTokenReq)
             {
-                if (Config.DMX.GlobalOwnerShipCheck || jwt.Validate(gameTimeTokenReq.OwnershipToken))
+                if (ServerConfig.DMX.GlobalOwnerShipCheck || jwt.Validate(gameTimeTokenReq.OwnershipToken))
                 {
                     Downstream = new()
                     {

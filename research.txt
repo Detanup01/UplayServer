@@ -1,0 +1,90 @@
+UplayGameConnectionHandler
+initReq {
+  uplayId: 1843
+  processId: 19076
+  apiVersion: 33556992
+  subSystemFriend: true
+  subSystemOverlay: true
+  subSystemProduct: true
+  subSystemStorage: true
+  subSystemInstall: true
+  subSystemMultiplayer: true
+  subSystemStore: true
+  subSystemStreaming: true
+}
+avatarReq {
+  getAvatarReq {
+    requestId: 196608
+    accountId: "REDACTED"
+    size: AvatarSize_128
+  }
+}
+
+achievementReq {
+  getReq {
+    requestId: 262144
+    onlyEarned: false
+  }
+}
+
+userReqV2 {
+  setRichPresenceReq {
+    requestId: 0
+    presenceId: 1
+    presenceTokens {
+      key: "Description"
+      value: "in MENU"
+    }
+  }
+}
+
+userRspV2 {
+  setRichPresenceRsp {
+    requestId: 0
+    result: ok
+  }
+}
+achievementRsp {
+  getRsp {
+    requestId: 262144
+    result: ok
+    data {
+      id: 1
+      name: "Back in the Day ATK"
+      description: "Play 10\302\240rounds with a Pathfinder Attacker in Quick Match/Ranked Multiplayer."
+      isEarned: true
+      timestamp: 1570292950
+    }
+  }
+}
+
+friendsRsp {
+  friendListUpdatedPushV2 {
+    friendsPresenceUpdated {
+      id: "USERID"
+      presence {
+        onlineStatus: OnlineStatus_Online
+        details: "Looking for QUICK MATCH match"
+        titleId: 635
+        titleName: "Tom Clancy\'s Rainbow Six\302\256 Siege"
+        multiplayerId: "ID"
+        multiplayerJoinable: false
+        multiplayerSize: 1
+        multiplayerMaxSize: 10
+        multiplayerInternalData: "{\"sessionType\":\"PartySession\"}"
+      }
+    }
+  }
+
+}
+multiplayerRsp {
+  multiplayerSessionUpdatedPush {
+    session {
+      id: "xxx"
+      joinability: MultiplayerSessionJoinability_InviteOnly
+      size: 1
+      maxSize: 10
+      internalData: "{\"sessionType\":\"PartySession\"}"
+    }
+  }
+}

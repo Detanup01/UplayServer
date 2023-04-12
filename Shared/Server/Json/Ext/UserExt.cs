@@ -1,4 +1,4 @@
-﻿namespace Core.JSON.Ext
+﻿namespace SharedLib.Server.Json
 {
     public class UserExt : User
     {

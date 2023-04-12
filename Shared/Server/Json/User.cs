@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Core.JSON
+namespace SharedLib.Server.Json
 {
     public class User
     {
@@ -20,7 +20,7 @@ namespace Core.JSON
 
         public class CFriends
         {
-            public string UserId { get; set; }
+            public string UserId { get; set; } = string.Empty;
             public string? Name { get; set; }
             public string? Nickname { get; set; }
             public bool IsFavorite { get; set; } = false;
@@ -48,7 +48,7 @@ namespace Core.JSON
         {
             public ulong? SessionId { get; set; }
             public string? SessionIdV2 { get; set; }
-            public string SessionData { get; set; }
+            public string SessionData { get; set; } = string.Empty;
             public bool Joinable { get; set; }
             public uint? Size { get; set; }
             public uint? MaxSize { get; set; }

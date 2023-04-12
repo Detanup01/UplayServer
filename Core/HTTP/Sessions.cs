@@ -1,9 +1,10 @@
-﻿using Core.JSON;
-using Core.SQLite;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Security.Cryptography;
 using System.Text;
-using static Core.SQLite.CurrentLogged;
+using SharedLib.Server.DB;
+using static SharedLib.Server.Enums;
+using SharedLib.Server.Json;
+using SharedLib.Shared;
 
 namespace Core.HTTP
 {
@@ -32,11 +33,11 @@ namespace Core.HTTP
             var id = "";
             if (IsToken)
             {
-                id = GetUserIdByToken(auth, (int)TokenType.Ticket);
+                id = Auth.GetUserIdByToken(auth, TokenType.Ticket);
             }
             else
             {
-                id = UserAuth.GetUserIdByAuth(Utils.Base64Encode(auth + Config.SQL.AuthSalt));
+                id = Auth.GetUserIdByAuth(B64.ToB64(auth + ServerConfig.SQL.AuthSalt));
             }
 
             if (id == "")
@@ -54,7 +55,7 @@ namespace Core.HTTP
 
             var token = jwt.CreateAuthToken(id, SessionId, appId);
 
-            Add(id, token, (int)TokenType.Ticket);
+            Auth.AddCurrent(id, token, TokenType.Ticket);
 
             string time = Utils.ConvertFromUnixTimestampToLocal(jwt.GetExp(token)).ToString();
 
@@ -63,7 +64,7 @@ namespace Core.HTTP
             SessionsResponse rsp = new()
             {
                 clientIp = "172.0.0.1",
-                clientIpCountry = Config.DMX.DefaultCountryCode,
+                clientIpCountry = ServerConfig.DMX.DefaultCountryCode,
                 twoFactorAuthenticationTicket = "",
                 serverTime = DateTime.Now.ToString("yyyy-MM-dd"),
                 environment = "Prod",
@@ -74,8 +75,8 @@ namespace Core.HTTP
                 expiration = time,
                 profileId = id,
                 userId = id,
-                sessionKey = Utils.Base64Encode(SessionId),
-                spaceId = AppAPI.GetSpaceId(appId),
+                sessionKey = B64.ToB64(SessionId),
+                spaceId = App.GetSpaceId(appId),
                 nameOnPlatform = User.GetUser(id).Name,
                 rememberDeviceTicket = devicetoken,
             };

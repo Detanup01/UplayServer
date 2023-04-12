@@ -1,6 +1,7 @@
-﻿using Core.JSON;
-using Core.SQLite;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using SharedLib.Server.DB;
+using SharedLib.Server.Json;
+using SharedLib.Shared;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -12,9 +13,9 @@ namespace Core.HTTP
         {
             contentType = "application/json; charset=UTF-8";
             var auth = headers["authorization"].Replace("Basic ", "");
-            var toauth = Utils.Base64Encode(SHA256.HashData(Encoding.UTF8.GetBytes(auth)).ToString() + Config.SQL.AuthSalt);
+            var toauth = B64.ToB64(SHA256.HashData(Encoding.UTF8.GetBytes(auth)).ToString() + ServerConfig.SQL.AuthSalt);
 
-            var userIdFromAuth = UserAuth.GetUserIdByAuth(toauth);
+            var userIdFromAuth = Auth.GetUserIdByAuth(toauth);
 
             if (userIdFromAuth != "")
             {
@@ -40,8 +41,7 @@ namespace Core.HTTP
                 }
             }
 
-            UserAuth.Add(userId, toauth);
-
+            Auth.AddUA(userId, toauth);
 
             User user = new()
             {
