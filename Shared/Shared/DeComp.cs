@@ -2,7 +2,7 @@
 using System.IO.Compression;
 using ZstdNet;
 
-namespace ClientKit.Lib
+namespace SharedLib.Shared
 {
     public class DeComp
     {
@@ -48,8 +48,8 @@ namespace ClientKit.Lib
                     compressZstd.Dispose();
                     return returner;
                 case "Deflate":
+                    MemoryStream ms = new();
                     ZLibStream compressor = new ZLibStream(new MemoryStream(bytesToCompress), CompressionLevel.SmallestSize);
-                    MemoryStream ms = new((int)outputsize);
                     ms.CopyTo(compressor);
                     compressor.Close();
                     return ms.ToArray();

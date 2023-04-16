@@ -29,7 +29,7 @@ namespace ClientKit.Demux
         public static int ConnectionPort { get; set; } = 443;
         public int WaitInTimeMS = 10;
         //We using this for same uplay version 
-        public uint ClientVersion { get; internal set; } = 10843;
+        public uint ClientVersion { get; internal set; } = 10857;
         public bool TestConfig { get; set; } = false;
         public uint TerminateConnectionId { get; set; } = 0;
         public bool IsClosed { get; internal set; } = false;

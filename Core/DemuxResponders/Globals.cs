@@ -26,7 +26,7 @@
 
         public static List<uint> AcceptVersions = new()
         {
-            uint.MinValue, 10843
+            uint.MinValue, 10857
         };
     }
 }

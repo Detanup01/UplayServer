@@ -25,8 +25,7 @@
     <PackageReference Include="NetCoreServer" Version="6.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="SharpZipLib" Version="1.4.2" />
-    <PackageReference Include="System.Data.SQLite" Version="1.0.117" />
-    <PackageReference Include="Uplay-Protobufs" Version="139.2.10843" />
+    <PackageReference Include="Uplay-Protobufs" Version="140.0.10857" />
     <PackageReference Include="ZstdNet" Version="1.4.5" />
   </ItemGroup>
 
