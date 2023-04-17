@@ -4,7 +4,7 @@ namespace LzhamWrapper
 {
     public class LzhamStream : Stream
     {
-        internal const int DefaultBufferSize = 8192;
+        public const int DefaultBufferSize = 8192;
         private Stream _stream;
         private readonly bool _leaveOpen;
         private readonly byte[] _buffer;
@@ -170,7 +170,9 @@ namespace LzhamWrapper
                     }
 
                     int readBytes = remaining;
+                    Console.WriteLine(readBytes);
                     int writtenBytes = outSize;
+                    Console.WriteLine(writtenBytes);
                     if (writtenBytes > 0)
                     {
                         _stream.Write(_buffer, 0, writtenBytes);

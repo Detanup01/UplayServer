@@ -39,7 +39,6 @@
             label3 = new Label();
             button2 = new Button();
             button3 = new Button();
-            compressionbox_old = new TextBox();
             label4 = new Label();
             sliceverbox = new TextBox();
             label5 = new Label();
@@ -137,13 +136,6 @@
             button3.UseVisualStyleBackColor = true;
             button3.Click += button3_Click;
             // 
-            // compressionbox_old
-            // 
-            compressionbox_old.Location = new Point(407, 115);
-            compressionbox_old.Name = "compressionbox_old";
-            compressionbox_old.Size = new Size(100, 23);
-            compressionbox_old.TabIndex = 10;
-            // 
             // label4
             // 
             label4.AutoSize = true;
@@ -201,9 +193,9 @@
             label6.AutoSize = true;
             label6.Location = new Point(688, 88);
             label6.Name = "label6";
-            label6.Size = new Size(53, 15);
+            label6.Size = new Size(105, 15);
             label6.TabIndex = 15;
-            label6.Text = "Max Size";
+            label6.Text = "Max Size (in bytes)";
             // 
             // button6
             // 
@@ -257,7 +249,7 @@
             compressionbox.DropDownStyle = ComboBoxStyle.DropDownList;
             compressionbox.FormattingEnabled = true;
             compressionbox.Items.AddRange(new object[] { "None", "Deflate", "Zstd", "Lzham" });
-            compressionbox.Location = new Point(407, 144);
+            compressionbox.Location = new Point(407, 115);
             compressionbox.Name = "compressionbox";
             compressionbox.Size = new Size(100, 23);
             compressionbox.TabIndex = 22;
@@ -279,7 +271,6 @@
             Controls.Add(button4);
             Controls.Add(sliceverbox);
             Controls.Add(label5);
-            Controls.Add(compressionbox_old);
             Controls.Add(label4);
             Controls.Add(button3);
             Controls.Add(button2);
@@ -309,7 +300,6 @@
         private Label label3;
         private Button button2;
         private Button button3;
-        private TextBox compressionbox_old;
         private Label label4;
         private TextBox sliceverbox;
         private Label label5;

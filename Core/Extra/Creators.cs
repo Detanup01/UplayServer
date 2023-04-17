@@ -1,6 +1,8 @@
 ﻿using Google.Protobuf;
 using ICSharpCode.SharpZipLib.Zip.Compression;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
+using SharedLib.Shared;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using ZstdNet;
@@ -50,85 +52,80 @@ namespace Core
         /// <param name="compression">Compression Method</param>
         /// <param name="sliceIds">ID's to ManifestData</param>
         /// <param name="numberofpart">Number of parts (same as sliceIds.Count)</param>
-        public static void CompressFile(string FileName, long maxSize, Uplay.Download.CompressionMethod compression, out List<uint> uncompressedLength, out List<byte[]> compressedbytes)
+        public static void CompressFile(string FileName, int maxSize, Uplay.Download.CompressionMethod compression, string savepath, string version, string prodid, out Uplay.Download.File file)
         {
-            uncompressedLength = new();
-            compressedbytes = new();
-            if (maxSize == 0) return;
+            FileInfo fileinfo = new FileInfo(FileName);
+            var filename = fileinfo.FullName.Replace(Path.GetDirectoryName(FileName) + "\\", "");
 
-            var sr = File.OpenRead(FileName);
-            int megabyte = 1024 * 1024;
-            byte[] buffer = new byte[megabyte];
-            int bytesRead = sr.Read(buffer, 0, megabyte);
-            while (bytesRead > 0)
+            file = new()
             {
-                //DoSomething(buffer, bytesRead);
-                bytesRead = sr.Read(buffer, 0, megabyte);
-            }
-
-            byte[] fileData = File.ReadAllBytes(FileName);
-
-            List<byte[]> sliceData = new();
-
-            if (fileData.Length <= (int)maxSize)
+                IsDir = false,
+                Name = filename,
+                Size = (ulong)fileinfo.Length,
+                Slices = { },
+                SliceList = { }
+            };
+            if (maxSize == 0) return; 
+           
+            if (new FileInfo(FileName).Length <= int.MaxValue)
             {
-                var mem = new MemoryStream();
-                // check compression method
-                switch (compression)
-                {
-                    case Uplay.Download.CompressionMethod.Zstd:
-                        Compressor compressorZstd = new();
-                        var zstd = compressorZstd.Wrap(fileData);
-                        compressorZstd.Dispose();
-                        mem.Write(zstd);
-                        break;
-                    case Uplay.Download.CompressionMethod.Deflate:
-                        var defl = new Deflater(Deflater.BEST_COMPRESSION, false);
-                        Stream deflate = new DeflaterOutputStream(mem, defl);
-                        deflate.Write(fileData);
-                        deflate.Close();
-                        break;
-                    case Uplay.Download.CompressionMethod.Lzham:
-                        mem.Write(fileData);
-                        break;
-                }
-                var arr = mem.ToArray();
-                var sliceid = GenerateSliceID(arr);
-                uncompressedLength.Add((uint)fileData.Length);
-                sliceData.Add(arr);
-                compressedbytes.Add(arr);
+                File.AppendAllText("output", "File lentght is smaller than int max!");
+                var slice = (File.ReadAllBytes(FileName));
+                var arr = DeComp.Compress(true, true, compression.ToString(), slice, (uint)maxSize);
+                File.AppendAllText("compressedfiles.txt", "UnSize: " + slice.Length + " | Compize: " + arr.Length + "\n");
+                WriteOut((uint)slice.Length, arr, savepath, version, prodid, file, out var outfile);
+                file = outfile;
             }
             else
             {
-                foreach (byte[] copySlice in fileData.Split((int)maxSize))
+                File.AppendAllText("output", "File lentght is bigger than int max!");
+                var sr = File.OpenRead(FileName);
+                File.AppendAllText("output", "open readed!");
+                byte[] buffer = new byte[maxSize];
+                int bytesRead = sr.Read(buffer, 0, maxSize);
+                var arr = DeComp.Compress(true, true, compression.ToString(), buffer, (uint)maxSize);
+                File.AppendAllText("compressedfiles.txt", "UnSize: " + buffer.Length + " | Compize: " + arr.Length + "\n");
+                WriteOut((uint)buffer.Length, arr, savepath, version, prodid, file, out var outfile);
+                file = outfile;
+                while (bytesRead > 0)
                 {
-                    var mem = new MemoryStream();
-                    // check compression method
-                    switch (compression)
-                    {
-                        case Uplay.Download.CompressionMethod.Zstd:
-                            Compressor compressorZstd = new();
-                            var zstd = compressorZstd.Wrap(copySlice);
-                            compressorZstd.Dispose();
-                            mem.Write(zstd);
-                            break;
-                        case Uplay.Download.CompressionMethod.Deflate:
-                            var defl = new Deflater(Deflater.BEST_COMPRESSION, false);
-                            Stream deflate = new DeflaterOutputStream(mem, defl);
-                            deflate.Write(copySlice);
-                            deflate.Close();
-                            break;
-                        case Uplay.Download.CompressionMethod.Lzham:
-                            mem.Write(copySlice);
-                            break;
-                    }
-                    var arr = mem.ToArray();
-                    var sliceid = GenerateSliceID(arr);
-                    uncompressedLength.Add((uint)copySlice.Length);
-                    sliceData.Add(arr);
-                    compressedbytes.Add(arr);
+                    //DoSomething(buffer, bytesRead);
+                    bytesRead = sr.Read(buffer, 0, maxSize);
+                    arr = DeComp.Compress(true, true, compression.ToString(), buffer, (uint)maxSize);
+                    File.AppendAllText("compressedfiles.txt", "UnSize: " + buffer.Length + " | Compize: " + arr.Length + "\n");
+                    WriteOut((uint)buffer.Length, arr, savepath, version, prodid, file, out outfile);
+                    file = outfile;
                 }
+                sr.Dispose();
+
             }
+        }
+
+        public static void WriteOut(uint orisliceSize, byte[] compslice, string savepath, string version, string prodid, Uplay.Download.File file, out Uplay.Download.File outfile)
+        {
+            outfile = file;
+            var sliceid = GenerateSliceID(compslice);
+            var sliceid_b = Convert.FromHexString(sliceid);
+            if (version == "3")
+            {
+                Uplay.Download.Slice dslice = new()
+                {
+                    DownloadSha1 = ByteString.CopyFrom(sliceid_b),
+                    Size = orisliceSize,
+                    DownloadSize = (uint)compslice.Length
+                };
+                file.SliceList.Add(dslice);
+                var pathtowrite = $"{savepath}/Download/{prodid}/slices_v3/{Formatters.FormatSliceHashChar(sliceid)}";
+                Directory.CreateDirectory(pathtowrite);
+                File.WriteAllBytes(pathtowrite + "/" + sliceid, compslice);
+            }
+            else
+            {
+                var pathtowrite = $"{savepath}/Download/{prodid}/slices";
+                Directory.CreateDirectory(pathtowrite);
+                File.WriteAllBytes(pathtowrite + "/" + sliceid, compslice);
+            }
+            outfile.Slices.Add(ByteString.CopyFrom(sliceid_b));
         }
 
         /// <summary>

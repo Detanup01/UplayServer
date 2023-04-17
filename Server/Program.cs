@@ -1,9 +1,6 @@
 ﻿using Core;
 using Core.Commands;
 using SharedLib.Shared;
-using LzhamWrapper;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace Tets
 {
@@ -11,37 +8,6 @@ namespace Tets
     {
         static void Main(string[] args)
         {
-            CompressionParameters p = new();
-            p.DictionarySize = 26;
-            p.Flags = 0;
-            p.HelperThreads = 4;
-            p.UpdateRate = LzhamWrapper.Enums.TableUpdateRate.InsanelySlow;
-            p.Level = LzhamWrapper.Enums.CompressionLevel.Uber;
-            Console.WriteLine("Compressing...");
-            Stream input = File.OpenRead("Uplay-Protobufs.dll");
-            Stream output = File.OpenWrite("Uplay-Protobufs.dll.lzh");
-            LzhamStream s = new LzhamStream(output, p);
-            input.CopyTo(s);
-            s.Close();
-            input.Close();
-            output.Close();
-
-            /*
-            Uplay Decomp:
-            DecompressionParameters p = new();
-            p.Flags = DecompressionFlag.ComputeAdler32; //2
-            p.Flags |= DecompressionFlag.ReadZlibStream; //4
-            p.DictionarySize = 15;
-            p.UpdateRate = TableUpdateRate.Default; //8
-            LzhamStream s = new LzhamStream(input, p);
-            s.CopyTo(output);
-            s.Close();
-            input.Close();
-            output.Close();*/
-
-
-
-            /*
             Console.WriteLine("Ubisoft Testing!");
             if (args.Contains("clean"))
             {
@@ -68,7 +34,7 @@ namespace Tets
 
             Owners.MakeOwnership("00000000-0000-0000-0000-000000000000", 0, new() { 0, 1, 2 }, new() { 0, 1, 2, 3, 4, 5 });
             */
-            /*
+            
             string endCheck = "not";
             while (endCheck.ToLower() != "exit")
             {
@@ -79,7 +45,7 @@ namespace Tets
                 }
             }
             CoreRun.Stop();
-            Console.ReadLine();*/
+            Console.ReadLine();
         }
 
     }

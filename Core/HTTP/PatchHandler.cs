@@ -1,17 +1,24 @@
-﻿namespace Core.HTTP
+﻿using SharedLib.Server.Json;
+using SharedLib.Shared;
+
+namespace Core.HTTP
 {
     internal class PatchHandler
     {
         public static byte[] PatchHandlerCallback(string url, out string contentType)
         {
-            //  /patch/$version/files.txt
-            // This file should contains the files for update
-            //
-            //  CRC32    file
-            //
-            //  All files should be compressed as zlib except the txt!!
+            byte[] returner = { };
+            url = url.Replace("/patch", "");
+            if (File.Exists($"{ServerConfig.DMX.ServerFilesPath}Patch{url}"))
+            {
+                returner = File.ReadAllBytes($"{ServerConfig.DMX.ServerFilesPath}Patch{url}");
+                if (!url.Contains(".files.txt"))
+                {
+                    returner = System.Text.Encoding.ASCII.GetBytes(CompressB64.GetZstdB64(returner));
+                }
+            }
             contentType = "application/octet-stream";
-            return new byte[] { 0x00 };
+            return returner;
         }
     }
 }

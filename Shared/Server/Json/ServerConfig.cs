@@ -12,7 +12,8 @@
         {
             public static string PatchBaseUrl = HTTPSUrl + "/patch/";
             public static string DownloadGameUrl = HTTPSUrl + "/download/";
-            public static string DownloadGamePath = Directory.GetCurrentDirectory() + "/ServerFiles/Download/";
+            public static string ServerFilesPath = Directory.GetCurrentDirectory() + "/ServerFiles/";
+            public static string DownloadGamePath = ServerFilesPath + "Download/";
             public static string DefaultCountryCode = "HU";
             public static string DefaultContinentCode = "EU";
             public static bool GlobalOwnerShipCheck = true;

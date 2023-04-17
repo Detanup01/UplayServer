@@ -15,4 +15,8 @@
     <PackageReference Include="ZstdNet" Version="1.4.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LzhamWrapper\LzhamWrapper.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -52,12 +52,6 @@ namespace ClientKit.Lib
                     Console.WriteLine("Code cannot be empty!");
                     return null;
                 }
-                if (ParameterLib.HasParameter(args, "-trustedname"))
-                {
-                    string trustedname = ParameterLib.GetParameter(args, "-trustedname", Environment.MachineName);
-                    string trustedid = ParameterLib.GetParameter(args, "-trustedid", GenerateDeviceId(trustedname));
-                    login = TryLoginWith2FA_Rem(login, code2fa, trustedname, trustedid);
-                }
                 else
                 {
                     login = TryLoginWith2FA(login, code2fa);
@@ -94,24 +88,6 @@ namespace ClientKit.Lib
                 login = Login(username, password);
             }
             return login;
-        }
-
-        public static LoginJson? TryLoginWith2FA_Rem(LoginJson? login, string code2fa, string trustedname)
-        {
-            var deviceId = GenerateDeviceId(trustedname);
-            return TryLoginWith2FA_Rem(login, code2fa, trustedname, deviceId);
-        }
-
-        public static LoginJson? TryLoginWith2FA_Rem(LoginJson? login, string code2fa, string trustedname, string trustedId)
-        {
-            LoginJson? ret = login;
-            Console.WriteLine(login.ToString());
-            if (login.Ticket == null && login.TwoFactorAuthenticationTicket != null)
-            {
-                ret = Login2FA_Device(login.TwoFactorAuthenticationTicket, code2fa, trustedId, trustedname);
-            }
-            Console.WriteLine(ret.ToString());
-            return ret;
         }
 
         public static LoginJson? TryLoginWith2FA(LoginJson? login, string code2fa)

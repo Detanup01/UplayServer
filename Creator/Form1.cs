@@ -31,7 +31,7 @@ namespace Creator
         private void button1_Click(object sender, EventArgs e)
         {
             var sp = serverpath.Text;
-            var compression = compressionbox.SelectedText;
+            var compression = compressionbox.SelectedItem.ToString();
             var manifest = manifestbox.Text;
             var prod = productbox.Text;
             var slver = sliceverbox.Text;
@@ -73,7 +73,7 @@ namespace Creator
         private void button2_Click(object sender, EventArgs e)
         {
             var sp = serverpath.Text;
-            var compression = compressionbox.SelectedText;
+            var compression = compressionbox.SelectedItem.ToString();
             var manifest = manifestbox.Text;
             var prod = productbox.Text;
             var slver = sliceverbox.Text;

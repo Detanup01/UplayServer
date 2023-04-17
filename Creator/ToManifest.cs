@@ -86,38 +86,7 @@ namespace Creator
             }
             Manifest.Version = uint.Parse(sliceversion);
             var fileinfo = new FileInfo(filepath);
-            List<uint> uncomplenght = new();
-            List<byte[]> bytes = new();
-            if (Manifest.IsCompressed)
-            {
-                Core.Creators.CompressFile(filepath, long.Parse(maxsiz), comp, out uncomplenght, out bytes);
-            }
-            else
-            {
-                if (fileinfo.Length >= int.MaxValue)
-                {
-                    var sr = File.OpenRead(filepath);
-                    int megabyte = 1024 * 1024;
-                    byte[] buffer = new byte[megabyte];
-                    int bytesRead = sr.Read(buffer, 0, megabyte);
-                    while (bytesRead > 0)
-                    {
-                        bytes.Add(buffer);
-                        uncomplenght.Add((uint)bytesRead);
-                        bytesRead = sr.Read(buffer, 0, megabyte);
-                    }
-                }
-                else
-                {
-                    uncomplenght.Add((uint)fileinfo.Length);
-                    bytes.Add(File.ReadAllBytes(filepath));
-                }
-            }
-
-
-
             var filename = fileinfo.FullName.Replace(basepath + "\\", "");
-
             Uplay.Download.File file = new()
             {
                 IsDir = false,
@@ -126,34 +95,34 @@ namespace Creator
                 Slices = { },
                 SliceList = { }
             };
-
-            for (int slicecounter = 0; slicecounter < uncomplenght.Count; slicecounter++)
+            if (Manifest.IsCompressed)
             {
-                var uncompsize = uncomplenght[slicecounter];
-                var slicebytes = bytes[slicecounter];
-                var sliceid = Core.Creators.GenerateSliceID(slicebytes);
-                var sliceid_b = Convert.FromHexString(sliceid);
-
-                if (sliceversion == "3")
+                Core.Creators.CompressFile(filepath, int.Parse(maxsiz), comp, savetopath, sliceversion, prodid, out var file1);
+                file = file1;
+            }
+            else
+            {
+                if (fileinfo.Length >= int.MaxValue)
                 {
-                    Uplay.Download.Slice slice = new()
+                    var sr = File.OpenRead(filepath);
+                    int megabyte = 5242880;
+                    byte[] buffer = new byte[megabyte];
+                    int bytesRead = sr.Read(buffer, 0, megabyte);
+                    Core.Creators.WriteOut((uint)buffer.Length, buffer, savetopath, sliceversion, prodid, file, out var outfile);
+                    file = outfile;
+                    while (bytesRead > 0)
                     {
-                        DownloadSha1 = ByteString.CopyFrom(sliceid_b),
-                        Size = uncompsize,
-                        DownloadSize = (uint)slicebytes.Length
-                    };
-                    file.SliceList.Add(slice);
-                    var pathtowrite = $"{savetopath}/Download/{prodid}/slices_v3/{FormatSliceHashChar(sliceid)}";
-                    Directory.CreateDirectory(pathtowrite);
-                    File.WriteAllBytes(pathtowrite + "/" + sliceid, slicebytes);
+                        bytesRead = sr.Read(buffer, 0, megabyte);
+                        Core.Creators.WriteOut((uint)buffer.Length, buffer, savetopath, sliceversion, prodid, file, out outfile);
+                        file = outfile;
+                    }
                 }
                 else
-                {
-                    var pathtowrite = $"{savetopath}/Download/{prodid}/slices";
-                    Directory.CreateDirectory(pathtowrite);
-                    File.WriteAllBytes(pathtowrite + "/" + sliceid, slicebytes);
+                {;
+                    var all = File.ReadAllBytes(filepath);
+                    Core.Creators.WriteOut((uint)all.Length, all, savetopath, sliceversion, prodid, file, out var outfile);
+                    file = outfile;
                 }
-                file.Slices.Add(ByteString.CopyFrom(sliceid_b));
             }
 
             Manifest.Chunks[chunknumber].Files.Add(file);

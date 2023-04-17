@@ -10,12 +10,6 @@
         public int partner { get; set; }
         public List<uint> ownershipAssociations { get; set; }
         public List<uint> associations { get; set; }
-    }
-
-    public class JStoreData
-    {
-        public int Id { get; set; }
-        public uint productId { get; set; }
         public int Type { get; set; }
     }
 }
