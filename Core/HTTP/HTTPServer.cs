@@ -110,6 +110,11 @@ namespace Core
                         contentBytes = PatchHandler.PatchHandlerCallback(key, out contentType);
                         handled = true;
                     }
+                    if (key.StartsWith("/store/"))
+                    {
+                        content = StoreHandler.StoreHandlerCallback(key, out contentType);
+                        handled = true;
+                    }
 
                     if (!handled)
                         Console.WriteLine("\n" + request.Method + "\n" + key);

@@ -60,15 +60,42 @@ namespace Core.DemuxResponders
 
             public static void GetData(GetDataReq req)
             {
+                List<StoreProduct> storelist = new();
+                var rpid = req.ProductId.ToList();
+                var datatype = (uint)req.StoreDataType;
+                foreach (var item in rpid)
+                {
+                    var storedata = SharedLib.Server.DB.Store.GetStoreByProdId(item);
+                    if (storedata != null)
+                    {
+                        StoreProduct product = new StoreProduct()
+                        {
+                            Staging = false,
+                            StorePartner = (StorePartner)storedata.partner,
+                            StoreReference = storedata.reference,
+                            Associations = { storedata.associations },
+                            PromotionScore = 0,
+                            Configuration = ByteString.CopyFromUtf8(storedata.configuration),
+                            Credentials = "",
+                            OwnershipAssociations = { storedata.ownershipAssociations },
+                            ProductId = item,
+                            Revision = 0,
+                            UserBlob = storedata.userBlob
+                        };
+                        storelist.Add(product);
+                    }
+                }
+
+
                 Downstream = new()
                 {
                     Response = new()
                     {
                         GetDataRsp = new()
                         { 
-                            Result = StoreResult.StoreResponseFailure,
+                            Result = StoreResult.StoreResponseSuccess,
                             StoreDataType = req.StoreDataType,
-                            Products = { }
+                            Products = { storelist }
                         }
                     }
                 };
@@ -76,14 +103,38 @@ namespace Core.DemuxResponders
 
             public static void GetStore(GetStoreReq req)
             {
+                var stores = SharedLib.Server.DB.Store.GetAllStore();
+                List<StoreProduct> storelist = new();
+                if (stores != null)
+                {
+                    foreach (var storedata in stores)
+                    {
+                        StoreProduct product = new StoreProduct()
+                        {
+                            Staging = false,
+                            StorePartner = (StorePartner)storedata.partner,
+                            StoreReference = storedata.reference,
+                            Associations = { storedata.associations },
+                            PromotionScore = 0,
+                            Configuration = ByteString.CopyFromUtf8(storedata.configuration),
+                            Credentials = "",
+                            OwnershipAssociations = { storedata.ownershipAssociations },
+                            ProductId = storedata.productId,
+                            Revision = 0,
+                            UserBlob = storedata.userBlob
+                        };
+                        storelist.Add(product);
+                    }
+                }
+
                 Downstream = new()
                 {
                     Response = new()
                     {
                         GetStoreRsp = new()
                         {
-                            Result = StoreResult.StoreResponseFailure,
-                            StoreProducts = { }
+                            Result = StoreResult.StoreResponseSuccess,
+                            StoreProducts = { storelist }
                         }
                     }
                 };

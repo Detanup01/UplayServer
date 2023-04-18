@@ -21,12 +21,12 @@ namespace SharedLib.Server.DB
             }
         }
 
-        public static void Edit(JStore store)
+        public static void Edit(uint prodId, JStore store)
         {
             using (var db = new LiteDatabase(DBName))
             {
                 var col = db.GetCollection<JStore>(StoreBDB);
-                var toReplace = col.Find(x => x.Id == store.Id).First();
+                var toReplace = col.Find(x => x.productId == prodId).First();
 
                 if (toReplace != null)
                 {
@@ -52,6 +52,24 @@ namespace SharedLib.Server.DB
 
             }
         }
+
+        public static List<JStore>? GetAllStore()
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JStore>(StoreBDB);
+                var toGet = col.FindAll().ToList();
+
+                if (toGet != null)
+                {
+                    return toGet;
+                }
+                else
+                    return null;
+
+            }
+        }
+
 
         public static void Delete(uint prodId)
         {

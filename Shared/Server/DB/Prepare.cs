@@ -29,6 +29,19 @@
 
             //fUser Auth with: fUSER@test: test
             Auth.AddUA("ffffffff-ffff-ffff-ffff-ffff-ffffffffffff", "YzFjNFU2d2RHZGJ4c0hjMkZjZUFpUlM2MWxVOE9tSndRK2hNbTJYS1E5WT1fQ1VTVE9NREVNVVg=");
+
+            Store.Add(new()
+            { 
+                Id = 0,
+                productId = 0,
+                associations = new() { 0 },
+                configuration = "",
+                ownershipAssociations = new() { 0 },
+                partner = 0,
+                reference = "0",
+                Type = 1,
+                userBlob = ""         
+            });
         }
     }
 }
