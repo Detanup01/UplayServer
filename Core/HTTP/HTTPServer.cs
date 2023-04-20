@@ -112,7 +112,8 @@ namespace Core
                     }
                     if (key.StartsWith("/store/"))
                     {
-                        content = StoreHandler.StoreHandlerCallback(key, out contentType);
+                        
+                        content = StoreHandler.StoreHandlerCallback(Headers, key, out contentType);
                         handled = true;
                     }
 
@@ -150,8 +151,8 @@ namespace Core
                             content = Sessions.SessionsCallback(Headers, request.Body, out contentType, out isfailed);
                             break;
                     }
-                    Console.WriteLine(isfailed);
-                    Console.WriteLine(contentType);
+                    Console.WriteLine("IsFailed? " + isfailed);
+                    Console.WriteLine("Content Type: " + contentType);
                     if (isfailed)
                     {
                         SendResponseAsync(Response.MakeErrorResponse("Something is wrong!"));

@@ -17,7 +17,7 @@ namespace HTTPSTESTER
             httpRequest.Method = method;
             httpRequest.Headers["Ubi-AppId"] = "685a3038-2b04-47ee-9c5a-6403381a46aa";
             httpRequest.Headers["GenomeId"] = "487091d6-a285-471c-9036-d4bce349f212";
-            httpRequest.Headers["Authorization"] = "Basic TEST";
+            httpRequest.Headers["Authorization"] = "me=VDF6UWlacDJvTDdCOE5IcXR3bHNYRE8yeDlvWjkvYzh6M083R0hER0hGaz0=";
             Console.WriteLine("header");
             var header = Console.ReadLine();
             httpRequest.Headers["TEST"] = header;

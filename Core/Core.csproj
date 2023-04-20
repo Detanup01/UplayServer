@@ -12,6 +12,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="ServerFiles\ProductConfigs\0_10_Config.json" />
+    <None Remove="serverfiles\web\store\0.html" />
+    <None Remove="ServerFiles\Web\Store\BaseStore.html" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Extra\usages.txt">

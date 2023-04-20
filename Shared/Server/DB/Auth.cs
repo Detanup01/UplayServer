@@ -1,5 +1,6 @@
 ﻿using LiteDB;
 using SharedLib.Server.Json.DB;
+using static Uplay.Statistics.GameCloudSaveSyncObjectData.Types;
 
 namespace SharedLib.Server.DB
 {
@@ -22,7 +23,7 @@ namespace SharedLib.Server.DB
                     var x = col.Count();
                     col.Insert(new JUA()
                     {
-                        Id = x,
+                        Id = x+1,
                         userId = userId,
                         authtoken = auth
                     });
@@ -36,7 +37,7 @@ namespace SharedLib.Server.DB
             {
                 var col = db.GetCollection<JUA>(UA);
 
-                var toReplace = col.Find(x => x.userId == userId).First();
+                var toReplace = col.FindOne(x => x.userId == userId);
 
                 if (toReplace != null)
                 {
@@ -46,15 +47,15 @@ namespace SharedLib.Server.DB
             }
         }
 
-        public static string GetUserIdByAuth(string userId)
+        public static string GetUserIdByAuth(string auth)
         {
             using (var db = new LiteDatabase(DBName))
             {
                 var col = db.GetCollection<JUA>(UA);
 
-                var toGet = col.Find(x => x.userId == userId).First();
+                var toGet = col.FindOne(x => x.authtoken == auth);
 
-                if (toGet != null && !string.IsNullOrEmpty(toGet.userId))
+                if (toGet != null)
                 {
                     return toGet.userId;
                 }
@@ -63,15 +64,15 @@ namespace SharedLib.Server.DB
             }
         }
 
-        public static string GetAuthByUserId(string auth)
+        public static string GetAuthByUserId(string userId)
         {
             using (var db = new LiteDatabase(DBName))
             {
                 var col = db.GetCollection<JUA>(UA);
 
-                var toGet = col.Find(x => x.authtoken == auth).First();
+                var toGet = col.FindOne(x => x.userId == userId);
 
-                if (toGet != null && !string.IsNullOrEmpty(toGet.authtoken))
+                if (toGet != null)
                 {
                     return toGet.authtoken;
                 }
@@ -86,9 +87,12 @@ namespace SharedLib.Server.DB
             {
                 var col = db.GetCollection<JUA>(UA);
 
-                var toDel = col.Find(x => x.userId == userId).First();
+                var toDel = col.FindOne(x => x.userId == userId);
 
-                col.Delete(toDel.Id);
+                if (toDel != null)
+                {
+                    col.Delete(toDel.Id);
+                }
             }
         }
         #endregion
@@ -104,7 +108,7 @@ namespace SharedLib.Server.DB
                     var x = col.Count();
                     col.Insert(new JU2S()
                     {
-                        Id = x,
+                        Id = x+1,
                         userId = userId,
                         sessionId = sessionId
                     });
@@ -117,7 +121,7 @@ namespace SharedLib.Server.DB
             {
                 var col = db.GetCollection<JU2S>(U2S);
 
-                var toReplace = col.Find(x => x.userId == userId).First();
+                var toReplace = col.FindOne(x => x.userId == userId);
 
                 if (toReplace != null)
                 {
@@ -133,9 +137,9 @@ namespace SharedLib.Server.DB
             {
                 var col = db.GetCollection<JU2S>(U2S);
 
-                var toGet = col.Find(x => x.sessionId == sessionId).First();
+                var toGet = col.FindOne(x => x.sessionId == sessionId);
 
-                if (toGet != null && !string.IsNullOrEmpty(toGet.userId))
+                if (toGet != null)
                 {
                     return toGet.userId;
                 }
@@ -150,9 +154,9 @@ namespace SharedLib.Server.DB
             {
                 var col = db.GetCollection<JU2S>(U2S);
 
-                var toGet = col.Find(x => x.userId == userId).First();
+                var toGet = col.FindOne(x => x.userId == userId);
 
-                if (toGet != null && !string.IsNullOrEmpty(toGet.sessionId))
+                if (toGet != null)
                 {
                     return toGet.sessionId;
                 }
@@ -167,9 +171,12 @@ namespace SharedLib.Server.DB
             {
                 var col = db.GetCollection<JU2S>(U2S);
 
-                var toDel = col.Find(x => x.sessionId == sessionId).First();
+                var toDel = col.FindOne(x => x.sessionId == sessionId);
 
-                col.Delete(toDel.Id);
+                if (toDel != null)
+                {
+                    col.Delete(toDel.Id);
+                }
             }
         }
 
@@ -179,9 +186,13 @@ namespace SharedLib.Server.DB
             {
                 var col = db.GetCollection<JU2S>(U2S);
 
-                var toDel = col.Find(x => x.userId == userId).First();
+                var toDel = col.FindOne(x => x.userId == userId);
 
-                col.Delete(toDel.Id);
+
+                if (toDel != null)
+                {
+                    col.Delete(toDel.Id);
+                }
             }
         }
         #endregion
@@ -197,7 +208,7 @@ namespace SharedLib.Server.DB
                     var x = col.Count();
                     col.Insert(new JDMX()
                     {
-                        Id = x,
+                        Id = x+1,
                         userId = userId,
                         conId = conId,
                         conName = conName
@@ -211,11 +222,16 @@ namespace SharedLib.Server.DB
             {
                 var col = db.GetCollection<JDMX>(DMX);
 
-                var toGet = col.Find(x => x.userId == userId && x.conName == conName).First();
+                var toGet = col.Find(x => x.userId == userId && x.conName == conName);
 
                 if (toGet != null)
                 {
-                    return toGet.conId;
+                    if (toGet.Any())
+                    {
+                        var conList = toGet.ToList().OrderBy(x=>x.conId).ToList();
+                        return conList.First().conId;
+                    }
+                    return 0;
                 }
                 else
                     return 0;
@@ -227,9 +243,9 @@ namespace SharedLib.Server.DB
             {
                 var col = db.GetCollection<JDMX>(DMX);
 
-                var toGet = col.Find(x => x.userId == userId && x.conId == conId).First();
+                var toGet = col.FindOne(x => x.userId == userId && x.conId == conId);
 
-                if (toGet != null && !string.IsNullOrEmpty(toGet.conName))
+                if (toGet != null)
                 {
                     return toGet.conName;
                 }
@@ -243,11 +259,16 @@ namespace SharedLib.Server.DB
             {
                 var col = db.GetCollection<JDMX>(DMX);
 
-                var toGet = col.Find(x => x.userId == userId).Last();
+                var toGet = col.Find(x => x.userId == userId);
 
                 if (toGet != null)
                 {
-                    return toGet.conId;
+                    if (toGet.Any())
+                    {
+                        var conList = toGet.ToList().OrderBy(x => x.conId).ToList();
+                        return conList.First().conId;
+                    }
+                    return 0;
                 }
                 else
                     return 0;
@@ -260,9 +281,12 @@ namespace SharedLib.Server.DB
             {
                 var col = db.GetCollection<JDMX>(DMX);
 
-                var toDel = col.Find(x => x.userId == userId).First();
+                var toDel = col.FindOne(x => x.userId == userId);
 
-                col.Delete(toDel.Id);
+                if (toDel != null)
+                {
+                    col.Delete(toDel.Id);
+                }
             }
         }
 
@@ -288,7 +312,7 @@ namespace SharedLib.Server.DB
                     var x = col.Count();
                     col.Insert(new JCurrent()
                     {
-                        Id = x,
+                        Id = x+1,
                         userId = userId,
                         token = token,
                         type = tokentype
@@ -302,7 +326,7 @@ namespace SharedLib.Server.DB
             using (var db = new LiteDatabase(DBName))
             {
                 var col = db.GetCollection<JCurrent>(Current);
-                var toReplace = col.Find(x => x.userId == userId && x.type == tokentype).First();
+                var toReplace = col.FindOne(x => x.userId == userId && x.type == tokentype);
 
                 if (toReplace != null)
                 {
@@ -317,9 +341,9 @@ namespace SharedLib.Server.DB
             using (var db = new LiteDatabase(DBName))
             {
                 var col = db.GetCollection<JCurrent>(Current);
-                var toGet = col.Find(x => x.token == token && x.type == tokentype).First();
+                var toGet = col.FindOne(x => x.token == token && x.type == tokentype);
 
-                if (toGet != null && !string.IsNullOrEmpty(toGet.userId))
+                if (toGet != null)
                 {
                     return toGet.userId;
                 }
@@ -335,9 +359,12 @@ namespace SharedLib.Server.DB
             {
                 var col = db.GetCollection<JCurrent>(Current);
 
-                var toDel = col.Find(x => x.userId == userId).Last();
+                var toDel = col.FindOne(x => x.userId == userId);
 
-                col.Delete(toDel.Id);
+                if (toDel != null)
+                {
+                    col.Delete(toDel.Id);
+                }
             }
         }
 

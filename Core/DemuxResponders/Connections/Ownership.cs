@@ -34,7 +34,7 @@ namespace Core.DemuxResponders
                 }
 
                 var userId64 = CompressB64.GetZstdB64(UserId);
-                return ByteString.CopyFrom(Encoding.UTF8.GetBytes(B64.FromB64(userId64 + "_OwnerSignature_" + sigb64)));
+                return ByteString.CopyFrom(Encoding.UTF8.GetBytes(B64.ToB64(userId64 + "_OwnerSignature_" + sigb64)));
             }
             return ByteString.CopyFrom(Encoding.UTF8.GetBytes("T3duZXJTaWduYXR1cmVfSXNGYWlsZWQ="));
         }

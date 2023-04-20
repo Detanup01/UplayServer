@@ -346,7 +346,7 @@ namespace ClientKit.Demux
             return false;
         }
 
-        public uint GetLatestVersion()
+        public GetPatchInfoRsp? GetPatch()
         {
             RequestId++;
             Req patchreq = new()
@@ -362,9 +362,9 @@ namespace ClientKit.Demux
             var patchrsp = SendReq(patchreq);
             if (patchrsp != null)
             {
-                return patchrsp.GetPatchInfoRsp.LatestVersion;
+                return patchrsp.GetPatchInfoRsp;
             }
-            return ClientVersion;
+            return null;
         }
 
         /// <summary>

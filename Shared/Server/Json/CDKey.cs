@@ -1,30 +1,38 @@
 ﻿using Newtonsoft.Json;
+using SharedLib.Shared;
 
 namespace SharedLib.Server.Json
 {
     public class CDKey
     {
-        public static string GenerateKey(uint productId)
+        public static string GenerateKey(uint productId, bool isUsed = true)
         {
             bool IsSuccesGen = false;
             string gen = string.Empty;
 
             //This should work
+            int i = 0; //exit counter
             while (!IsSuccesGen)
             {
+                if (i == 10)
+                {
+                    //10 time it generated shit, we make an error
+                    Debug.PWDebug("[GenerateKey] We tried generating keys 10 times and we still failed!");
+                }
+
                 gen = Generate();
 
                 if (IfCDKeyExist(gen))
-                {
                     IsSuccesGen = !IfCDKeyUsed(gen);
-                }
                 else
                     IsSuccesGen = true;
+
+                i++;
             }
            
             JCDKEY key = new()
             {
-                IsUsed = false,
+                IsUsed = isUsed,
                 Key = gen,
                 ProductId = productId
             };

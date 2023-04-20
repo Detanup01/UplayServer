@@ -5,7 +5,7 @@ namespace Core.Commands
 {
     public class Reloader
     {
-        public static void ReloadAll()
+        public static void ReloadAll(object obj)
         {
             Console.WriteLine("ReloadAll Started");
             //owners
@@ -30,7 +30,7 @@ namespace Core.Commands
             Console.WriteLine("ReloadAll Finished");
         }
 
-        public static void CleanServer()
+        public static void CleanServer(object obj)
         {
             Console.WriteLine("CleanServer Started");
             DemuxServer.ConnectedIds.ForEach(id =>

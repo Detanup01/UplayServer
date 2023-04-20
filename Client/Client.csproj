@@ -16,4 +16,8 @@
     <ProjectReference Include="..\ClientKit\ClientKit.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Patch\" />
+  </ItemGroup>
+
 </Project>

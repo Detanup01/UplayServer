@@ -1,7 +1,10 @@
 ﻿using ClientKit.Demux;
 using ClientKit.Demux.Connection;
 using ClientKit.UbiServices.Public;
+using ClientKit.UbiServices.Records;
 using Google.Protobuf;
+using Newtonsoft.Json;
+using RestSharp;
 using System.IO.Pipes;
 using System.Reflection.Metadata;
 
@@ -13,6 +16,17 @@ namespace Client
         {
             ClientKit.UbiServices.Debug.isDebug = true;
             ClientKit.Demux.Debug.isDebug = true;
+            var client = new RestClient("https://local-ubiservices.ubi.com:7777/store/?p=0");
+            var request = new RestRequest();
+
+            request.AddHeader("authorization", $"ubi_v1 t=VDF6UWlacDJvTDdCOE5IcXR3bHNYRE8yeDlvWjkvYzh6M083R0hER0hGaz0=");
+
+            var rsp = ClientKit.UbiServices.Rest.GetString(client,request);
+
+            File.WriteAllText("resp", rsp);
+
+
+
             var reg = V3.Register("testuser", "testuser", "testuser");
             if (reg != null)
             {

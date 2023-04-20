@@ -1,4 +1,8 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using SharedLib.Server.Json;
+using SharedLib.Shared;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
 
 namespace Core
 {
@@ -25,6 +29,10 @@ namespace Core
             return origin.AddSeconds(timestamp).ToLocalTime();
         }
 
+        public static string MakeAuth(string auth)
+        {
+            return B64.ToB64(Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(auth).Concat(Encoding.UTF8.GetBytes(ServerConfig.SQL.AuthSalt)).ToArray())));
+        }
 
         public static string Randoming(int lenght)
         {

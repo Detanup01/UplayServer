@@ -1,6 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System.Security.Cryptography;
-using System.Text;
 using SharedLib.Server.DB;
 using static SharedLib.Server.Enums;
 using SharedLib.Server.Json;
@@ -19,7 +17,6 @@ namespace Core.HTTP
             if (auth.Contains("Basic"))
             {
                 auth = auth.Replace("Basic ", "");
-                auth = SHA256.HashData(Encoding.UTF8.GetBytes(auth)).ToString();
             }
             else if (auth.Contains(" t="))
             {
@@ -37,7 +34,7 @@ namespace Core.HTTP
             }
             else
             {
-                id = Auth.GetUserIdByAuth(B64.ToB64(auth + ServerConfig.SQL.AuthSalt));
+                id = Auth.GetUserIdByAuth(Utils.MakeAuth(auth));
             }
 
             if (id == "")
