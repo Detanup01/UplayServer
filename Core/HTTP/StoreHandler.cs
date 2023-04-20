@@ -14,7 +14,7 @@ namespace Core.HTTP
             contentType = "text/plain; charset=utf-8";
             // url schema:
             /*
-            {basic}/store/?p={productId}
+            {basic}/store/?p={productId} [Accept: "*"]
             
             {basic}/store/{storereference}
             
@@ -30,7 +30,8 @@ namespace Core.HTTP
                 }
                 if (headers.TryGetValue("authorization", out var auth))
                 {
-                    auth = auth.Split(" t=")[1];
+                    Console.WriteLine(auth);
+                    auth = auth.Split("t=")[1];
                     var id = Auth.GetUserIdByToken(auth, TokenType.Ticket);
                     user = User.GetUser(id);
                 }
@@ -63,6 +64,11 @@ namespace Core.HTTP
 
                 result = result.Replace("__REPLACEME_PRODUCT__", productid);
                 result = result.Replace("__REPLACEME_RESULT__", reason);
+
+                if (headers["accept"].Contains("*")) //to make it html
+                {
+                    contentType = "text/html; charset=UTF-8";
+                }
             }
             else
             {
