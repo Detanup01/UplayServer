@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="ServerFiles\**">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="ServerFiles\ProductConfigs\0_10_Config.json" />
+    <None Remove="serverfiles\web\store\0.html" />
+    <None Remove="ServerFiles\Web\Store\BaseStore.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Extra\usages.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.22.1" />
+    <PackageReference Include="JWT" Version="10.0.2" />
+    <PackageReference Include="NetCoreServer" Version="6.7.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="SharedLib" Version="0.0.0.1" />
+    <PackageReference Include="SharpZipLib" Version="1.4.2" />
+    <PackageReference Include="Uplay-Protobufs" Version="140.0.10857" />
+    <PackageReference Include="ZstdNet" Version="1.4.5" />
+  </ItemGroup>
+
+</Project>

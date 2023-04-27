@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ClientKit" Version="0.0.0.4" />
+    <PackageReference Include="ZstdNet" Version="1.4.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Patch\" />
+  </ItemGroup>
+
+</Project>
