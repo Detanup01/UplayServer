@@ -13,9 +13,9 @@ namespace ClientKit.UbiServices
         {
             try
             {
-                Debug.WriteDebug(JsonConvert.SerializeObject(request), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(request), "UbiServices_Rest.txt");
                 RestResponse response = client.PutAsync(request).Result;
-                Debug.WriteDebug(JsonConvert.SerializeObject(response), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(response), "UbiServices_Rest.txt");
                 if (response.Content != null)
                 {
                     Console.WriteLine(response.StatusCode);
@@ -35,9 +35,9 @@ namespace ClientKit.UbiServices
         {
             try
             {
-                Debug.WriteDebug(JsonConvert.SerializeObject(request), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(request), "UbiServices_Rest.txt");
                 RestResponse response = client.PostAsync(request).Result;
-                Debug.WriteDebug(JsonConvert.SerializeObject(response), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(response), "UbiServices_Rest.txt");
                 if (response.Content != null)
                 {
                     Console.WriteLine(response.StatusCode);
@@ -57,9 +57,9 @@ namespace ClientKit.UbiServices
         {
             try
             {
-                Debug.WriteDebug(JsonConvert.SerializeObject(request), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(request), "UbiServices_Rest.txt");
                 RestResponse response = client.GetAsync(request).Result;
-                Debug.WriteDebug(JsonConvert.SerializeObject(response), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(response), "UbiServices_Rest.txt");
                 if (response.Content != null)
                 {
                     Console.WriteLine(response.StatusCode);
@@ -80,9 +80,9 @@ namespace ClientKit.UbiServices
         {
             try
             {
-                Debug.WriteDebug(JsonConvert.SerializeObject(request), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(request), "UbiServices_Rest.txt");
                 RestResponse response = client.PutAsync(request).Result;
-                Debug.WriteDebug(JsonConvert.SerializeObject(response), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(response), "UbiServices_Rest.txt");
                 if (response.Content != null)
                 {
                     Console.WriteLine(response.StatusCode);
@@ -102,9 +102,9 @@ namespace ClientKit.UbiServices
         {
             try
             {
-                Debug.WriteDebug(JsonConvert.SerializeObject(request), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(request), "UbiServices_Rest.txt");
                 RestResponse response = client.PostAsync(request).Result;
-                Debug.WriteDebug(JsonConvert.SerializeObject(response), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(response), "UbiServices_Rest.txt");
                 if (response.Content != null)
                 {
                     Console.WriteLine(response.StatusCode);
@@ -124,9 +124,9 @@ namespace ClientKit.UbiServices
         {
             try
             {
-                Debug.WriteDebug(JsonConvert.SerializeObject(request), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(request), "UbiServices_Rest.txt");
                 RestResponse response = client.GetAsync(request).Result;
-                Debug.WriteDebug(JsonConvert.SerializeObject(response), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(response), "UbiServices_Rest.txt");
                 if (response.Content != null)
                 {
                     Console.WriteLine(response.StatusCode);
@@ -163,9 +163,9 @@ namespace ClientKit.UbiServices
         {
             try
             {
-                Debug.WriteDebug(JsonConvert.SerializeObject(request), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(request), "UbiServices_Rest.txt");
                 RestResponse response = client.GetAsync(request).Result;
-                Debug.WriteDebug(JsonConvert.SerializeObject(response), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(response), "UbiServices_Rest.txt");
                 if (response.Content != null)
                 {
                     Console.WriteLine(response.StatusCode);
@@ -185,9 +185,9 @@ namespace ClientKit.UbiServices
         {
             try
             {
-                Debug.WriteDebug(JsonConvert.SerializeObject(request), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(request), "UbiServices_Rest.txt");
                 RestResponse response = client.PostAsync(request).Result;
-                Debug.WriteDebug(JsonConvert.SerializeObject(response), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(response), "UbiServices_Rest.txt");
                 if (response.Content != null)
                 {
                     Console.WriteLine(response.StatusCode);
@@ -207,9 +207,9 @@ namespace ClientKit.UbiServices
         {
             try
             {
-                Debug.WriteDebug(JsonConvert.SerializeObject(request), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(request), "UbiServices_Rest.txt");
                 RestResponse response = client.PutAsync(request).Result;
-                Debug.WriteDebug(JsonConvert.SerializeObject(response), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(response), "UbiServices_Rest.txt");
                 if (response.Content != null)
                 {
                     Console.WriteLine(response.StatusCode);
@@ -229,9 +229,9 @@ namespace ClientKit.UbiServices
         {
             try
             {
-                Debug.WriteDebug(JsonConvert.SerializeObject(request), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(request), "UbiServices_Rest.txt");
                 RestResponse response = client.DeleteAsync(request).Result;
-                Debug.WriteDebug(JsonConvert.SerializeObject(response), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(response), "UbiServices_Rest.txt");
                 if (response.Content != null)
                 {
                     Console.WriteLine(response.StatusCode);
@@ -252,9 +252,9 @@ namespace ClientKit.UbiServices
         {
             try
             {
-                Debug.WriteDebug(JsonConvert.SerializeObject(request), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(request), "UbiServices_Rest.txt");
                 RestResponse response = client.GetAsync(request).Result;
-                Debug.WriteDebug(JsonConvert.SerializeObject(response), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(response), "UbiServices_Rest.txt");
                 if (response.RawBytes != null)
                 {
                     Console.WriteLine(response.StatusCode);
@@ -274,9 +274,9 @@ namespace ClientKit.UbiServices
         {
             try
             {
-                Debug.WriteDebug(JsonConvert.SerializeObject(request), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(request), "UbiServices_Rest.txt");
                 RestResponse response = client.PostAsync(request).Result;
-                Debug.WriteDebug(JsonConvert.SerializeObject(response), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(response), "UbiServices_Rest.txt");
                 if (response.RawBytes != null)
                 {
                     Console.WriteLine(response.StatusCode);
@@ -296,9 +296,9 @@ namespace ClientKit.UbiServices
         {
             try
             {
-                Debug.WriteDebug(JsonConvert.SerializeObject(request), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(request), "UbiServices_Rest.txt");
                 RestResponse response = client.PutAsync(request).Result;
-                Debug.WriteDebug(JsonConvert.SerializeObject(response), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(response), "UbiServices_Rest.txt");
                 if (response.RawBytes != null)
                 {
                     Console.WriteLine(response.StatusCode);
@@ -318,9 +318,9 @@ namespace ClientKit.UbiServices
         {
             try
             {
-                Debug.WriteDebug(JsonConvert.SerializeObject(request), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(request), "UbiServices_Rest.txt");
                 RestResponse response = client.DeleteAsync(request).Result;
-                Debug.WriteDebug(JsonConvert.SerializeObject(response), "ubiservice_rest.txt");
+                Debug.AppendAllText(JsonConvert.SerializeObject(response), "UbiServices_Rest.txt");
                 if (response.RawBytes != null)
                 {
                     Console.WriteLine(response.StatusCode);

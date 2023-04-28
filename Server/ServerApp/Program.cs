@@ -12,7 +12,7 @@ namespace Tets
             if (args.Contains("clean"))
             {
                 Console.WriteLine("cleaned!");
-                var log_files = Directory.GetFiles(Environment.CurrentDirectory, "*.log");
+                var log_files = Directory.GetFiles(Environment.CurrentDirectory, "*.log", SearchOption.AllDirectories);
                 foreach (var logfile in log_files)
                 {
                     File.Delete(logfile);

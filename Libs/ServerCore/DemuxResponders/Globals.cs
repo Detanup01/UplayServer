@@ -21,8 +21,8 @@
             "Downloadable", "Playable", "DenuvoForceTimeTrial" , "Denuvo", "FromSubscription", "FromExpiredSubscription"
         };
 
-        public static Dictionary<int, string> IdToUser = new();
-        public static Dictionary<string, int> UserToId = new();
+        public static Dictionary<Guid, string> IdToUser = new();
+        public static Dictionary<string, Guid> UserToId = new();
 
         public static List<uint> AcceptVersions = new()
         {

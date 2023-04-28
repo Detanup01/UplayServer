@@ -10,7 +10,10 @@
 
   <ItemGroup>
     <PackageReference Include="LzhamWrapper" Version="1.0.0" />
-    <PackageReference Include="ServerCore" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libs\ServerCore\ServerCore.csproj" />
   </ItemGroup>
 
 </Project>

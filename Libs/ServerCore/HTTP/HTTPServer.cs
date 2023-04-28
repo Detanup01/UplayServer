@@ -84,6 +84,9 @@ namespace Core
                     var contentType = "text/html; charset=UTF-8";
                     switch (key)
                     {
+                        case "/":
+                            content = "main";
+                            break;
                         case "v3/users/me":
                             break;
                     }
@@ -128,7 +131,8 @@ namespace Core
                     {
                         SendResponseAsync(Response.MakeGetResponse(contentBytes, contentType));
                     }
-
+                    contentBytes = new byte[] { };
+                    content = "";
                 }
                 else if ((request.Method == "POST") || (request.Method == "PUT"))
                 {

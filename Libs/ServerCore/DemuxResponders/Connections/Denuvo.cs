@@ -9,7 +9,7 @@ namespace Core.DemuxResponders
         public class Up
         {
             public static Downstream Downstream = null;
-            public static void UpstreamConverter(int ClientNumb, ByteString bytes)
+            public static void UpstreamConverter(Guid ClientNumb, ByteString bytes)
             {
                 var UpstreamBytes = bytes.Skip(4).ToArray();
                 var Upsteam = Upstream.Parser.ParseFrom(UpstreamBytes);
@@ -33,7 +33,7 @@ namespace Core.DemuxResponders
             public static Downstream Downstream = null;
             public static uint ReqId = 0;
             public static bool IsIdDone = false;
-            public static void Requests(int ClientNumb, Req req)
+            public static void Requests(Guid ClientNumb, Req req)
             {
                 ReqId = req.RequestId;
                 if (req?.GetGameTokenReq != null) { GameToken(ClientNumb, req.GetGameTokenReq); }
@@ -41,7 +41,7 @@ namespace Core.DemuxResponders
                 IsIdDone = true;
             }
 
-            public static void GameToken(int ClientNumb, GetGameTokenReq gameTokenReq)
+            public static void GameToken(Guid ClientNumb, GetGameTokenReq gameTokenReq)
             {
                 if (ServerConfig.DMX.GlobalOwnerShipCheck || jwt.Validate(gameTokenReq.OwnershipToken))
                 {
@@ -71,7 +71,7 @@ namespace Core.DemuxResponders
                 }
             }
 
-            public static void GameTimeToken(int ClientNumb, GetGameTimeTokenReq gameTimeTokenReq)
+            public static void GameTimeToken(Guid ClientNumb, GetGameTimeTokenReq gameTimeTokenReq)
             {
                 if (ServerConfig.DMX.GlobalOwnerShipCheck || jwt.Validate(gameTimeTokenReq.OwnershipToken))
                 {

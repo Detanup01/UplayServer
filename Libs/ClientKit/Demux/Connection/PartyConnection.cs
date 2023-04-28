@@ -98,7 +98,7 @@ namespace ClientKit.Demux.Connection
                 return null;
 
             var ds = Formatters.FormatData<Downstream>(down.Push.Data.Data.ToByteArray());
-            Debug.WriteDebug(ds.ToString(), "playtime.txt");
+            Debug.WriteDebug(ds.ToString(), "PartyConnection");
 
             if (ds != null || ds?.Response != null)
                 return ds.Response;
@@ -111,7 +111,7 @@ namespace ClientKit.Demux.Connection
                 var down = Formatters.FormatData<Downstream>(e.Data.Data.ToArray());
                 if (down != null && down.Push != null)
                 {
-                    Debug.WriteDebug(down.Push.ToString(), "party_push.txt");
+                    Debug.WriteDebug(down.Push.ToString(), "PartyConnection_NewMessage");
                     PushEvent?.Invoke(this, down.Push);
                 }
             }

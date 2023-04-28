@@ -83,7 +83,7 @@ namespace ClientKit.Demux.Connection
                 var down = Formatters.FormatData<Downstream>(e.Data.Data.ToArray());
                 if (down != null && down.Push != null)
                 {
-                    Debug.WriteDebug(down.Push.ToString(), "store_push.txt");
+                    Debug.WriteDebug(down.Push.ToString(), "StoreConnection_NewMessage");
                     PushEvent?.Invoke(this, down.Push);
                 }
             }
@@ -112,7 +112,7 @@ namespace ClientKit.Demux.Connection
                 return null;
 
             var ds = Formatters.FormatData<Downstream>(down.Push.Data.Data.ToByteArray());
-            Debug.WriteDebug(ds.ToString(), "store.txt");
+            Debug.WriteDebug(ds.ToString(), "StoreConnection");
             if (ds != null || ds?.Response != null)
                 return ds.Response;
             return null;

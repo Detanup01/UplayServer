@@ -7,7 +7,6 @@ namespace Core
 {
     public class CoreRun
     {
-        public static DemuxServer server = null;
         public static void Start(bool IsLocal = true)
         {
             Prepare.MakeAll();
@@ -15,14 +14,14 @@ namespace Core
             PluginHandle.LoadPlugins();
             HTTPServer.Start();
             Console.WriteLine(ServerConfig.HTTPSUrl);
-            server = new(IsLocal);
+            DemuxServer.Start(IsLocal);
             Console.WriteLine(ServerConfig.DemuxUrl);
         }
 
         public static void Stop()
         {
             PluginHandle.UnloadPlugins();
-            server.Close();
+            DemuxServer.Stop();
             HTTPServer.Stop();
         }
     }

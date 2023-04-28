@@ -1,6 +1,5 @@
 ﻿using LiteDB;
 using SharedLib.Server.Json.DB;
-using static Uplay.Statistics.GameCloudSaveSyncObjectData.Types;
 
 namespace SharedLib.Server.DB
 {
@@ -296,7 +295,15 @@ namespace SharedLib.Server.DB
             {
                 var col = db.GetCollection<JDMX>(DMX);
 
-                col.DeleteMany(userId);
+                var toDel = col.Find(x => x.userId == userId);
+
+                if (toDel != null)
+                {
+                    foreach (var item in toDel)
+                    {
+                        col.Delete(item.Id);
+                    }
+                }
             }
         }
         #endregion
@@ -372,7 +379,15 @@ namespace SharedLib.Server.DB
             {
                 var col = db.GetCollection<JCurrent>(Current);
 
-                col.DeleteMany(userId);
+                var toDel = col.Find(x => x.userId == userId);
+
+                if (toDel != null)
+                {
+                    foreach (var item in toDel)
+                    {
+                        col.Delete(item.Id);
+                    }
+                }
             }
         }
         #endregion

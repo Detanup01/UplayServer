@@ -5,7 +5,7 @@ VisualStudioVersion = 17.3.32811.315
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerCore", "Libs\ServerCore\ServerCore.csproj", "{BB28E51F-3E29-4BB8-A478-530AB842D5DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceApp", "Client\ServiceApp\ServiceApp.csproj", "{4460478D-1CD2-4C3D-BA9C-6E669863973E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceApp", "Client\ServiceApp\ServiceApp.csproj", "{4460478D-1CD2-4C3D-BA9C-6E669863973E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerApp", "Server\ServerApp\ServerApp.csproj", "{B61C9950-977E-449C-A625-AA7E928CCAB9}"
 EndProject
@@ -27,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedLib", "Libs\Shared\Sh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LzhamWrapper", "Libs\LzhamWrapper\LzhamWrapper.csproj", "{4C5957EF-8AD3-4740-8A70-10F1AABDEE59}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientTester", "Tests\ClientTester\ClientTester.csproj", "{58A0D4EB-4835-4092-9351-5271E49B5082}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientTester", "Tests\ClientTester\ClientTester.csproj", "{58A0D4EB-4835-4092-9351-5271E49B5082}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +51,18 @@ Global
 		{BB28E51F-3E29-4BB8-A478-530AB842D5DA}.Release|x64.Build.0 = Release|Any CPU
 		{BB28E51F-3E29-4BB8-A478-530AB842D5DA}.Release|x86.ActiveCfg = Release|Any CPU
 		{BB28E51F-3E29-4BB8-A478-530AB842D5DA}.Release|x86.Build.0 = Release|Any CPU
+		{4460478D-1CD2-4C3D-BA9C-6E669863973E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4460478D-1CD2-4C3D-BA9C-6E669863973E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4460478D-1CD2-4C3D-BA9C-6E669863973E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4460478D-1CD2-4C3D-BA9C-6E669863973E}.Debug|x64.Build.0 = Debug|Any CPU
+		{4460478D-1CD2-4C3D-BA9C-6E669863973E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4460478D-1CD2-4C3D-BA9C-6E669863973E}.Debug|x86.Build.0 = Debug|Any CPU
+		{4460478D-1CD2-4C3D-BA9C-6E669863973E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4460478D-1CD2-4C3D-BA9C-6E669863973E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4460478D-1CD2-4C3D-BA9C-6E669863973E}.Release|x64.ActiveCfg = Release|Any CPU
+		{4460478D-1CD2-4C3D-BA9C-6E669863973E}.Release|x64.Build.0 = Release|Any CPU
+		{4460478D-1CD2-4C3D-BA9C-6E669863973E}.Release|x86.ActiveCfg = Release|Any CPU
+		{4460478D-1CD2-4C3D-BA9C-6E669863973E}.Release|x86.Build.0 = Release|Any CPU
 		{B61C9950-977E-449C-A625-AA7E928CCAB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B61C9950-977E-449C-A625-AA7E928CCAB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B61C9950-977E-449C-A625-AA7E928CCAB9}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -183,10 +195,6 @@ Global
 		{58A0D4EB-4835-4092-9351-5271E49B5082}.Release|x64.Build.0 = Release|Any CPU
 		{58A0D4EB-4835-4092-9351-5271E49B5082}.Release|x86.ActiveCfg = Release|Any CPU
 		{58A0D4EB-4835-4092-9351-5271E49B5082}.Release|x86.Build.0 = Release|Any CPU
-		{4460478D-1CD2-4C3D-BA9C-6E669863973E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4460478D-1CD2-4C3D-BA9C-6E669863973E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4460478D-1CD2-4C3D-BA9C-6E669863973E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4460478D-1CD2-4C3D-BA9C-6E669863973E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

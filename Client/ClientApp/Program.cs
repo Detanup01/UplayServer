@@ -71,11 +71,15 @@ namespace Client
                     args = args.Append("-ticket").Append(ticket).ToArray();
                     Downloader.Program.Main(args, socket);
                 }
-                OwnershipConnection ownershipConnection = new(socket);
-                var x = ownershipConnection.Initialize();
-                var sig = x.OwnedGamesContainer.Signature.ToBase64();
-                var tmp = ownershipConnection.RegisterTempOwnershipToken(sig);
-                Console.WriteLine(tmp.ProductIds.Count);
+                else
+                {
+                    OwnershipConnection ownershipConnection = new(socket);
+                    var x = ownershipConnection.Initialize();
+                    var sig = x.OwnedGamesContainer.Signature.ToBase64();
+                    var tmp = ownershipConnection.RegisterTempOwnershipToken(sig);
+                    Console.WriteLine(tmp.ProductIds.Count);
+                }
+
                 Console.ReadLine();
                 socket.Close();
             }

@@ -10,7 +10,7 @@ namespace Core.DemuxResponders
         public class Up
         {
             public static Downstream Downstream = null;
-            public static void UpstreamConverter(int ClientNumb, ByteString bytes)
+            public static void UpstreamConverter(Guid ClientNumb, ByteString bytes)
             {
                 var UpstreamBytes = bytes.ToArray();
                 var Upsteam = Upstream.Parser.ParseFrom(UpstreamBytes);

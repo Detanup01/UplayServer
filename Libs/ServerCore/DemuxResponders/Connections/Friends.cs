@@ -11,7 +11,7 @@ namespace Core.DemuxResponders
         public class Up
         {
             public static Downstream Downstream = null;
-            public static void UpstreamConverter(int ClientNumb, ByteString bytes)
+            public static void UpstreamConverter(Guid ClientNumb, ByteString bytes)
             {
                 var UpstreamBytes = bytes.Skip(4).ToArray();
                 var Upsteam = Upstream.Parser.ParseFrom(UpstreamBytes);
@@ -36,9 +36,9 @@ namespace Core.DemuxResponders
             public static Downstream Downstream = null;
             public static uint ReqId = 0;
             public static bool IsIdDone = false;
-            public static Dictionary<int, bool> UserInits = new();
+            public static Dictionary<Guid, bool> UserInits = new();
 
-            public static void Requests(int ClientNumb, Req req)
+            public static void Requests(Guid ClientNumb, Req req)
             {
                 //All Deprecated func should return false or emtpy data
                 ReqId = req.RequestId;
@@ -167,7 +167,7 @@ namespace Core.DemuxResponders
             #endregion
 
             #region Normal Functions
-            public static void AcceptFriendship(int ClientNumb, AcceptFriendshipReq acceptFriendship)
+            public static void AcceptFriendship(Guid ClientNumb, AcceptFriendshipReq acceptFriendship)
             {
                 bool IsSuccess = false;
                 if (UserInits[ClientNumb])
@@ -213,7 +213,7 @@ namespace Core.DemuxResponders
                 };
             }
 
-            public static void AddToBlacklist(int ClientNumb, AddToBlacklistReq AddToBlacklist)
+            public static void AddToBlacklist(Guid ClientNumb, AddToBlacklistReq AddToBlacklist)
             {
                 bool IsSuccess = false;
                 if (UserInits[ClientNumb])
@@ -248,7 +248,7 @@ namespace Core.DemuxResponders
                 };
             }
 
-            public static void RemoveFromBlacklist(int ClientNumb, RemoveFromBlacklistReq RemoveFromBlacklist)
+            public static void RemoveFromBlacklist(Guid ClientNumb, RemoveFromBlacklistReq RemoveFromBlacklist)
             {
                 bool IsSuccess = false;
                 if (UserInits[ClientNumb])
@@ -283,7 +283,7 @@ namespace Core.DemuxResponders
                 };
             }
 
-            public static void Initialize(int ClientNumb, InitializeReq initialize)
+            public static void Initialize(Guid ClientNumb, InitializeReq initialize)
             {
                 bool IsSuccess = false;
                 List<Relationship> Relationships = new();
@@ -348,7 +348,7 @@ namespace Core.DemuxResponders
                 };
             }
 
-            public static void FindFriend(int ClientNumb, FindFriendReq FindFriend)
+            public static void FindFriend(Guid ClientNumb, FindFriendReq FindFriend)
             {
                 bool IsSuccess = false;
                 List<Friend> friends = new();
@@ -389,7 +389,7 @@ namespace Core.DemuxResponders
                 };
             }
 
-            public static void SetActivityStatus(int ClientNumb, SetActivityStatusReq SetActivityStatus)
+            public static void SetActivityStatus(Guid ClientNumb, SetActivityStatusReq SetActivityStatus)
             {
                 bool IsSuccess = false;
                 if (UserInits[ClientNumb])
@@ -419,7 +419,7 @@ namespace Core.DemuxResponders
                 };
             }
 
-            public static void SetNickname(int ClientNumb, SetNicknameReq SetNickname)
+            public static void SetNickname(Guid ClientNumb, SetNicknameReq SetNickname)
             {
                 bool IsSuccess = false;
                 if (UserInits[ClientNumb])
@@ -452,7 +452,7 @@ namespace Core.DemuxResponders
                 };
             }
 
-            public static void SetRichPresence(int ClientNumb, SetRichPresenceReq SetRichPresence)
+            public static void SetRichPresence(Guid ClientNumb, SetRichPresenceReq SetRichPresence)
             {
                 bool IsSuccess = false;
                 if (UserInits[ClientNumb])
@@ -493,7 +493,7 @@ namespace Core.DemuxResponders
                 };
             }
 
-            public static void SetGame(int ClientNumb, SetGameReq SetGame)
+            public static void SetGame(Guid ClientNumb, SetGameReq SetGame)
             {
                 bool IsSuccess = false;
                 if (UserInits[ClientNumb])
@@ -525,7 +525,7 @@ namespace Core.DemuxResponders
                 };
             }
 
-            public static void UbiTicketRefresh(int ClientNumb, UbiTicketRefreshReq UbiTicketRefresh)
+            public static void UbiTicketRefresh(Guid ClientNumb, UbiTicketRefreshReq UbiTicketRefresh)
             {
                 bool IsSuccess = false;
                 if (jwt.Validate(UbiTicketRefresh.UbiTicket))
@@ -546,7 +546,7 @@ namespace Core.DemuxResponders
                 };
             }
 
-            public static void DeclineFriendship(int ClientNumb, DeclineFriendshipReq DeclineFriendship)
+            public static void DeclineFriendship(Guid ClientNumb, DeclineFriendshipReq DeclineFriendship)
             {
                 bool IsSuccess = false;
                 if (UserInits[ClientNumb])
@@ -560,7 +560,7 @@ namespace Core.DemuxResponders
                     if (UserFromFriend && FriendFromUser)
                     {
                         IsSuccess = true;
-                        if (Globals.UserToId.TryGetValue(friendId, out int id))
+                        if (Globals.UserToId.TryGetValue(friendId, out var id))
                         {
                             Pusher.Pushes(id, new()
                             {
@@ -593,7 +593,7 @@ namespace Core.DemuxResponders
                 };
             }
 
-            public static void RequestFriendships(int ClientNumb, RequestFriendshipsReq RequestFriendships)
+            public static void RequestFriendships(Guid ClientNumb, RequestFriendshipsReq RequestFriendships)
             {
 
                 // This for be all false if something isnt go right 
@@ -629,7 +629,7 @@ namespace Core.DemuxResponders
                                     User.SaveUser(userID, user);
                                     User.SaveUser(ruser.AccountId, fuser);
 
-                                    if (Globals.UserToId.TryGetValue(ruser.AccountId, out int id))
+                                    if (Globals.UserToId.TryGetValue(ruser.AccountId, out var id))
                                     {
                                         Pusher.Pushes(id, new()
                                         {
@@ -667,7 +667,7 @@ namespace Core.DemuxResponders
                 };
             }
 
-            public static void ClearRelationship(int ClientNumb, ClearRelationshipReq ClearRelationship)
+            public static void ClearRelationship(Guid ClientNumb, ClearRelationshipReq ClearRelationship)
             {
                 bool IsSuccess = false;
                 if (UserInits[ClientNumb])
@@ -682,7 +682,7 @@ namespace Core.DemuxResponders
                     if (UserFromFriend && FriendFromUser)
                     {
                         IsSuccess = true;
-                        if (Globals.UserToId.TryGetValue(friendId, out int id))
+                        if (Globals.UserToId.TryGetValue(friendId, out var id))
                         {
                             Pusher.Pushes(id, new()
                             {
@@ -715,7 +715,7 @@ namespace Core.DemuxResponders
                 };
             }
 
-            public static void GetBlacklist(int ClientNumb, GetBlacklistReq GetBlacklist)
+            public static void GetBlacklist(Guid ClientNumb, GetBlacklistReq GetBlacklist)
             {
                 bool IsSuccess = false;
                 List<string> blacklist = new();
@@ -755,7 +755,7 @@ namespace Core.DemuxResponders
                 };
             }
 
-            public static void JoinGameInvitation(int ClientNumb, JoinGameInvitationReq JoinGameInvitation)
+            public static void JoinGameInvitation(Guid ClientNumb, JoinGameInvitationReq JoinGameInvitation)
             {
                 bool IsSuccess = false;
                 if (UserInits[ClientNumb])
@@ -793,7 +793,7 @@ namespace Core.DemuxResponders
                 };
             }
 
-            public static void DeclineGameInvite(int ClientNumb, DeclineGameInviteReq DeclineGameInvite)
+            public static void DeclineGameInvite(Guid ClientNumb, DeclineGameInviteReq DeclineGameInvite)
             {
                 bool IsSuccess = false;
                 if (UserInits[ClientNumb])
@@ -827,7 +827,7 @@ namespace Core.DemuxResponders
 
         public class Pusher
         {
-            public static void Pushes(int ClientNumb, Push push)
+            public static void Pushes(Guid ClientNumb, Push push)
             {
                 if (push?.PushUpdatedRelationship != null) { PushUpdatedRelationship(ClientNumb, push.PushUpdatedRelationship); }
                 if (push?.PushUpdatedStatus != null) { PushUpdatedStatus(ClientNumb, push.PushUpdatedStatus); }
@@ -838,80 +838,80 @@ namespace Core.DemuxResponders
                 if (push?.PushIsFavoriteUpdate != null) { PushIsFavoriteUpdate(ClientNumb, push.PushIsFavoriteUpdate); }
             }
 
-            public static void PushUpdatedRelationship(int ClientNumb, PushUpdatedRelationship pushUpdatedRelationship)
+            public static void PushUpdatedRelationship(Guid ClientNumb, PushUpdatedRelationship pushUpdatedRelationship)
             {
                 if (Globals.IdToUser.TryGetValue(ClientNumb, out var username))
                 {
                     uint userCon = Auth.GetConIdByUserAndName(username, Name);
                     var bstr = pushUpdatedRelationship.ToByteString();
 
-                    DemuxServer.SendToClientBSTR(ClientNumb, bstr, userCon);
+                    DemuxServer.SendToClient(ClientNumb, bstr, userCon);
                 }
             }
 
-            public static void PushUpdatedStatus(int ClientNumb, PushUpdatedStatus pushUpdatedStatus)
+            public static void PushUpdatedStatus(Guid ClientNumb, PushUpdatedStatus pushUpdatedStatus)
             {
                 if (Globals.IdToUser.TryGetValue(ClientNumb, out var username))
                 {
                     uint userCon = Auth.GetConIdByUserAndName(username, Name);
                     var bstr = pushUpdatedStatus.ToByteString();
 
-                    DemuxServer.SendToClientBSTR(ClientNumb, bstr, userCon);
+                    DemuxServer.SendToClient(ClientNumb, bstr, userCon);
                 }
             }
 
-            public static void PushJoinGameInvitation(int ClientNumb, PushJoinGameInvitation pushJoinGameInvitation)
+            public static void PushJoinGameInvitation(Guid ClientNumb, PushJoinGameInvitation pushJoinGameInvitation)
             {
                 if (Globals.IdToUser.TryGetValue(ClientNumb, out var username))
                 {
                     uint userCon = Auth.GetConIdByUserAndName(username, Name);
                     var bstr = pushJoinGameInvitation.ToByteString();
 
-                    DemuxServer.SendToClientBSTR(ClientNumb, bstr, userCon);
+                    DemuxServer.SendToClient(ClientNumb, bstr, userCon);
                 }
             }
 
-            public static void PushRecentlyMetPlayers(int ClientNumb, PushRecentlyMetPlayers pushRecentlyMetPlayers)
+            public static void PushRecentlyMetPlayers(Guid ClientNumb, PushRecentlyMetPlayers pushRecentlyMetPlayers)
             {
                 if (Globals.IdToUser.TryGetValue(ClientNumb, out var username))
                 {
                     uint userCon = Auth.GetConIdByUserAndName(username, Name);
                     var bstr = pushRecentlyMetPlayers.ToByteString();
 
-                    DemuxServer.SendToClientBSTR(ClientNumb, bstr, userCon);
+                    DemuxServer.SendToClient(ClientNumb, bstr, userCon);
                 }
             }
 
-            public static void PushGameInviteDeclined(int ClientNumb, PushGameInviteDeclined pushGameInviteDeclined)
+            public static void PushGameInviteDeclined(Guid ClientNumb, PushGameInviteDeclined pushGameInviteDeclined)
             {
                 if (Globals.IdToUser.TryGetValue(ClientNumb, out var username))
                 {
                     uint userCon = Auth.GetConIdByUserAndName(username, Name);
                     var bstr = pushGameInviteDeclined.ToByteString();
 
-                    DemuxServer.SendToClientBSTR(ClientNumb, bstr, userCon);
+                    DemuxServer.SendToClient(ClientNumb, bstr, userCon);
                 }
             }
 
-            public static void PushNicknameUpdate(int ClientNumb, PushNicknameUpdate pushNicknameUpdate)
+            public static void PushNicknameUpdate(Guid ClientNumb, PushNicknameUpdate pushNicknameUpdate)
             {
                 if (Globals.IdToUser.TryGetValue(ClientNumb, out var username))
                 {
                     uint userCon = Auth.GetConIdByUserAndName(username, Name);
                     var bstr = pushNicknameUpdate.ToByteString();
 
-                    DemuxServer.SendToClientBSTR(ClientNumb, bstr, userCon);
+                    DemuxServer.SendToClient(ClientNumb, bstr, userCon);
                 }
             }
 
-            public static void PushIsFavoriteUpdate(int ClientNumb, PushIsFavoriteUpdate pushIsFavoriteUpdate)
+            public static void PushIsFavoriteUpdate(Guid ClientNumb, PushIsFavoriteUpdate pushIsFavoriteUpdate)
             {
                 if (Globals.IdToUser.TryGetValue(ClientNumb, out var username))
                 {
                     uint userCon = Auth.GetConIdByUserAndName(username, Name);
                     var bstr = pushIsFavoriteUpdate.ToByteString();
 
-                    DemuxServer.SendToClientBSTR(ClientNumb, bstr, userCon);
+                    DemuxServer.SendToClient(ClientNumb, bstr, userCon);
                 }
             }
         }

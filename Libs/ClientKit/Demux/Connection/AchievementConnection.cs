@@ -90,7 +90,7 @@ namespace ClientKit.Demux.Connection
                 return null;
 
             var ds = Formatters.FormatData<Rsp>(down.Push.Data.Data.ToByteArray());
-            Debug.WriteDebug(ds.ToString(), "ach.txt");
+            Debug.WriteDebug(ds.ToString(), "AchievementConnection");
 
             if (ds != null)
                 return ds;

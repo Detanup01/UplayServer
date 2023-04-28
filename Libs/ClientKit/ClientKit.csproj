@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	<Description>Custom Implementation for Uplay Demux Backend</Description>
-	<Version>0.0.0.4</Version>
+	<Version>0.0.1.1</Version>
 	<Company>Detanup01</Company>
 	<Authors>Detanup01</Authors>
   </PropertyGroup>
@@ -14,7 +14,7 @@
 		<PackageReference Include="Google.Protobuf" Version="3.22.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="RestSharp" Version="109.0.1" />
-		<PackageReference Include="SharedLib" Version="0.0.0.2" />
+		<PackageReference Include="SharedLib" Version="0.0.1.2" />
 		<PackageReference Include="SharpZipLib" Version="1.4.2" />
 		<PackageReference Include="Uplay-Protobufs" Version="140.0.10857" />
 		<PackageReference Include="ZstdNet" Version="1.4.5" />

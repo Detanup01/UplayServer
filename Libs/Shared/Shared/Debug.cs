@@ -1,35 +1,20 @@
 ﻿using System.Runtime.CompilerServices;
+using LLibrary;
 
 namespace SharedLib.Shared
 {
     public class Debug
     {
+        public static L logger = new(true);
+
         public static bool isDebug = true;
 
-        public static void PWDebug(object obj, [CallerMemberName] string memberName = "Shared")
+        public static void PWDebug(object obj, string label = "INFO", [CallerMemberName] string memberName = "Shared")
         {
             if (isDebug == true)
             {
-                Console.WriteLine(obj.ToString());
-                WriteDebug(obj.ToString(),"debug.txt", memberName);
-            }
-        }
-
-        public static void PWDebug(object obj, string logname, [CallerMemberName] string memberName = "Shared")
-        {
-            if (isDebug == true)
-            {
-                Console.WriteLine(obj.ToString());
-                WriteDebug(obj.ToString(), logname, memberName);
-            }
-        }
-
-        public static void PWDebugSafe(object obj, [CallerMemberName] string memberName = "Shared")
-        {
-            if (isDebug == true)
-            {
-                Console.WriteLine(obj.ToString());
-                WriteDebugAsnyc(obj.ToString(), "debug.txt", memberName);
+                Console.WriteLine($"[{label}] {obj}");
+                logger.Log(label, obj.ToString() + " | " + memberName);
             }
         }
 
@@ -41,27 +26,11 @@ namespace SharedLib.Shared
             }
         }
 
-        public static Task PrintDebugAsync(object msg)
+        public static void WriteDebug(string strLog, string label = "debug", [CallerMemberName] string memberName = "Shared")
         {
             if (isDebug == true)
             {
-                Console.WriteLine(msg.ToString());
-            }
-            return Task.CompletedTask;
-        }
-
-        public static void WriteDebug(string strLog, string logname = "debug.txt", [CallerMemberName] string memberName = "Shared")
-        {
-            if (isDebug == true)
-            {
-                File.AppendAllText(logname, memberName + " | " + strLog + "\n");
-            }
-        }
-        public static async void WriteDebugAsnyc(string strLog, string logname = "debug.txt", [CallerMemberName] string memberName = "Shared")
-        {
-            if (isDebug == true)
-            {
-                await File.AppendAllTextAsync(logname, memberName + " | " + strLog + "\n");
+                logger.Log(label, strLog + " | " + memberName);
             }
         }
 
@@ -72,11 +41,27 @@ namespace SharedLib.Shared
                 File.WriteAllBytes(logname, bytes);
             }
         }
+
         public static void WriteAllText(string text, string logname = "_debug.txt")
         {
             if (isDebug == true)
             {
                 File.WriteAllText(logname, text);
+            }
+        }
+
+        public static void AppendAllText(string text, string logname = "_debug.txt")
+        {
+            if (isDebug == true)
+            {
+                try
+                {
+                    File.AppendAllText(logname, text + "\n");
+                }
+                catch
+                {
+                    PWDebug(text, "ERROR-APPEND");
+                }
             }
         }
     }

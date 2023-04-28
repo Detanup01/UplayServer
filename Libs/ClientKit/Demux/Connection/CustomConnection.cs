@@ -100,7 +100,7 @@ namespace ClientKit.Demux.Connection
                 return default;
 
             var ds = Formatters.FormatData<V>(down.Push.Data.Data.ToByteArray());
-            Debug.WriteDebug(ds.ToString(), "custom.txt");
+            Debug.WriteDebug(ds.ToString(), "CustomConnection");
 
             if (ds != null)
                 return ds;

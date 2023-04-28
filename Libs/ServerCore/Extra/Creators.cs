@@ -2,10 +2,8 @@
 using ICSharpCode.SharpZipLib.Zip.Compression;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using SharedLib.Shared;
-using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using ZstdNet;
 
 namespace Core
 {
@@ -156,7 +154,7 @@ namespace Core
                 achievement.AchievementId = id;
                 achievement.TitleId = id;
                 achievement.DescriptionId = id;
-                achievement.DescriptionId = id;
+                achievement.ImageId = id;
                 achievements.Achievements.Add(achievement);
             }
 

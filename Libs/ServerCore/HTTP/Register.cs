@@ -36,6 +36,7 @@ namespace Core.HTTP
                     userId = id;
                     break;
                 }
+                Thread.Sleep(10);
             }
 
             Auth.AddUA(userId, toauth);

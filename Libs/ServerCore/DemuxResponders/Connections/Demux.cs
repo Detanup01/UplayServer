@@ -10,14 +10,17 @@ namespace Core.DemuxResponders
 {
     public static class Demux
     {
-        public static void DeleteClient(int ClientNumb)
+        public static void DeleteClient(Guid ClientNumb)
         {
             if (Globals.IdToUser.TryGetValue(ClientNumb, out var Id))
             {
                 Globals.IdToUser.Remove(ClientNumb);
                 Globals.UserToId.Remove(Id);
-                Auth.DeleteCurrent(Id);
-                Auth.DeleteDMX(Id);
+                Auth.DeleteCurrentWithUserId(Id);
+                Auth.DeleteDMXWithUserId(Id);
+                Download.ReqRSP.UserInits.Remove(ClientNumb);
+                Friends.ReqRSP.UserInits.Remove(ClientNumb);
+                Ownership.ReqRSP.UserInits.Remove(ClientNumb);
             }
         }
 
@@ -25,7 +28,7 @@ namespace Core.DemuxResponders
         public static class PushRSP
         {
             public static Downstream Downstream = null;
-            public static void Push(int ClientNumb, Push push)
+            public static void Push(Guid ClientNumb, Push push)
             {
                 File.AppendAllText($"logs/client_{ClientNumb}_push.log", push.ToString() + "\n");
                 if (push?.Data != null) { PushData(ClientNumb, push.Data); }
@@ -35,7 +38,7 @@ namespace Core.DemuxResponders
                 if (push?.ClientVersion != null) { ClientVersion(ClientNumb, push.ClientVersion); }
             }
 
-            public static void PushData(int ClientNumb, DataMessage data)
+            public static void PushData(Guid ClientNumb, DataMessage data)
             {
                 bool SendBackEndPush = false;
                 ByteString rspBytes = ByteString.Empty;
@@ -114,17 +117,17 @@ namespace Core.DemuxResponders
 
             }
 
-            public static void ProductEnd(int ClientNumb, ProductEndedPush productEnded)
+            public static void ProductEnd(Guid ClientNumb, ProductEndedPush productEnded)
             {
                 Console.WriteLine(productEnded.ProductId);
             }
 
-            public static void ProductStart(int ClientNumb, ProductStartedPush productStarted)
+            public static void ProductStart(Guid ClientNumb, ProductStartedPush productStarted)
             {
                 Console.WriteLine(productStarted.ProductId);
             }
 
-            public static void KeepAlive(int ClientNumb)
+            public static void KeepAlive(Guid ClientNumb)
             {
                 Downstream = new()
                 {
@@ -136,7 +139,7 @@ namespace Core.DemuxResponders
                 };
             }
 
-            public static void ClientVersion(int ClientNumb, ClientVersionPush clientVersion)
+            public static void ClientVersion(Guid ClientNumb, ClientVersionPush clientVersion)
             {
                 if (!Globals.AcceptVersions.Contains(clientVersion.Version))
                 {
@@ -161,7 +164,7 @@ namespace Core.DemuxResponders
         {
             public static Downstream Downstream = null;
             public static uint ReqId = 0;
-            public static void Requests(int ClientNumb, Req req)
+            public static void Requests(Guid ClientNumb, Req req)
             {
                 File.AppendAllText($"logs/client_{ClientNumb}_req.log", req.ToString() + "\n");
                 ReqId = req.RequestId;
@@ -192,7 +195,7 @@ namespace Core.DemuxResponders
                 };
             }
 
-            public static void Authenticate(int ClientNumb, AuthenticateReq authenticateReq)
+            public static void Authenticate(Guid ClientNumb, AuthenticateReq authenticateReq)
             {
                 bool IsSuccess = false;
                 bool IsBanned = false;
@@ -280,7 +283,7 @@ namespace Core.DemuxResponders
 
             }
 
-            public static void OpenConnection(int ClientNumb, OpenConnectionReq OpenConnection)
+            public static void OpenConnection(Guid ClientNumb, OpenConnectionReq OpenConnection)
             {
                 uint Id = 1;
                 bool IsSucces = false;
@@ -320,7 +323,7 @@ namespace Core.DemuxResponders
                 };
             }
 
-            public static void ServiceRequest(int ClientNumb, ServiceReq service)
+            public static void ServiceRequest(Guid ClientNumb, ServiceReq service)
             {
                 bool IsSucces = false;
                 ByteString returnData = ByteString.Empty;

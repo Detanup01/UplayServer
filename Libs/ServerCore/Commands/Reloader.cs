@@ -33,22 +33,19 @@ namespace Core.Commands
         public static void CleanServer(object obj)
         {
             Console.WriteLine("CleanServer Started");
-            DemuxServer.ConnectedIds.ForEach(id =>
+
+            DemuxServer.SendToAllClient(new Uplay.Demux.Downstream()
             {
-                DemuxServer.SendToClient(id,
-                    new()
+                Push = new()
+                {
+                    ConnectionClosed = new()
                     {
-                        Push = new()
-                        {
-                            ConnectionClosed = new()
-                            {
-                                ConnectionId = 0,
-                                ErrorCode = Uplay.Demux.ConnectionClosedPush.Types.Connection_ErrorCode.ConnectionForceQuit
-                            }
-                        }
+                        ConnectionId = 0,
+                        ErrorCode = Uplay.Demux.ConnectionClosedPush.Types.Connection_ErrorCode.ConnectionForceQuit
                     }
-                    );
+                }
             });
+
             Console.WriteLine("CleanServer Finished");
         }
 

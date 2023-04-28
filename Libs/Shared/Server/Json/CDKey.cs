@@ -17,7 +17,7 @@ namespace SharedLib.Server.Json
                 if (i == 10)
                 {
                     //10 time it generated shit, we make an error
-                    Debug.PWDebug("[GenerateKey] We tried generating keys 10 times and we still failed!");
+                    Debug.PWDebug("We tried generating keys 10 times and we still failed!", "[GenerateKey]");
                 }
 
                 gen = Generate();

@@ -9,7 +9,7 @@ namespace Core.DemuxResponders
         public class Up
         {
             public static Downstream Downstream = null;
-            public static void UpstreamConverter(int ClientNumb, ByteString bytes)
+            public static void UpstreamConverter(Guid ClientNumb, ByteString bytes)
             {
                 var UpstreamBytes = bytes.Skip(4).ToArray();
                 var Upsteam = Upstream.Parser.ParseFrom(UpstreamBytes);
@@ -33,8 +33,8 @@ namespace Core.DemuxResponders
             public static Downstream Downstream = null;
             public static uint ReqId = 0;
             public static bool IsIdDone = false;
-            public static Dictionary<int, bool> UserInits = new();
-            public static void Requests(int ClientNumb, Req req)
+            public static Dictionary<Guid, bool> UserInits = new();
+            public static void Requests(Guid ClientNumb, Req req)
             {
                 File.AppendAllText($"logs/client_{ClientNumb}_download_req.log", req.ToString() + "\n");
                 ReqId = req.RequestId;
@@ -43,7 +43,7 @@ namespace Core.DemuxResponders
                 if (req?.UrlReqCovid != null) { Url(ClientNumb, req.UrlReqCovid); }
                 IsIdDone = true;
             }
-            public static void Initialize(int ClientNumb, InitializeReq initialize)
+            public static void Initialize(Guid ClientNumb, InitializeReq initialize)
             {
                 bool TokenValid = false;
                 if (initialize.OwnershipToken != null)
@@ -80,7 +80,7 @@ namespace Core.DemuxResponders
                 };
             }
 
-            public static void Url(int ClientNumb, UrlReq url)
+            public static void Url(Guid ClientNumb, UrlReq url)
             {
                 List<UrlRsp.Types.UrlResponse> resp = new();
                 UrlRsp.Types.UrlResponse urlresp = new()

@@ -93,7 +93,7 @@ namespace ClientKit.Demux.Connection
                 return null;
 
             var ds = Formatters.FormatData<Downstream>(down.Push.Data.Data.ToByteArray());
-            Debug.WriteDebug(ds.ToString(), "pcbang.txt");
+            Debug.WriteDebug(ds.ToString(), "PCBangConnection");
 
             if (ds != null || ds?.Response != null)
                 return ds.Response;

@@ -8,7 +8,7 @@ namespace Core.DemuxResponders
         public class Up
         {
             public static Downstream Downstream = null;
-            public static void UpstreamConverter(int ClientNumb, ByteString bytes)
+            public static void UpstreamConverter(Guid ClientNumb, ByteString bytes)
             {
                 var UpstreamBytes = bytes.Skip(4).ToArray();
                 var Upsteam = Upstream.Parser.ParseFrom(UpstreamBytes);
@@ -33,7 +33,7 @@ namespace Core.DemuxResponders
             public static Downstream Downstream = null;
             public static uint ReqId = 0;
             public static bool IsIdDone = false;
-            public static void Requests(int ClientNumb, Req req)
+            public static void Requests(Guid ClientNumb, Req req)
             {
                 ReqId = req.RequestId;
                 if (req?.InitializeReq != null) { Init(req.InitializeReq); }

@@ -97,7 +97,7 @@ namespace ClientKit.Demux.Connection
                 return null;
 
             var ds = Formatters.FormatData<Downstream>(down.Push.Data.Data.ToByteArray());
-            Debug.WriteDebug(ds.ToString(), "download.txt");
+            Debug.WriteDebug(ds.ToString(), "DownloadConnection");
 
             if (ds != null || ds?.Response != null)
                 return ds.Response;

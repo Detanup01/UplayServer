@@ -93,11 +93,10 @@ namespace Core.DemuxResponders
         public class Up
         {
             public static Downstream Downstream = null;
-            public static void UpstreamConverter(int ClientNumb, ByteString bytes)
+            public static void UpstreamConverter(Guid ClientNumb, ByteString bytes)
             {
                 var UpstreamBytes = bytes.Skip(4).ToArray();
                 var Upsteam = Upstream.Parser.ParseFrom(UpstreamBytes);
-                Utils.WriteFile(Upsteam.ToString(), $"logs/client_{ClientNumb}_party_req.log");
                 if (Upsteam != null)
                 {
                     if (Upsteam.Request != null)
@@ -107,7 +106,6 @@ namespace Core.DemuxResponders
                         {
 
                         }
-                        Utils.WriteFile(Upsteam.ToString(), $"logs/client_{ClientNumb}_party_req.log");
                         Downstream = ReqRSP.Downstream;
                     }
                 }
@@ -119,8 +117,8 @@ namespace Core.DemuxResponders
             public static Downstream Downstream = null;
             public static uint ReqId = 0;
             public static bool IsIdDone = false;
-            public static Dictionary<int, bool> UserInits = new();
-            public static void Requests(int ClientNumb, Req req)
+            public static Dictionary<Guid, bool> UserInits = new();
+            public static void Requests(Guid ClientNumb, Req req)
             {
                 File.AppendAllText($"logs/client_{ClientNumb}_ownership_req.log", req.ToString() + "\n");
                 ReqId = req.RequestId;
@@ -150,7 +148,7 @@ namespace Core.DemuxResponders
                 IsIdDone = true;
             }
 
-            public static void x(int ClientNumb, ClaimKeystorageKeyReq claimKeystorageKeyReq)
+            public static void x(Guid ClientNumb, ClaimKeystorageKeyReq claimKeystorageKeyReq)
             {
                 if (UserInits[ClientNumb])
                 {
@@ -173,7 +171,7 @@ namespace Core.DemuxResponders
 
 
             #region Functions
-            public static void Initialize(int ClientNumb, InitializeReq Initializer)
+            public static void Initialize(Guid ClientNumb, InitializeReq Initializer)
             {
                 bool IsSuccess = false;
                 var userID = Globals.IdToUser[ClientNumb];
@@ -238,7 +236,7 @@ namespace Core.DemuxResponders
                 }
             }
 
-            public static void OwnershipToken(int ClientNumb, OwnershipTokenReq OwnershipToken)
+            public static void OwnershipToken(Guid ClientNumb, OwnershipTokenReq OwnershipToken)
             {
                 bool IsSuccess = false;
                 ulong Exp = 0;
@@ -277,7 +275,7 @@ namespace Core.DemuxResponders
                 };
             }
 
-            public static void SignOwnership(int ClientNumb, SignOwnershipReq SignOwnership)
+            public static void SignOwnership(Guid ClientNumb, SignOwnershipReq SignOwnership)
             {
                 bool IsSuccess = false;
                 ByteString signature = ByteString.Empty;
@@ -318,7 +316,7 @@ namespace Core.DemuxResponders
                 };
             }
 
-            public static void DeprecatedGetLatestManifests(int ClientNumb, DeprecatedGetLatestManifestsReq DeprecatedGetLatestManifests)
+            public static void DeprecatedGetLatestManifests(Guid ClientNumb, DeprecatedGetLatestManifestsReq DeprecatedGetLatestManifests)
             {
                 Downstream = new()
                 {
@@ -364,7 +362,7 @@ namespace Core.DemuxResponders
                 }
             }
 
-            public static void GetBatchDownloadUrls(int ClientNumb, GetBatchDownloadUrlsReq GetBatchDownloadUrls)
+            public static void GetBatchDownloadUrls(Guid ClientNumb, GetBatchDownloadUrlsReq GetBatchDownloadUrls)
             {
                 Downstream = new()
                 {
@@ -402,7 +400,7 @@ namespace Core.DemuxResponders
                 }
             }
 
-            public static void GetUplayPcTicket(int ClientNumb, GetUplayPCTicketReq getUplayPCTicketReq)
+            public static void GetUplayPcTicket(Guid ClientNumb, GetUplayPCTicketReq getUplayPCTicketReq)
             {
                 bool isSucces = false;
                 string ticket = "";
@@ -435,7 +433,7 @@ namespace Core.DemuxResponders
                 };
             }
 
-            public static void RegisterTemporaryOwnership(int ClientNumb, RegisterTemporaryOwnershipReq registerTemporaryOwnershipReq)
+            public static void RegisterTemporaryOwnership(Guid ClientNumb, RegisterTemporaryOwnershipReq registerTemporaryOwnershipReq)
             {
                 bool IsSuccess = false;
                 List<uint> prodids = new();
@@ -460,7 +458,7 @@ namespace Core.DemuxResponders
                 };
             }
 
-            public static void UnlockProductBranch(int ClientNumb, UnlockProductBranchReq unlockProductBranchReq)
+            public static void UnlockProductBranch(Guid ClientNumb, UnlockProductBranchReq unlockProductBranchReq)
             {
                 var pid = unlockProductBranchReq.Branch.ProductId;
                 var pass = unlockProductBranchReq.Branch.Password;
@@ -499,7 +497,7 @@ namespace Core.DemuxResponders
                 };
             }
 
-            public static void SwitchProductBranch(int ClientNumb, SwitchProductBranchReq switchProductBranchReq)
+            public static void SwitchProductBranch(Guid ClientNumb, SwitchProductBranchReq switchProductBranchReq)
             {
                 OwnedGames ownedGames = new()
                 {
@@ -557,7 +555,7 @@ namespace Core.DemuxResponders
                 };
             }
 
-            public static void GetProductConfig(int ClientNumb, GetProductConfigReq getProductConfigReq)
+            public static void GetProductConfig(Guid ClientNumb, GetProductConfigReq getProductConfigReq)
             {
                 GetProductConfigRsp.Types.Result result = GetProductConfigRsp.Types.Result.InternalServerError;
                 string Conf = string.Empty;
@@ -599,38 +597,38 @@ namespace Core.DemuxResponders
 
         public class Pusher
         {
-            public static void Pushes(int ClientNumb, Push push)
+            public static void Pushes(Guid ClientNumb, Push push)
             {
                 if (push?.OwnedGamePush != null) { OwnedGamePusher(ClientNumb, push.OwnedGamePush); }
                 if (push?.UplayCoreGameInitializedPush != null) { UplayCoreGameInitializedPusher(ClientNumb, push.UplayCoreGameInitializedPush); }
                 if (push?.SubscriptionPush != null) { SubscriptionPusher(ClientNumb, push.SubscriptionPush); }
             }
 
-            public static void OwnedGamePusher(int ClientNumb, OwnedGamePush OwnedGamePusher)
+            public static void OwnedGamePusher(Guid ClientNumb, OwnedGamePush OwnedGamePusher)
             {
                 string username = Globals.IdToUser[ClientNumb];
                 uint userCon = Auth.GetConIdByUserAndName(username, Name);
                 var bstr = OwnedGamePusher.ToByteString();
 
-                DemuxServer.SendToClientBSTR(ClientNumb, bstr, userCon);
+                DemuxServer.SendToClient(ClientNumb, bstr, userCon);
             }
 
-            public static void UplayCoreGameInitializedPusher(int ClientNumb, UplayCoreGameInitializedPush UplayCoreGameInitializedPusher)
+            public static void UplayCoreGameInitializedPusher(Guid ClientNumb, UplayCoreGameInitializedPush UplayCoreGameInitializedPusher)
             {
                 string username = Globals.IdToUser[ClientNumb];
                 uint userCon = Auth.GetConIdByUserAndName(username, Name);
                 var bstr = UplayCoreGameInitializedPusher.ToByteString();
 
-                DemuxServer.SendToClientBSTR(ClientNumb, bstr, userCon);
+                DemuxServer.SendToClient(ClientNumb, bstr, userCon);
             }
 
-            public static void SubscriptionPusher(int ClientNumb, SubscriptionPush SubscriptionPusher)
+            public static void SubscriptionPusher(Guid ClientNumb, SubscriptionPush SubscriptionPusher)
             {
                 string username = Globals.IdToUser[ClientNumb];
                 uint userCon = Auth.GetConIdByUserAndName(username, Name);
                 var bstr = SubscriptionPusher.ToByteString();
 
-                DemuxServer.SendToClientBSTR(ClientNumb, bstr, userCon);
+                DemuxServer.SendToClient(ClientNumb, bstr, userCon);
             }
         }
     }

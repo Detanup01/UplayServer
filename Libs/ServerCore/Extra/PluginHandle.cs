@@ -36,23 +36,15 @@ namespace Core.Extra
             }
         }
 
-        public static void DemuxDataReceived(int ClientNumb, SslStream sslStream, byte[] receivedData)
+        public static void DemuxDataReceived(Guid ClientNumb,byte[] receivedData)
         {
             foreach (var plugin in pluginsList)
             {
-                plugin.Value.Plugin.DemuxDataReceived(ClientNumb, sslStream, receivedData);
+                plugin.Value.Plugin.DemuxDataReceived(ClientNumb, receivedData);
             }
         }
 
-        public static void DemuxParseInitFinish(DemuxResponders.DemuxServer demux)
-        {
-            foreach (var plugin in pluginsList)
-            {
-                plugin.Value.Plugin.DemuxParseInitFinish(demux);
-            }
-        }
-
-        public static void DemuxDataReceivedCustom(int ClientNumb, byte[] receivedData, string Protoname)
+        public static void DemuxDataReceivedCustom(Guid ClientNumb, byte[] receivedData, string Protoname)
         {
             foreach (var plugin in pluginsList)
             {

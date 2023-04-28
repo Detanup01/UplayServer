@@ -83,9 +83,6 @@ namespace Core.HTTP
 
             }
 
-
-
-
             return result;
         }
     }

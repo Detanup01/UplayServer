@@ -174,6 +174,7 @@ namespace Downloader
                     {
                         var spList = splittedList[listcounter];
                         var dlbytes = ByteDownloader.DownloadBytes(file.Name, spList.ToList(), downloadConnection);
+                        Console.WriteLine(spList.Count + " =?= " + dlbytes.Count);
                         for (int i = 0; i < spList.Count; i++)
                         {
                             var sp = spList[i];
@@ -200,6 +201,7 @@ namespace Downloader
                 else
                 {
                     var dlbytes = ByteDownloader.DownloadBytes(file.Name, file.SliceList.ToList(), downloadConnection);
+                    Console.WriteLine(file.SliceList.ToList().Count + " =?= " + dlbytes.Count);
                     for (int i = 0; i < file.SliceList.ToList().Count; i++)
                     {
                         var sp = file.SliceList.ToList()[i];
@@ -228,6 +230,7 @@ namespace Downloader
                     {
                         var spList = splittedList[listcounter];
                         var dlbytes = ByteDownloader.DownloadBytes(file, spList.ToList(), downloadConnection);
+                        Console.WriteLine(spList.ToList().Count + " =?= " + dlbytes.Count);
                         for (int i = 0; i < spList.ToList().Count; i++)
                         {
                             var sp = spList.ToList()[i];
@@ -256,6 +259,7 @@ namespace Downloader
                 else
                 {
                     var dlbytes = ByteDownloader.DownloadBytes(file, file.Slices.ToList(), downloadConnection);
+                    Console.WriteLine(file.Slices.Count + " =?= " + dlbytes.Count);
                     for (int i = 0; i < file.Slices.ToList().Count; i++)
                     {
                         var sp = file.Slices.ToList()[i];
