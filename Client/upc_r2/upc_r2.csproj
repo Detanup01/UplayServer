@@ -7,6 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Structs.cs.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Structs.cs.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DNNE" Version="2.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Uplay-Protobufs" Version="139.2.10843" />

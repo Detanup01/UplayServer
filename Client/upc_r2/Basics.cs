@@ -1,19 +1,11 @@
 ﻿using Google.Protobuf;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace upc_r2
 {
     public class Basics
     {
-        [UnmanagedCallersOnly(EntryPoint = "Test", CallConvs = new[] { typeof(CallConvCdecl) })]
-        public static int TEST()
-        {
-            SendReq(new Uplay.Uplaydll.Req() { LaunchAppReq = new() { ProductId = 0 } }, out var rsp);
-            return 0;
-        }
-
         public static void Log(string actionName, object[] parameters)
         {
             File.AppendAllText("upc_r2.log", $"{Process.GetCurrentProcess().Id} | {actionName} {string.Join(", ", parameters)}\n");
@@ -78,6 +70,44 @@ namespace upc_r2
                 return data.Base.RspLog;
             }
             else return false;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct BasicList
+        {
+            [MarshalAs(UnmanagedType.I4)]
+            public int count;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr list;
+        }
+
+        public static unsafe IntPtr GetListPtr<T>(List<T> values) where T : struct
+        {
+            IntPtr main_ptr = Marshal.AllocHGlobal(sizeof(IntPtr) * values.Count);
+            int indx = 0;
+            foreach (var item in values)
+            {
+                IntPtr iptr = Marshal.AllocHGlobal(sizeof(T));
+                Marshal.StructureToPtr(item, iptr, false);
+                Marshal.WriteIntPtr(main_ptr, indx * sizeof(IntPtr), iptr);
+                indx++;
+            }
+            return main_ptr;
+        }
+
+        public static unsafe void FreeListPtr(int count, IntPtr listPointer)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                var ptr = Marshal.ReadIntPtr(listPointer, i * sizeof(IntPtr));
+                Marshal.FreeHGlobal(ptr);
+            }
+            Marshal.FreeHGlobal(listPointer);
+        }
+
+        public static T IntPtrToStruct<T>(IntPtr ptr) where T : struct
+        {
+            return (T)((object)Marshal.PtrToStructure(ptr, typeof(T)));
         }
     }
 }

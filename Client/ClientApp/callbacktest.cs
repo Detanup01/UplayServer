@@ -1,4 +1,6 @@
-﻿using System.Runtime.InteropServices;
+﻿using Newtonsoft.Json;
+using System;
+using System.Runtime.InteropServices;
 
 namespace Client
 {
@@ -99,7 +101,36 @@ namespace Client
         [DllImport("upc_r2_loader", CallingConvention = CallingConvention.Cdecl, EntryPoint = "usecontext")]
         public static extern int usecontext(IntPtr context, IntPtr indata, IntPtr indataplus);
 
+        [DllImport("dummydll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ProductListGet")]
+        public static extern int ProductListGet(ref IntPtr outProductList);
+
+        [DllImport("dummydll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ProductListFree")]
+        public static extern int ProductListFree(IntPtr outProductList);
+
         #endregion
+        #region struct
+        [StructLayout(LayoutKind.Sequential)]
+        public struct test
+        {
+            [MarshalAs(UnmanagedType.LPUTF8Str)]
+            public string nameUtf8;
+        }
+        #endregion
+        public static T IntPtrToStruct<T>(IntPtr ptr) where T : struct
+        {
+            return (T)((object)Marshal.PtrToStructure(ptr, typeof(T)));
+        }
+        public static unsafe void getlist()
+        {
+            IntPtr ptrProductList = IntPtr.Zero;
+            var back = ProductListGet(ref ptrProductList);
+            Console.WriteLine("back: " + back);
+            Console.WriteLine(ptrProductList);
+            test upc_ProductList = IntPtrToStruct<test>(ptrProductList);
+            Console.WriteLine(JsonConvert.SerializeObject(upc_ProductList));
+            ProductListFree(ptrProductList);
+
+        }
 
         public static unsafe void Use(IntPtr context)
         {

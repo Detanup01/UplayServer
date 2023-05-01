@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ClientKit\ClientKit.csproj" />
+    <ProjectReference Include="..\..\Libs\ClientKit\ClientKit.csproj" />
   </ItemGroup>
 
 </Project>

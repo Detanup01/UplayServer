@@ -1,12 +1,37 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using static upc_r2.Basics;
 
-namespace upc_r2
+namespace upc_r2.Exports
 {
-    internal class IntPtrs
+    internal class Other
     {
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+        public static int UPC_CPUScoreGet(IntPtr inContext, IntPtr outScore)
+        {
+            Basics.Log(nameof(UPC_CPUScoreGet), new object[] { inContext, outScore });
+            Marshal.WriteInt32(outScore, 0x1000);
+            return 0;
+        }
+
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+        public static int UPC_GPUScoreGet(IntPtr inContext, IntPtr outScore, IntPtr outConfidenceLevel)
+        {
+            Basics.Log(nameof(UPC_CPUScoreGet), new object[] { inContext, outScore, outConfidenceLevel });
+            Marshal.WriteInt32(outScore, 0x1000);
+            Marshal.WriteInt64(outConfidenceLevel, (long)0.1f);
+            return 0;
+        }
+
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+        public static int UPC_ApplicationIdGet(IntPtr inContext, IntPtr outAppId)
+        {
+            Basics.Log(nameof(UPC_ApplicationIdGet), new object[] { inContext });
+            var str = Marshal.StringToCoTaskMemAnsi(Main.GlobalContext.Config.AppId.ToString());
+            Marshal.WriteIntPtr(outAppId, str);
+            return 0;
+        }
+
         [UnmanagedCallersOnly(EntryPoint = "UPC_ErrorToString", CallConvs = new[] { typeof(CallConvCdecl) })]
         public static IntPtr UPC_ErrorToString(int error)
         {
