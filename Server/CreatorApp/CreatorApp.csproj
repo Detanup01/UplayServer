@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ServerCore" Version="1.0.0" />
+    <ProjectReference Include="..\..\Libs\ServerCore\ServerCore.csproj" />
   </ItemGroup>
 
 </Project>

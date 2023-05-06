@@ -13,8 +13,4 @@
     <PackageReference Include="ZstdNet" Version="1.4.5" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Patch\" />
-  </ItemGroup>
-
 </Project>

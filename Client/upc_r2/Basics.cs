@@ -1,24 +1,30 @@
 ﻿using Google.Protobuf;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace upc_r2
 {
     public class Basics
     {
+        public static string GetCuPath()
+        {
+            return Assembly.GetExecutingAssembly().Location;
+        }
+
         public static void Log(string actionName, object[] parameters)
         {
-            File.AppendAllText("upc_r2.log", $"{Process.GetCurrentProcess().Id} | {actionName} {string.Join(", ", parameters)}\n");
+            File.AppendAllText(GetCuPath() + "\\upc_r2.log", $"{Process.GetCurrentProcess().Id} | {actionName} {string.Join(", ", parameters)}\n");
         }
 
         public static void LogReq(Uplay.Uplaydll.Req req)
         {
-            File.AppendAllText("upc_r2_req.log", $"{req.ToString()}\n");
+            File.AppendAllText(GetCuPath() + "\\upc_r2_req.log", $"{req.ToString()}\n");
         }
 
         public static void LogRsp(Uplay.Uplaydll.Rsp rsp)
         {
-            File.AppendAllText("upc_r2_rsp.log", $"{rsp.ToString()}\n");
+            File.AppendAllText(GetCuPath() + "\\upc_r2_rsp.log", $"{rsp.ToString()}\n");
         }
 
         public static uint ReqId = uint.MinValue;
@@ -54,7 +60,7 @@ namespace upc_r2
 
         public static bool IfReqLog()
         {
-            var data = Newtonsoft.Json.JsonConvert.DeserializeObject<json.Root>(File.ReadAllText("upc.json"));
+            var data = Newtonsoft.Json.JsonConvert.DeserializeObject<json.Root>(File.ReadAllText(GetCuPath() + "\\upc.json"));
             if (data != null && data.Base.ReqLog)
             {
                 return data.Base.ReqLog;
@@ -64,7 +70,7 @@ namespace upc_r2
 
         public static bool IfRspLog()
         {
-            var data = Newtonsoft.Json.JsonConvert.DeserializeObject<json.Root>(File.ReadAllText("upc.json"));
+            var data = Newtonsoft.Json.JsonConvert.DeserializeObject<json.Root>(File.ReadAllText(GetCuPath() + "\\upc.json"));
             if (data != null && data.Base.RspLog)
             {
                 return data.Base.RspLog;

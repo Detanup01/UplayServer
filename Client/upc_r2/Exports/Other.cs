@@ -87,7 +87,7 @@ namespace upc_r2.Exports
             }
 
             var ret = Marshal.StringToHGlobalAnsi(switch_ret);
-            Log(nameof(UPC_ErrorToString), new object[] { error });
+            Basics.Log(nameof(UPC_ErrorToString), new object[] { error });
             return ret;
         }
     }

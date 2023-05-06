@@ -1,10 +1,10 @@
-All the functions and parameters are inside uplay_r2(64).dll
-I used IDA to reverse those.
-
-unkown:
-IDA didnt show any specific things for this
-UPC_LaunchApp MUST RETURN 1 to start.
-
+# All the functions and parameters are inside uplay_r2(64).dll
+# I used IDA to reverse those.
+#
+# unkown:
+# IDA didnt show any specific things for this
+# UPC_LaunchApp MUST RETURN 1 to start.
+#
 UPC_AchievementImageFree(IntPtr inContext, IntPtr inImageRGBA)
 UPC_AchievementImageGet(IntPtr inContext, uint inId, IntPtr outImageRGBA, IntPtr inCallback, IntPtr inCallbackData)
 UPC_AchievementListFree(IntPtr inContext, IntPtr inAchievementList)
@@ -52,7 +52,7 @@ UPC_MultiplayerSessionClear_Extended(IntPtr inContext, IntPtr unknown1, IntPtr u
 UPC_MultiplayerSessionFree(IntPtr inContext, IntPtr inMultiplayerSession)
 UPC_MultiplayerSessionGet(IntPtr inContext, IntPtr outMultiplayerSession)
 UPC_MultiplayerSessionSet(IntPtr inContext, IntPtr inMultiplayerSession)
-UPC_MultiplayerSessionSet_Extended(IntPtr inContext, IntPtr inMultiplayerSession,IntPtr unknown1, IntPtr unknown2)
+UPC_MultiplayerSessionSet_Extended(IntPtr inContext, IntPtr inMultiplayerSession, IntPtr unknown1, IntPtr unknown2)
 UPC_NameGet(IntPtr inContext)
 UPC_NameGet_Extended(IntPtr inContext, IntPtr userName)
 UPC_OverlayBrowserUrlShow(IntPtr inContext, IntPtr inBrowserUrlUtf8, IntPtr inOptCallback, IntPtr inOptCallbackData)
@@ -106,6 +106,4 @@ UPC_Update(IntPtr inContext)
 UPC_UserFree(IntPtr inContext, IntPtr inUser)
 UPC_UserGet(IntPtr inContext, IntPtr inOptUserIdUtf8, IntPtr outUser, IntPtr inCallback, IntPtr inCallbackData)
 UPC_UserPlayedWithAdd(IntPtr inContext, IntPtr inUserIdUtf8List, uint inListLength)
-UPC_UserPlayedWithAdd_Extended((IntPtr inContext, IntPtr inUserIdUtf8List, uint inListLength, IntPtr unknown1, IntPtr unknown2)
-
-
+UPC_UserPlayedWithAdd_Extended(IntPtr inContext, IntPtr inUserIdUtf8List, uint inListLength, IntPtr unknown1, IntPtr unknown2)

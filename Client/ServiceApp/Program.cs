@@ -1,4 +1,5 @@
 ﻿using SharedLib.Shared;
+using System.Runtime.InteropServices;
 
 namespace ServiceApp
 {
@@ -46,19 +47,22 @@ namespace ServiceApp
                 if (Directory.Exists("SendUpstream"))
                     Directory.Delete("SendUpstream", true);
 
-                if (File.Exists("debug.txt"))
-                    File.Delete("debug.txt");
+                if (Directory.Exists("logs"))
+                    Directory.Delete("logs", true);
 
-                if (File.Exists("DemuxSocket.log"))
-                    File.Delete("DemuxSocket.log");
+                if (File.Exists("UbiServices_Rest.txt"))
+                    File.Delete("UbiServices_Rest.txt");
 
-                if (File.Exists("Receive.txt"))
-                    File.Delete("Receive.txt");
+            }
+            if (ParameterLib.HasParameter(args, "test"))
+            {
+                UPC_Init(0,0);
 
-                if (File.Exists("ubiservice_rest.txt"))
-                    File.Delete("ubiservice_rest.txt");
 
             }
         }
+
+        [DllImport("upc_r2_loader64", CallingConvention = CallingConvention.Cdecl, EntryPoint = "UPC_Init")]
+        public static extern int UPC_Init(uint version, int appID);
     }
 }

@@ -1,8 +1,6 @@
-﻿using Core.DemuxResponders;
-using Core.Extra.Interfaces;
+﻿using Core.Extra.Interfaces;
 using NetCoreServer;
 using System.Composition;
-using System.Net.Security;
 
 namespace Plugin
 {
@@ -35,16 +33,12 @@ namespace Plugin
 
         }
 
-        public void DemuxParseInitFinish(DemuxServer demux)
+        public void DemuxDataReceived(Guid ClientNumb, byte[] receivedData)
         {
 
         }
 
-        public void DemuxDataReceived(int ClientNumb, SslStream sslStream, byte[] receivedData)
-        {
-
-        }
-        public void DemuxDataReceivedCustom(int ClientNumb, byte[] receivedData, string Protoname)
+        public void DemuxDataReceivedCustom(Guid ClientNumb, byte[] receivedData, string Protoname)
         {
 
         }
@@ -61,5 +55,7 @@ namespace Plugin
         {
             Console.WriteLine("Goodbye!");
         }
+
+
     }
 }

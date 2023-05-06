@@ -96,7 +96,8 @@ namespace Client
         [DllImport("upc_r2_loader", CallingConvention = CallingConvention.Cdecl, EntryPoint = "updatecontext")]
         public static extern int updatecontext(IntPtr context);
 
-
+        [DllImport("upc_r2_loader", CallingConvention = CallingConvention.Cdecl, EntryPoint = "UPC_Init")]
+        public static extern int UPC_Init(uint version, int appID);
 
         [DllImport("upc_r2_loader", CallingConvention = CallingConvention.Cdecl, EntryPoint = "usecontext")]
         public static extern int usecontext(IntPtr context, IntPtr indata, IntPtr indataplus);

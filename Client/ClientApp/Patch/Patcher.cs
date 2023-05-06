@@ -18,8 +18,6 @@ namespace Client.Patch
                 var client = new RestClient(baseurl + "/files.txt");
                 var request = new RestRequest();
                 var bytes = ClientKit.UbiServices.Rest.GetBytes(client, request);
-                File.WriteAllBytes($"patch_{latest}.txt", bytes);
-
                 var patchdata = Encoding.UTF8.GetString(bytes);
                 DoUpdate(baseurl, patchdata);
             }     
@@ -60,7 +58,6 @@ namespace Client.Patch
             var dfile = Path.GetDirectoryName(filename);
             if (dfile.Trim() != string.Empty)
             {
-                Console.WriteLine("|:" + dfile + ":|");
                 Directory.CreateDirectory("Patch" + Path.DirectorySeparatorChar + dfile);
             }
 

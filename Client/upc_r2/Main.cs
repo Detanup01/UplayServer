@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using static upc_r2.Enums;
 
@@ -126,6 +127,17 @@ namespace upc_r2
         {
             GlobalContext.Config.AppId = (uint)appid;
             Basics.Log(nameof(UPC_Init), new object[] { inVersion, appid });
+            Basics.SendReq(new Uplay.Uplaydll.Req()
+            { 
+                InitProcessReq = new()
+                { 
+                    ApiVersion = inVersion,
+                    UplayEnvIsSet = false,
+                    UplayId = (uint)appid,
+                    ProcessId = (uint)Process.GetCurrentProcess().Id
+                }
+            }, out var rsp);
+            Console.WriteLine(rsp);
             return 0;
         }
 

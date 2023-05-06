@@ -34,6 +34,23 @@ namespace SharedLib.Shared
             }
             inputStream.Close();
         }
+
+        public static string GetManifestSignature(string FileInput)
+        {
+            var inputStream = File.OpenRead(FileInput);
+            using (var reader = new BinaryReader(inputStream, Encoding.UTF8, false))
+            {
+                var compression = reader.ReadInt32();
+                var sign_lenght = reader.ReadInt32();
+                var manifest_length = reader.ReadInt32();
+                var signed = reader.ReadBytes(sign_lenght);
+                var byteString = Encoding.UTF8.GetString(signed);
+                inputStream.Close();
+                return byteString;
+            }
+            
+        }
+
         public static Uplay.Download.Manifest ParseManifestFile(string FileInput)
         {
             var result = ParseManifest(File.OpenRead(FileInput));

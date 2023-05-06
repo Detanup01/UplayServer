@@ -1,7 +1,4 @@
-﻿using Google.Protobuf;
-using static SharedLib.Shared.Formatters;
-
-namespace Creator
+﻿namespace Creator
 {
     internal class ToManifest
     {
