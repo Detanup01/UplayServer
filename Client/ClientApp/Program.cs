@@ -34,7 +34,8 @@ namespace Client
             */
             pipeServer = new PipeServer();
             pipeServer.Readed += PipeServer_Readed;
-            new Thread(pipeServer.Start).Start();
+            var pipeThread = new Thread(pipeServer.Start);
+            pipeThread.Start();
             var reg = V3.Register("testuser", "testuser", "testuser");
             if (reg != null)
             {
@@ -93,6 +94,7 @@ namespace Client
                 Console.ReadLine();
                 pipeServer.Readed -= PipeServer_Readed;
                 pipeServer.Stop();
+                pipeThread.Join();
                 Socket.Close();
             }
 
@@ -153,14 +155,5 @@ namespace Client
             var rsp = Socket.SendUpstream(req);
             pipeServer.Send(Formatters.FormatUpstream(rsp.ToByteArray()));
         }
-
-        /*
-         
-                     Console.WriteLine("Hello, World!"); 
-            new Thread(VTest).Start();
-            
-            Console.WriteLine("Bye, World!");
-         
-         */
     }
 }

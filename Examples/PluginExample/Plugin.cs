@@ -11,13 +11,6 @@ namespace Plugin
 
         public string Name => "Plugin Example";
 
-        SharedLib.Server.Json.Plugin IPlugin.PluginExtra => new()
-        {
-            Mode = "Test",
-            PluginType = SharedLib.Server.Json.Plugin.pluginType.Extra,
-            Version = "0.0.0.1"
-        };
-
         public Plugin()
         {
             Console.WriteLine("Welcome from " + Name + " !");
@@ -33,22 +26,24 @@ namespace Plugin
 
         }
 
-        public void DemuxDataReceived(Guid ClientNumb, byte[] receivedData)
+        public bool DemuxDataReceived(Guid ClientNumb, byte[] receivedData)
         {
-
+            return false;
         }
 
-        public void DemuxDataReceivedCustom(Guid ClientNumb, byte[] receivedData, string Protoname)
+        public bool DemuxDataReceivedCustom(Guid ClientNumb, byte[] receivedData, string Protoname)
         {
-
+            return false;
         }
 
-        public void HttpRequest(HttpRequest request, HttpsSession session)
+        public bool HttpRequest(HttpRequest request, HttpsSession session)
         {
             if (request.Url.Contains("ok"))
             {
                 session.SendResponseAsync(session.Response.MakeGetResponse("Success!"));
+                return true;
             }
+            return false;
         }
 
         public void ShutDown()

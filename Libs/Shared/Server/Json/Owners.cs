@@ -139,14 +139,10 @@ namespace SharedLib.Server.Json
                 OwnedGames_ = { }
             };
             var owship = GetOwnershipTXT(UserId);
-
-            Console.WriteLine("[GetOwnershipGames] owcount: " + owship.OwnedGames.Count());
-            Console.WriteLine("[GetOwnershipGames] owcache: " + owship);
             var owcount = owship.OwnedGames.Count();
             for (int owhelper = 0; owhelper < owcount; owhelper++)
             {
                 var og = owship.OwnedGames[owhelper];
-                Console.WriteLine("[GetOwnershipGames] og: " + owhelper + " string: "+ og.ToString());
                 Uplay.Ownership.OwnedGame ownedgame = new()
                 {
                     ProductId = og.ProductId,

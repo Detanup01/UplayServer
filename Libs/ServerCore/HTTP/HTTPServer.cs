@@ -61,8 +61,10 @@ namespace Core
 
             protected override void OnReceivedRequest(HttpRequest request)
             {
-                Extra.PluginHandle.PluginsHttpRequest(request, this);
+                var ret =  Extra.PluginHandle.PluginsHttpRequest(request, this);
                 _request = request;
+                if (ret.Contains(true))
+                    return;
                 // Show HTTP request content
                 Dictionary<string, string> Headers = new();
                 for (int i = 0; i < request.Headers; i++)

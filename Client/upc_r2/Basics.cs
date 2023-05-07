@@ -9,7 +9,7 @@ namespace upc_r2
     {
         public static string GetCuPath()
         {
-            return Assembly.GetExecutingAssembly().Location;
+            return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         }
 
         public static void Log(string actionName, object[] parameters)

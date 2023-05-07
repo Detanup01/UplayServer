@@ -5,7 +5,7 @@ namespace ClientApp.PipeConnection
 {
     public class PipeServer
     {
-        bool Cancel;
+        volatile bool Cancel;
         NamedPipeServerStream pipeServer;
         bool connectedOrWaiting;
         public event EventHandler<byte[]> Readed;

@@ -1,4 +1,5 @@
-﻿using SharedLib.Server.Json;
+﻿using Core.DemuxResponders;
+using SharedLib.Server.Json;
 using SharedLib.Shared;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
@@ -59,6 +60,19 @@ namespace Core
 
             X509Certificate2 cert = new(File.ReadAllBytes($"cert/{certname}.pfx"), password);
             return cert;
+        }
+
+        public static (string protoname, byte[] buffer) GetCustomProto(Guid Id, byte[] buffer)
+        {
+            Debug.PWDebug($"{Id}: Custom Request Received!", "DMXSERVER");
+            int ReqNameLenght = int.Parse(Encoding.UTF8.GetString(new byte[] { buffer[1] }));
+            var bytename = buffer.Skip(2).Take(ReqNameLenght).ToArray();
+            string protoname = Encoding.UTF8.GetString(bytename);
+            Debug.PrintDebug($"[DMXSERVER] Request Name: {protoname}");
+            var bytes = buffer.Skip(2 + ReqNameLenght).ToArray();
+            return (protoname, bytes);
+
+
         }
     }
 }

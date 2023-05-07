@@ -184,7 +184,9 @@ namespace Core.DemuxResponders
                 Debug.PWDebug($"SSL session with Id {Id} received!");
                 var buf = buffer.Take((int)size);
                 buffer = buf.Skip(4).ToArray();
-                PluginHandle.DemuxDataReceived(Id, buffer);
+                var ret = PluginHandle.DemuxDataReceived(Id, buffer);
+                if (ret.Contains(true))
+                    return;
                 var first = buffer[0];
                 Debug.WriteDebug("First: " + first);
                 int Which = -1; // 0 Push, 1 Req
@@ -204,13 +206,10 @@ namespace Core.DemuxResponders
                         //  5F 08 75 70 6c 61 79 64 6c 6c
                         //  5F 8 uplaydll
                         //  Please only use this if you want to communicate NOT Uplay Proto types!
-                        Debug.PWDebug($"{Id}: Custom Request Received!", "DMXSERVER");
-                        int ReqNameLenght = int.Parse(System.Text.Encoding.UTF8.GetString(new byte[] { buffer[1] }));
-                        var bytename = buffer.Skip(2).Take(ReqNameLenght).ToArray();
-                        string protoname = System.Text.Encoding.UTF8.GetString(bytename);
-                        Debug.PrintDebug($"[DMXSERVER] Request Name: {protoname}");
-                        var bytes = buffer.Skip(2 + ReqNameLenght).ToArray();
-                        Custom.Requests(Id, bytes, protoname);
+                        var customproto = Utils.GetCustomProto(Id,buffer);
+                        ret = PluginHandle.DemuxDataReceivedCustom(Id, customproto.buffer, customproto.protoname);
+                        if (ret.Contains(true))
+                            return;
                         break;
                     default:
                         Debug.PWDebug("Unknown First byte : " + first, "DMXSERVER");

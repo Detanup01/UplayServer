@@ -4,7 +4,9 @@
     {
         public static List<string> Services = new()
         {
-            "utility_service", "steam_service", "client_configuration_service", "uplaydll"
+            "utility_service", "steam_service", "client_configuration_service", 
+            // our services
+            "uplaydll"
         };
         public static List<string> Connections = new()
         {

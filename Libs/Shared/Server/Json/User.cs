@@ -14,7 +14,6 @@ namespace SharedLib.Server.Json
         public class COwnership
         {
             public List<uint> OwnedGamesIds { get; set; } = new();
-
             public uint UbiPlus { get; set; }
         }
 
@@ -91,7 +90,7 @@ namespace SharedLib.Server.Json
 
         public static void SaveUser(string id, User user)
         {
-            File.WriteAllText($"ServerFiles/Users/{id}.json", JsonConvert.SerializeObject(user));
+            File.WriteAllText($"ServerFiles/Users/{id}.json", JsonConvert.SerializeObject(user, Formatting.Indented));
         }
     }
 }

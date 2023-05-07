@@ -9,6 +9,7 @@ namespace SharedLib.Server.Json
         public string configuration { get; set; } = string.Empty;
         public string store_configuration { get; set; } = string.Empty;
         public string latest_manifest { get; set; } = string.Empty;
+        public string encryption_key { get; set; } = string.Empty;
         public bool staging { get; set; } = false;
         public Session gamesession { get; set; } = new();
         public Branches branches { get; set; } = new();
@@ -16,7 +17,13 @@ namespace SharedLib.Server.Json
         public List<uint> associations { get; set; } = new();
         public List<string> appflags { get; set; } = new();
         public string storereference { get; set; } = string.Empty;
-
+        public uint config_version { get; set; } = 0;
+        public uint download_version { get; set; } = 0;
+        public Uplay.Ownership.GetUplayPCTicketReq.Types.Platform platform { get; set; } = Uplay.Ownership.GetUplayPCTicketReq.Types.Platform.Normal;
+        public Uplay.Ownership.OwnedGame.Types.ProductType product_type { get; set; } = Uplay.Ownership.OwnedGame.Types.ProductType.Game;
+        public Uplay.Ownership.OwnedGame.Types.State state { get; set; } = Uplay.Ownership.OwnedGame.Types.State.Released;
+        public string space_id { get; set; } = string.Empty;
+        public string app_id { get; set; } = string.Empty;
         public class Session
         {
             public uint max_size { get; set; } = 4;
@@ -77,6 +84,18 @@ namespace SharedLib.Server.Json
                 }
             }
             return GameConfig;
+        }
+
+        public static void SetGameConfig(GameConfig gameConfig)
+        {
+            if (gameConfig.branches.active_branch_id == uint.MinValue)
+            {
+                File.WriteAllText($"ServerFiles/ProductConfigs/{gameConfig.uplay_id}_Config.json", JsonConvert.SerializeObject(gameConfig, Formatting.Indented));
+            }
+            else
+            {
+                File.WriteAllText($"ServerFiles/ProductConfigs/{gameConfig.uplay_id}_{gameConfig.branches.active_branch_id}_Config.json", JsonConvert.SerializeObject(gameConfig, Formatting.Indented));
+            }
         }
     }
 }

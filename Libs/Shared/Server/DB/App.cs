@@ -7,7 +7,8 @@ namespace SharedLib.Server.DB
     {
         public readonly static string DBName = Prepare.DatabasePath + "App.db";
         public readonly static string AppAPI = "AppAPI";
-        public readonly static string AppFlags = "AppFlags";
+        public readonly static string AppConfig = "AppConfig"; 
+        public readonly static string AppBranches = "AppBranches";
 
         /// <summary>
         /// Create App.db and filling with Basic data
@@ -58,68 +59,50 @@ namespace SharedLib.Server.DB
             }
         }
         #endregion
-        #region AppFlags
-        public static void AddFlags(uint productId, List<string> flags)
-        {
-            AddFlags(new()
-            { 
-                productId = productId,
-                flags = flags
-            });
-        }
-
-        public static void AddFlags(JAppFlags jAppFlags)
+        #region AppConfig
+        public static void AddAppConfig(JAppConfig jAppConfig)
         {
             using (var db = new LiteDatabase(DBName))
             {
-                var col = db.GetCollection<JAppFlags>(AppFlags);
+                var col = db.GetCollection<JAppConfig>(AppConfig);
 
-                if (!col.Exists(X => X == jAppFlags))
+                if (!col.Exists(X => X.productId == jAppConfig.productId))
                 {
-                    col.Insert(jAppFlags);
+                    col.Insert(jAppConfig);
                 }
             }
         }
 
-        public static void EditFlags(uint productId, List<string> flags)
-        {
-            EditFlags(new()
-            {
-                productId = productId,
-                flags = flags
-            });
-        }
-
-        public static void EditFlags(JAppFlags jAppFlags)
+        public static void EditAppConfig(JAppConfig jAppConfig)
         {
             using (var db = new LiteDatabase(DBName))
             {
-                var col = db.GetCollection<JAppFlags>(AppFlags);
+                var col = db.GetCollection<JAppConfig>(AppConfig);
 
-                var fId = col.Find(X => X.productId == jAppFlags.productId).First().Id;
-                jAppFlags.Id = fId;
-                col.Update(jAppFlags);
+                var fId = col.FindOne(X => X.productId == jAppConfig.productId).Id;
+                jAppConfig.Id = fId;
+                col.Update(jAppConfig);
             }
         }
 
-        public static List<string> GetFlags(uint productId)
+        public static JAppConfig GetAppConfig(uint productId)
         {
             using (var db = new LiteDatabase(DBName))
             {
-                var col = db.GetCollection<JAppFlags>(AppFlags);
+                var col = db.GetCollection<JAppConfig>(AppConfig);
                 var x = col.Query().Where(x => x.productId == productId);
                 if (x.Count() > 0)
-                    return x.First().flags;
+                    return x.First();
                 else
-                    return new();
+                    return new() { productId = productId };
             }
         }
 
-        public static void DeleteFlags(uint productId)
+        public static void DeleteAppConfig(uint productId)
         {
             using (var db = new LiteDatabase(DBName))
             {
-                var col = db.GetCollection<JAppFlags>(AppFlags);
+                var col = db.GetCollection<JAppConfig>(AppConfig);
 
                 var found = col.Find(X => X.productId == productId).First();
                 col.Delete(found.Id);

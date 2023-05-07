@@ -1,19 +1,14 @@
-﻿using SharedLib.Server.Json;
-using SharedLib.Shared;
-using System.Security.Cryptography;
-using System.Text;
-
-namespace Core.Commands
+﻿namespace Core.Commands
 {
     public class CommandHandler
     {
         public static Dictionary<string, Action<object>> Commands = new()
-        {
+        {            
+            { "help" , Help },
             { "reload" , Reloader.ReloadAll },
             { "cleanserver" , Reloader.CleanServer },
-            { "help" , Help },
-            { "calculatelogin" , CalculateLogin }
-
+            { "calculatelogin" , CalculateLogin },
+            { "generatecdkey" , Nothing }
         };
 
         public static void Run(string CommandName)
@@ -35,12 +30,17 @@ namespace Core.Commands
 
         public static void Help(object obj)
         {
-            Console.WriteLine(string.Join(", ", Commands.Keys.ToList()));
+            Console.WriteLine("Commands: " + string.Join(", ", Commands.Keys.ToList()));
         }
 
         public static void CalculateLogin(object obj)
         {
             var args = (string[])obj;
+            if (args.Length == 0)
+            {
+                Console.WriteLine("Use as: !calculatelogin {auth}\t(Auth must be email:password)");
+                return;
+            }
             var auth = args[0];
             var toauth = Utils.MakeAuth(auth);
             Console.WriteLine($"Auth for {auth} is:\n{toauth}");

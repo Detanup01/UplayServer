@@ -13,9 +13,8 @@ namespace SharedLib.Server.DB
             using (var db = new LiteDatabase(DBName))
             {
                 var col = db.GetCollection<JStore>(StoreBDB);
-                if (!col.Exists(x => x == store))
+                if (!col.Exists(x => x.Id == store.Id))
                 {
-                    var x = col.Count();
                     col.Insert(store);
                 }
             }
@@ -26,7 +25,7 @@ namespace SharedLib.Server.DB
             using (var db = new LiteDatabase(DBName))
             {
                 var col = db.GetCollection<JStore>(StoreBDB);
-                var toReplace = col.Find(x => x.productId == prodId).First();
+                var toReplace = col.FindOne(x => x.productId == prodId);
 
                 if (toReplace != null)
                 {
@@ -41,7 +40,7 @@ namespace SharedLib.Server.DB
             using (var db = new LiteDatabase(DBName))
             {
                 var col = db.GetCollection<JStore>(StoreBDB);
-                var toGet = col.Find(x => x.productId == prodId).First();
+                var toGet = col.FindOne(x => x.productId == prodId);
 
                 if (toGet != null)
                 {
@@ -77,9 +76,12 @@ namespace SharedLib.Server.DB
             {
                 var col = db.GetCollection<JStore>(StoreBDB);
 
-                var toDel = col.Find(x => x.productId == prodId).Last();
+                var toDel = col.FindOne(x => x.productId == prodId);
+                if (toDel != null)
+                {
+                    col.Delete(toDel.Id);
+                }
 
-                col.Delete(toDel.Id);
             }
         }
 
@@ -89,7 +91,15 @@ namespace SharedLib.Server.DB
             {
                 var col = db.GetCollection<JStore>(StoreBDB);
 
-                col.DeleteMany(x=>x.productId == prodId);
+                var toDel = col.Find(x => x.productId == prodId);
+
+                if (toDel != null)
+                {
+                    foreach (var item in toDel)
+                    {
+                        col.Delete(item.Id);
+                    }
+                }
             }
         }
         #endregion
