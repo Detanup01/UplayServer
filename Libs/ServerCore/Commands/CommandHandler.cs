@@ -1,4 +1,7 @@
-﻿namespace Core.Commands
+﻿using SharedLib.Server.DB;
+using SharedLib.Server.Json;
+
+namespace Core.Commands
 {
     public class CommandHandler
     {
@@ -8,7 +11,7 @@
             { "reload" , Reloader.ReloadAll },
             { "cleanserver" , Reloader.CleanServer },
             { "calculatelogin" , CalculateLogin },
-            { "generatecdkey" , Nothing }
+            { "generatecdkey" , Generator.GenerateCDKey }
         };
 
         public static void Run(string CommandName)

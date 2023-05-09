@@ -14,6 +14,7 @@ namespace SharedLib.Server.DB
         public readonly static string Playtime = "Playtime";
         public readonly static string GameSession = "GameSession";
 
+        #region JUser
         public static void Add(JUser user)
         {
             using (var db = new LiteDatabase(DBName))
@@ -27,6 +28,38 @@ namespace SharedLib.Server.DB
             }
         }
 
+        public static void Edit(JUser user)
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JUser>(USER);
+
+                var fId = col.FindOne(X=> X.Id == user.Id);
+                if (fId != null)
+                {
+                    user.Id = fId.Id;
+                    col.Update(user);
+                }
+
+            }
+        }
+
+        public static JUser? GetUser(string UserId)
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JUser>(USER);
+
+                var fId = col.FindOne(X => X.UserId == UserId);
+                if (fId != null)
+                {
+                    return fId;
+                }
+            }
+            return null;
+        }
+        #endregion
+        #region JOwnershipBasic
         public static void Add(JOwnershipBasic ownershipBasic)
         {
             using (var db = new LiteDatabase(DBName))
@@ -40,7 +73,38 @@ namespace SharedLib.Server.DB
             }
         }
 
+        public static void Edit(JOwnershipBasic ownershipBasic)
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JOwnershipBasic>(OwnershipBasic);
 
+                var fId = col.FindOne(X => X.Id == ownershipBasic.Id);
+                if (fId != null)
+                {
+                    ownershipBasic.Id = fId.Id;
+                    col.Update(ownershipBasic);
+                }
+
+            }
+        }
+
+        public static JOwnershipBasic? GetOwnershipBasic(string UserId)
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JOwnershipBasic>(OwnershipBasic);
+
+                var fId = col.FindOne(X => X.UserId == UserId);
+                if (fId != null)
+                {
+                    return fId;
+                }
+            }
+            return null;
+        }
+        #endregion
+        #region JActivity
         public static void Add(JActivity activity)
         {
             using (var db = new LiteDatabase(DBName))
@@ -54,6 +118,38 @@ namespace SharedLib.Server.DB
             }
         }
 
+        public static void Edit(JActivity activity)
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JActivity>(Activity);
+
+                var fId = col.FindOne(X => X.Id == activity.Id);
+                if (fId != null)
+                {
+                    activity.Id = fId.Id;
+                    col.Update(activity);
+                }
+
+            }
+        }
+
+        public static JActivity? GetActivity(string UserId)
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JActivity>(Activity);
+
+                var fId = col.FindOne(X => X.UserId == UserId);
+                if (fId != null)
+                {
+                    return fId;
+                }
+            }
+            return null;
+        }
+        #endregion
+        #region JFriend
         public static void Add(JFriend friend)
         {
             using (var db = new LiteDatabase(DBName))
@@ -67,6 +163,38 @@ namespace SharedLib.Server.DB
             }
         }
 
+        public static void Edit(JFriend friend)
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JFriend>(Friend);
+
+                var fId = col.FindOne(X => X.Id == friend.Id);
+                if (fId != null)
+                {
+                    friend.Id = fId.Id;
+                    col.Update(friend);
+                }
+
+            }
+        }
+
+        public static JFriend? GetFriend(string UserId)
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JFriend>(Friend);
+
+                var fId = col.FindOne(X => X.UserId == UserId);
+                if (fId != null)
+                {
+                    return fId;
+                }
+            }
+            return null;
+        }
+        #endregion
+        #region JPlaytime
         public static void Add(JPlaytime playtime)
         {
             using (var db = new LiteDatabase(DBName))
@@ -80,6 +208,38 @@ namespace SharedLib.Server.DB
             }
         }
 
+        public static void Edit(JPlaytime playtime)
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JPlaytime>(Playtime);
+
+                var fId = col.FindOne(X => X.Id == playtime.Id);
+                if (fId != null)
+                {
+                    playtime.Id = fId.Id;
+                    col.Update(playtime);
+                }
+
+            }
+        }
+
+        public static JPlaytime? GetPlaytime(string UserId)
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JPlaytime>(Playtime);
+
+                var fId = col.FindOne(X => X.UserId == UserId);
+                if (fId != null)
+                {
+                    return fId;
+                }
+            }
+            return null;
+        }
+        #endregion
+        #region JGameSession
         public static void Add(JGameSession session)
         {
             using (var db = new LiteDatabase(DBName))
@@ -92,5 +252,37 @@ namespace SharedLib.Server.DB
                 }
             }
         }
+
+        public static void Edit(JGameSession session)
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JGameSession>(Playtime);
+
+                var fId = col.FindOne(X => X.Id == session.Id);
+                if (fId != null)
+                {
+                    session.Id = fId.Id;
+                    col.Update(session);
+                }
+
+            }
+        }
+
+        public static JGameSession? GetGameSession(string UserId)
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JGameSession>(Playtime);
+
+                var fId = col.FindOne(X => X.UserId == UserId);
+                if (fId != null)
+                {
+                    return fId;
+                }
+            }
+            return null;
+        }
+        #endregion
     }
 }

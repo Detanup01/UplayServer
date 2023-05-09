@@ -20,23 +20,6 @@ namespace Core.Commands
                     Owners.MakeOwnershipFromTXT(file);
                 }
             }
-
-            DBUser.Add(new SharedLib.Server.Json.DB.JUser() 
-            { 
-                Id = 0,
-                UserId = "00000000-0000-0000-0000-000000000000",
-                Friends = new(),
-                Name = "0USER"
-            });
-
-            DBUser.Add(new SharedLib.Server.Json.DB.JOwnershipBasic()
-            {
-                Id = 0,
-                UserId = "00000000-0000-0000-0000-000000000000",
-                OwnedGamesIds = new() { 0 },
-                UbiPlus = 0
-            });
-
             Console.WriteLine("ReloadAll Finished");
         }
 
