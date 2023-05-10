@@ -1,4 +1,6 @@
-﻿namespace SharedLib.Server.Json
+﻿using SharedLib.Server.DB;
+
+namespace SharedLib.Server.Json
 {
     public class UserExt : User
     {
@@ -54,22 +56,31 @@
 
         public static void UplayFriendsGameParseToUser(string UserId, Uplay.Friends.Game game)
         {
-            var user = GetUser(UserId);
-            if (user != null)
+            var activity = DBUser.GetActivity(UserId);
+            if (activity == null)
+                activity = new()
+                { 
+                    UserId = UserId
+                };
+            activity.GameId = game.UplayId;
+            activity.ProductName = game.ProductName;
+            activity.IsPlaying = true;
+            DBUser.Edit(activity);
+            if (game.GameSession != null)
             {
-                user.Activity.GameId = game.UplayId;
-                user.Activity.ProductName = game.ProductName;
-                if (game.GameSession != null)
-                {
-                    user.Activity.GameSession.SessionData = game.GameSession.GameSessionData.ToBase64();
-                    user.Activity.GameSession.SessionId = game.GameSession.GameSessionId;
-                    user.Activity.GameSession.SessionIdV2 = game.GameSession.GameSessionIdV2;
-                    user.Activity.GameSession.Joinable = game.GameSession.Joinable;
-                    user.Activity.GameSession.Size = game.GameSession.Size;
-                    user.Activity.GameSession.MaxSize = game.GameSession.MaxSize;
-
-                }
-                SaveUser(UserId, user);
+                var session = DBUser.GetGameSession(UserId);
+                if (session == null)
+                    session = new()
+                    {
+                        UserId = UserId
+                    };
+                session.SessionData = game.GameSession.GameSessionData.ToBase64();
+                session.SessionId = game.GameSession.GameSessionId;
+                session.SessionIdV2 = game.GameSession.GameSessionIdV2;
+                session.Joinable = game.GameSession.Joinable;
+                session.Size = game.GameSession.Size;
+                session.MaxSize = game.GameSession.MaxSize;
+                DBUser.Edit(session);
             }
         }
     }

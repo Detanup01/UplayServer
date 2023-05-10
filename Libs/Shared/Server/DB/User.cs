@@ -104,6 +104,51 @@ namespace SharedLib.Server.DB
             return null;
         }
         #endregion
+        #region JOwnership
+        public static void Add(JOwnership ownership)
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JOwnership>(Ownership);
+
+                if (!col.Exists(X => X.Id == ownership.Id && X.UserId == ownership.UserId))
+                {
+                    col.Insert(ownership);
+                }
+            }
+        }
+
+        public static void Edit(JOwnership ownership)
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JOwnership>(Ownership);
+
+                var fId = col.FindOne(X => X.Id == ownership.Id);
+                if (fId != null)
+                {
+                    ownership.Id = fId.Id;
+                    col.Update(ownership);
+                }
+
+            }
+        }
+
+        public static JOwnership? GetOwnership(string UserId)
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JOwnership>(Ownership);
+
+                var fId = col.FindOne(X => X.UserId == UserId);
+                if (fId != null)
+                {
+                    return fId;
+                }
+            }
+            return null;
+        }
+        #endregion
         #region JActivity
         public static void Add(JActivity activity)
         {

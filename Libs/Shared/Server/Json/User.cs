@@ -53,26 +53,6 @@ namespace SharedLib.Server.Json
             public uint? MaxSize { get; set; }
         }
 
-        public static List<User> GetAllUsersList()
-        {
-            List<User> users = new();
-            foreach (var file in Directory.GetFiles("ServerFiles/Users"))
-            {
-                users.Add(JsonConvert.DeserializeObject<User>(File.ReadAllText(file)));
-            }
-            return users;
-        }
-
-        public static Dictionary<string, User> GetAllUsersDict()
-        {
-            Dictionary<string, User> users = new();
-            foreach (var file in Directory.GetFiles("ServerFiles/Users"))
-            {
-                users.Add(file.Replace(".json", "").Replace("ServerFiles/Users\\", ""), JsonConvert.DeserializeObject<User>(File.ReadAllText(file)));
-            }
-            return users;
-        }
-
         public static User? GetUser(string UserId)
         {
             User? users = null;

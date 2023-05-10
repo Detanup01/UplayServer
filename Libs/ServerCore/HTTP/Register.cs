@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using SharedLib.Server.DB;
 using SharedLib.Server.Json;
+using SharedLib.Server.Json.DB;
 
 namespace Core.HTTP
 {
@@ -41,19 +42,35 @@ namespace Core.HTTP
 
             Auth.AddUA(userId, toauth);
 
-            User user = new()
-            {
-                Name = name,
+            DBUser.Add(new JUser()
+            { 
                 UserId = userId,
-                Ownership = new()
-                {
-                    OwnedGamesIds = { 0 },
-                    UbiPlus = 0
-                }
-            };
-
-            User.SaveUser(userId, user);
-            Owners.MakeOwnership(userId, 0, new() { 0 }, new() { 0 });
+                Name = name,
+                Friends = new()
+            });
+            DBUser.Add(new JOwnershipBasic()
+            {
+                UserId = userId,
+                OwnedGamesIds = { 0 },
+                UbiPlus = 0
+            });
+            var cdkey = CDKey.GenerateKey(0);
+            DBUser.Add(new JOwnership()
+            {
+                UserId = userId,
+                Subscriptions = { },
+                Suspension = Uplay.Ownership.OwnedGame.Types.SuspensionType.None,
+                IsLockedSubscription = false,
+                DenuvoActivation = Uplay.Ownership.OwnedGame.Types.DenuvoActivationOverwrite.Default,
+                PackageState = Uplay.Ownership.OwnedGame.Types.PackageOwnershipState.Full,
+                Activation = Uplay.Ownership.OwnedGame.Types.ActivationType.Purchase,
+                ActivationIds = { },
+                CD_Key = cdkey,
+                ProductId = 0,
+                IsOwned = true,
+                TargetPartner = Uplay.Ownership.OwnedGame.Types.TargetPartner.None
+            });
+            //Owners.MakeOwnership(userId, 0, new() { 0 }, new() { 0 });
             return JsonConvert.SerializeObject(new RegisterResponse()
             {
                 UserId = userId
