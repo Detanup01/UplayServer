@@ -12,12 +12,12 @@ namespace Core.DemuxResponders
     {
         public static ByteString GetOwnerSignature(string UserId)
         {
-            var user = User.GetUser(UserId);
-            if (user != null)
+            var owbasic = DBUser.GetOwnershipBasic(UserId);
+            if (owbasic != null)
             {
                 List<byte> SignList = new();
                 int i = 0;
-                foreach (var id in user.Ownership.OwnedGamesIds)
+                foreach (var id in owbasic.OwnedGamesIds)
                 {
                     byte bi = Convert.ToByte(i.ToString(), 16);
                     SignList.Add(bi);
@@ -28,7 +28,7 @@ namespace Core.DemuxResponders
                 var SignatureByte = SignList.ToArray();
                 ByteString Signature = ByteString.CopyFrom(SignatureByte);
                 var sigb64 = Signature.ToBase64();
-                if (user.Ownership.OwnedGamesIds.Count > 30)
+                if (owbasic.OwnedGamesIds.Count > 30)
                 {
                     sigb64 = CompressB64.GetZstdB64(SignatureByte);
                 }
@@ -48,9 +48,9 @@ namespace Core.DemuxResponders
             var userid64 = tokensp[0];
             var sig64 = tokensp[1];
             var userId = B64.FromB64(CompressB64.GetUnZstdB64(Convert.FromBase64String(userid64)));
-            var user = User.GetUser(userId);
+            var owbasic = DBUser.GetOwnershipBasic(userId);
             byte[] siglist = { };
-            if (user.Ownership.OwnedGamesIds.Count > 30)
+            if (owbasic.OwnedGamesIds.Count > 30)
             {
                 siglist = Convert.FromBase64String(CompressB64.GetUnZstdB64(Convert.FromBase64String(sig64)));
             }

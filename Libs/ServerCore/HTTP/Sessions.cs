@@ -74,7 +74,7 @@ namespace Core.HTTP
                 userId = id,
                 sessionKey = B64.ToB64(SessionId),
                 spaceId = App.GetSpaceId(appId),
-                nameOnPlatform = User.GetUser(id).Name,
+                nameOnPlatform = DBUser.GetUser(id).Name,
                 rememberDeviceTicket = devicetoken,
             };
             contentType = "application/json; charset=UTF-8";

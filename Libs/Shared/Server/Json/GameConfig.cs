@@ -85,17 +85,5 @@ namespace SharedLib.Server.Json
             }
             return GameConfig;
         }
-
-        public static void SetGameConfig(GameConfig gameConfig)
-        {
-            if (gameConfig.branches.active_branch_id == uint.MinValue)
-            {
-                File.WriteAllText($"ServerFiles/ProductConfigs/{gameConfig.uplay_id}_Config.json", JsonConvert.SerializeObject(gameConfig, Formatting.Indented));
-            }
-            else
-            {
-                File.WriteAllText($"ServerFiles/ProductConfigs/{gameConfig.uplay_id}_{gameConfig.branches.active_branch_id}_Config.json", JsonConvert.SerializeObject(gameConfig, Formatting.Indented));
-            }
-        }
     }
 }

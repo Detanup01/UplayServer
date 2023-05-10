@@ -10,10 +10,12 @@
     {
         public string Name { get; set; }
         public List<string> Friends { get; set; } = new();
+        public bool IsBanned { get; set; } = false;
     }
     public class JOwnershipBasic : JUserBase
     {
-        public List<uint> OwnedGamesIds { get; set; } = new(); 
+        public List<uint> OwnedGamesIds { get; set; } = new();
+        public Dictionary<uint,List<uint>> UnlockedBranches { get; set; } = new();
         public uint UbiPlus { get; set; }
     }
 
@@ -23,6 +25,7 @@
         public bool IsOwned { get; set; }
         public bool IsLockedSubscription { get; set; }
         public string CD_Key { get; set; }
+        public uint current_branch_id { get; set; } = 0;
         public List<uint> ActivationIds { get; set; } = new();
         public List<uint> Subscriptions { get; set; } = new();
         public Uplay.Ownership.OwnedGame.Types.PackageOwnershipState PackageState { get; set; }

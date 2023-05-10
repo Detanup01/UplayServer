@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf;
 using SharedLib.Server.DB;
 using SharedLib.Server.Json;
+using SharedLib.Server.Json.Ext;
 using Uplay.Friends;
 
 namespace Core.DemuxResponders
@@ -300,7 +301,6 @@ namespace Core.DemuxResponders
 
                         user.Activity.Status = (int)initialize.ActivityStatus;
                         User.SaveUser(userID, user);
-                        UserExt.SetAllUserActivity(userID);
                         foreach (var userfriend in user.Friends)
                         {
                             if (userfriend.Activity.Status == 1)
@@ -401,7 +401,6 @@ namespace Core.DemuxResponders
                     {
                         user.Activity.Status = (int)SetActivityStatus.ActivityStatus;
                         User.SaveUser(userID, user);
-                        UserExt.SetAllUserActivity(userID);
                         //  PushUpdatedStatus to all friend
                         IsSuccess = true;
                     }
@@ -472,7 +471,6 @@ namespace Core.DemuxResponders
                                 user.Activity.Key = SetRichPresence.PresenceState.PresenceTokens[0].Key;
                                 user.Activity.Value = SetRichPresence.PresenceState.PresenceTokens[0].Val;
                                 User.SaveUser(userID, user);
-                                UserExt.SetAllUserActivity(userID);
                                 //  PushUpdatedStatus to all friend
 
                             }
@@ -503,9 +501,8 @@ namespace Core.DemuxResponders
 
                     if (user != null)
                     {
-                        UserExt.UplayFriendsGameParseToUser(userID, SetGame.Game);
+                        DBUserExt.UplayFriendsGameParseToUser(userID, SetGame.Game);
 
-                        UserExt.SetAllUserActivity(userID);
                         //  PushUpdatedStatus to all friend
 
                         IsSuccess = true;
@@ -554,8 +551,8 @@ namespace Core.DemuxResponders
                     var userID = Globals.IdToUser[ClientNumb];
                     var friendId = DeclineFriendship.User.AccountId;
 
-                    bool UserFromFriend = UserExt.RemoveFromFriends(userID, friendId);
-                    bool FriendFromUser = UserExt.RemoveFromFriends(friendId, userID);
+                    bool UserFromFriend = DBUserExt.RemoveFromFriends(userID, friendId);
+                    bool FriendFromUser = DBUserExt.RemoveFromFriends(friendId, userID);
 
                     if (UserFromFriend && FriendFromUser)
                     {
@@ -676,8 +673,8 @@ namespace Core.DemuxResponders
 
                     var friendId = ClearRelationship.User.AccountId;
 
-                    bool UserFromFriend = UserExt.RemoveFromFriends(userID, friendId);
-                    bool FriendFromUser = UserExt.RemoveFromFriends(friendId, userID);
+                    bool UserFromFriend = DBUserExt.RemoveFromFriends(userID, friendId);
+                    bool FriendFromUser = DBUserExt.RemoveFromFriends(friendId, userID);
 
                     if (UserFromFriend && FriendFromUser)
                     {
@@ -762,9 +759,9 @@ namespace Core.DemuxResponders
                 {
                     var userID = Globals.IdToUser[ClientNumb];
 
-                    UserExt.UplayFriendsGameParseToUser(userID, JoinGameInvitation.Game);
+                    DBUserExt.UplayFriendsGameParseToUser(userID, JoinGameInvitation.Game);
 
-                    if (UserExt.IsUserExist(JoinGameInvitation.AccountIdTo))
+                    if (DBUserExt.IsUserExist(JoinGameInvitation.AccountIdTo))
                     {
                         Pusher.Pushes(ClientNumb, new()
                         {
@@ -798,7 +795,7 @@ namespace Core.DemuxResponders
                 bool IsSuccess = false;
                 if (UserInits[ClientNumb])
                 {
-                    if (UserExt.IsUserExist(DeclineGameInvite.AccountId))
+                    if (DBUserExt.IsUserExist(DeclineGameInvite.AccountId))
                     {
                         Pusher.Pushes(ClientNumb, new()
                         {

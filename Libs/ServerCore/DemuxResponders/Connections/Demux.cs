@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using SharedLib.Server.DB;
 using SharedLib.Server.Json;
+using SharedLib.Server.Json.Ext;
 using SharedLib.Shared;
 using Uplay.Demux;
 using static SharedLib.Server.Enums;
@@ -208,7 +209,7 @@ namespace Core.DemuxResponders
                     string userId = Auth.GetUserIdByToken(authenticateReq.Token.UbiToken.ToStringUtf8(), TokenType.Ticket);
                     if (!string.IsNullOrEmpty(userId))
                     {
-                        if (!Prepare.BannedUsers.Contains(userId))
+                        if (!DBUserExt.IsUserBanned(userId))
                         {
                             Globals.IdToUser.Add(ClientNumb, userId);
                             Globals.UserToId.Add(userId, ClientNumb);
@@ -226,7 +227,7 @@ namespace Core.DemuxResponders
                     string userId = Auth.GetUserIdByToken(authenticateReq.Token.OrbitToken, TokenType.Orbit);
                     if (!string.IsNullOrEmpty(userId))
                     {
-                        if (!Prepare.BannedUsers.Contains(userId))
+                        if (!DBUserExt.IsUserBanned(userId))
                         {
                             Globals.IdToUser.Add(ClientNumb, userId);
                             Globals.UserToId.Add(userId, ClientNumb);
@@ -254,7 +255,7 @@ namespace Core.DemuxResponders
                     string userId = Auth.GetUserIdByToken(authenticateReq.Token.UbiTicket, TokenType.Ticket);
                     if (!string.IsNullOrEmpty(userId))
                     {
-                        if (!Prepare.BannedUsers.Contains(userId))
+                        if (!DBUserExt.IsUserBanned(userId))
                         {
                             Globals.IdToUser.Add(ClientNumb, userId);
                             Globals.UserToId.Add(userId, ClientNumb);

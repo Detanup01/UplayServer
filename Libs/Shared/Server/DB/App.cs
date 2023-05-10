@@ -29,6 +29,40 @@ namespace SharedLib.Server.DB
                     };
                     col.Insert(appAPI);
                 }
+                var appconf = db.GetCollection<JAppConfig>(AppConfig);
+                if (!appconf.Exists(x => x.productId == 0))
+                {
+                    appconf.Insert(new JAppConfig()
+                    { 
+                        productId = 0,
+                        configuration = "0.yml",
+                        store_configuration = "null",
+                        appflags = { "Downloadable", "Playable" },
+                        app_id = "",
+                        space_id = "",
+                        staging = false,
+                        state = Uplay.Ownership.OwnedGame.Types.State.Released,
+                        storereference = "0",
+                        associations = { },
+                        config_version = 1,
+                        download_version = 1,
+                        platform = Uplay.Ownership.GetUplayPCTicketReq.Types.Platform.Normal,
+                        product_name = "Example",
+                        product_type = Uplay.Ownership.OwnedGame.Types.ProductType.Game,
+                        session_max_size = 4
+
+                    });
+                }
+                var appbranch = db.GetCollection<JAppBranches>(AppBranches);
+                if (!appbranch.Exists(x => x.productId == 0))
+                {
+                    appbranch.Insert(new JAppBranches()
+                    {
+                        productId = 0,
+                        branch_name = "Example",
+                        latest_manifest = "0"
+                    });
+                }
             }
         }
 

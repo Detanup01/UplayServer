@@ -28,4 +28,6 @@
             public static string AuthSalt = "_CUSTOMDEMUX";
         }
     }
+
+    //TODO: Making this configurable in json file(?)
 }

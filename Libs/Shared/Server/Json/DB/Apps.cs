@@ -19,7 +19,6 @@
         public uint productId { get; set; }
         public uint config_version { get; set; } = 0;
         public uint download_version { get; set; } = 0;
-        public uint current_branch_id { get; set; } = 0;
         public uint session_max_size { get; set; } = 4;
         public string product_name { get; set; } = string.Empty;
         public string space_id { get; set; } = string.Empty;

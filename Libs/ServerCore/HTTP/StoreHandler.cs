@@ -1,6 +1,7 @@
 ﻿using SharedLib.Server.DB;
 using SharedLib.Server.Json;
 using SharedLib.Server.Json.DB;
+using SharedLib.Server.Json.Ext;
 using static SharedLib.Server.Enums;
 
 namespace Core.HTTP
@@ -21,7 +22,6 @@ namespace Core.HTTP
             */
             if (url.Contains("?"))
             {
-                User user = null;
                 JOwnershipBasic ownershipBasic = null;
                 var reason = "FAILED";
                 var productid = url.Replace("/store/?p=", "");
@@ -35,7 +35,6 @@ namespace Core.HTTP
                     auth = auth.Split("t=")[1];
                     var id = Auth.GetUserIdByToken(auth, TokenType.Ticket);
                     ownershipBasic = DBUser.GetOwnershipBasic(id);
-                    user = User.GetUser(id);
                 }
 
                 if (ownershipBasic != null)
@@ -50,7 +49,8 @@ namespace Core.HTTP
                         if (config != null)
                         {
                             ownershipBasic.OwnedGamesIds.Add(pid);
-                            Owners.MakeOwnershipFromUser(user.UserId, user.Ownership);
+                            DBUserExt.AddOwnership(pid,0, ownershipBasic.UserId, CDKey.GenerateKey(pid),new(),new());
+                            //Owners.MakeOwnershipFromUser(user.UserId, user.Ownership);
                             reason = "SUCCESS";
                         }
                         else
