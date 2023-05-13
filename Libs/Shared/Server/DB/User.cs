@@ -148,6 +148,21 @@ namespace SharedLib.Server.DB
             }
             return null;
         }
+
+        public static List<JOwnership>? GetOwnershipList(string UserId)
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JOwnership>(Ownership);
+
+                var fId = col.Find(X => X.UserId == UserId);
+                if (fId != null)
+                {
+                    return fId.ToList();
+                }
+            }
+            return null;
+        }
         #endregion
         #region JActivity
         public static void Add(JActivity activity)

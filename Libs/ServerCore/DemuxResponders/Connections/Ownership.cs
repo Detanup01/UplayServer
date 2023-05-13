@@ -175,9 +175,8 @@ namespace Core.DemuxResponders
             {
                 bool IsSuccess = false;
                 var userID = Globals.IdToUser[ClientNumb];
-                Console.WriteLine(userID + " OW Init");
-                var user = User.GetUser(userID);
-                if (user != null)
+                var owbasic = DBUser.GetOwnershipBasic(userID);
+                if (owbasic != null)
                 {
                     IsSuccess = true;
                 }
@@ -205,32 +204,24 @@ namespace Core.DemuxResponders
                         }
                     }
                 };
-                if (user != null)
+                if (owbasic != null)
                 {
                     UserInits.Add(ClientNumb, true);
-                    Downstream.Response.InitializeRsp.SubscriptionType = user.Ownership.UbiPlus;
-                    Downstream.Response.InitializeRsp.SubscriptionState = (SubscriptionState)user.Ownership.UbiPlus;
+                    Downstream.Response.InitializeRsp.SubscriptionType = owbasic.UbiPlus;
+                    Downstream.Response.InitializeRsp.SubscriptionState = (SubscriptionState)owbasic.UbiPlus;
 
                     Downstream.Response.InitializeRsp.OwnedGamesContainer.Signature = GetOwnerSignature(userID);
-                    if (File.Exists($"ServerFiles/CacheFiles/{userID}.ownershipcache"))
+                    Downstream.Response.InitializeRsp.OwnedGamesContainer.ProductIds.AddRange(owbasic.OwnedGamesIds);
+                    Downstream.Response.InitializeRsp.OwnedGamesContainer.VisibleOrInstallableProductIds.AddRange(owbasic.OwnedGamesIds);
+                    Downstream.Response.InitializeRsp.OwnedGames = Owners.GetOwnershipGames(userID);
+                    if (Initializer.Branches != null)
                     {
-                        Console.WriteLine("cache");
-                        Downstream.Response.InitializeRsp.OwnedGamesContainer.ProductIds.AddRange(Owners.GetOwnershipProdIds(userID));
-                        Downstream.Response.InitializeRsp.OwnedGamesContainer.VisibleOrInstallableProductIds.AddRange(Owners.GetOwnershipInstallable(userID));
-                        Downstream.Response.InitializeRsp.OwnedGames = Owners.GetOwnershipGames(userID);
+                        foreach (var item in Initializer.Branches)
+                        {
+                            //item.ProductId;
+                            //item.ActiveBranchId;
+                            //item.
                     }
-                    else if (File.Exists($"ServerFiles/CacheFiles/{userID}.ownershipInit"))
-                    {
-                        Console.WriteLine("init");
-                        Downstream.Response.InitializeRsp = InitializeRsp.Parser.ParseFrom(File.ReadAllBytes($"ServerFiles/CacheFiles/{userID}.ownershipInit"));
-                    }
-                    else
-                    {
-                        Console.WriteLine("else");
-                        Owners.MakeOwnershipFromUser(userID, user.Ownership);
-                        Downstream.Response.InitializeRsp.OwnedGamesContainer.ProductIds.AddRange(Owners.GetOwnershipProdIds(userID));
-                        Downstream.Response.InitializeRsp.OwnedGamesContainer.VisibleOrInstallableProductIds.AddRange(Owners.GetOwnershipInstallable(userID));
-                        Downstream.Response.InitializeRsp.OwnedGames = Owners.GetOwnershipGames(userID);
                     }
 
                 }
@@ -244,10 +235,10 @@ namespace Core.DemuxResponders
                 if (UserInits[ClientNumb])
                 {
                     var userID = Globals.IdToUser[ClientNumb];
-                    var user = User.GetUser(userID);
-                    if (user != null)
+                    var owbasic = DBUser.GetOwnershipBasic(userID);
+                    if (owbasic != null)
                     {
-                        if (ServerConfig.DMX.GlobalOwnerShipCheck | user.Ownership.OwnedGamesIds.Contains(OwnershipToken.ProductId))
+                        if (ServerConfig.DMX.GlobalOwnerShipCheck || owbasic.OwnedGamesIds.Contains(OwnershipToken.ProductId))
                         {
                             var gameconfig = GameConfig.GetGameConfig(OwnershipToken.ProductId);
                             if (gameconfig != null)
@@ -285,10 +276,10 @@ namespace Core.DemuxResponders
                 if (UserInits[ClientNumb])
                 {
                     var userID = Globals.IdToUser[ClientNumb];
-                    var user = User.GetUser(userID);
-                    if (user != null)
+                    var ownershipBasic = DBUser.GetOwnershipBasic(userID);
+                    if (ownershipBasic != null)
                     {
-                        if (ServerConfig.DMX.GlobalOwnerShipCheck || user.Ownership.OwnedGamesIds.Contains(SignOwnership.ProductId))
+                        if (ServerConfig.DMX.GlobalOwnerShipCheck || ownershipBasic.OwnedGamesIds.Contains(SignOwnership.ProductId))
                         {
                             var gameconfig = GameConfig.GetGameConfig(SignOwnership.ProductId);
                             if (gameconfig != null)
@@ -407,10 +398,10 @@ namespace Core.DemuxResponders
                 if (UserInits[ClientNumb])
                 {
                     var userID = Globals.IdToUser[ClientNumb];
-                    var user = User.GetUser(userID);
-                    if (user != null)
+                    var ownershipBasic = DBUser.GetOwnershipBasic(userID);
+                    if (ownershipBasic != null)
                     {
-                        if (ServerConfig.DMX.GlobalOwnerShipCheck)
+                        if (ServerConfig.DMX.GlobalOwnerShipCheck || ownershipBasic.OwnedGamesIds.Contains(getUplayPCTicketReq.UplayId))
                         {
                             ticket = jwt.CreateUplayTicket(userID, getUplayPCTicketReq.UplayId, (int)getUplayPCTicketReq.Platform);
                             isSucces = true;
@@ -566,9 +557,9 @@ namespace Core.DemuxResponders
                     var user = User.GetUser(userID);
                     if (user != null)
                     {
-                        if ((ServerConfig.DMX.GlobalOwnerShipCheck | user.Ownership.OwnedGamesIds.Contains(getProductConfigReq.ProductId)) || ServerConfig.DMX.ownership.EnableConfigRequest)
+                        if (ServerConfig.DMX.ownership.EnableConfigRequest || user.Ownership.OwnedGamesIds.Contains(getProductConfigReq.ProductId))
                         {
-                            var gameconfig = GameConfig.GetGameConfig(getProductConfigReq.ProductId);
+                            var gameconfig = App.GetAppConfig(getProductConfigReq.ProductId);
                             if (gameconfig != null)
                             {
                                 Conf = File.ReadAllText("ServerFiles/ProductConfigs/" + gameconfig.configuration);
@@ -597,6 +588,16 @@ namespace Core.DemuxResponders
 
         public class Pusher
         {
+            public static void Pushes(string UserId, Push push)
+            {
+                if (Globals.UserToId.TryGetValue(UserId, out var ClientNumb))
+                {
+                    if (push?.OwnedGamePush != null) { OwnedGamePusher(ClientNumb, push.OwnedGamePush); }
+                    if (push?.UplayCoreGameInitializedPush != null) { UplayCoreGameInitializedPusher(ClientNumb, push.UplayCoreGameInitializedPush); }
+                    if (push?.SubscriptionPush != null) { SubscriptionPusher(ClientNumb, push.SubscriptionPush); }
+                }
+            }
+
             public static void Pushes(Guid ClientNumb, Push push)
             {
                 if (push?.OwnedGamePush != null) { OwnedGamePusher(ClientNumb, push.OwnedGamePush); }

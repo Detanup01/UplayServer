@@ -26,12 +26,23 @@
         public string configuration { get; set; } = string.Empty;
         public string store_configuration { get; set; } = string.Empty;
         public string storereference { get; set; } = string.Empty;
+        public string gamecode { get; set; } = string.Empty;
         public bool staging { get; set; } = false;
         public List<uint> associations { get; set; } = new();
-        public List<string> appflags { get; set; } = new();
+        public List<AppFlags> appflags { get; set; } = new();
         public Uplay.Ownership.GetUplayPCTicketReq.Types.Platform platform { get; set; } = Uplay.Ownership.GetUplayPCTicketReq.Types.Platform.Normal;
         public Uplay.Ownership.OwnedGame.Types.ProductType product_type { get; set; } = Uplay.Ownership.OwnedGame.Types.ProductType.Game;
         public Uplay.Ownership.OwnedGame.Types.State state { get; set; } = Uplay.Ownership.OwnedGame.Types.State.Released;
+    }
+
+    public enum AppFlags
+    { 
+        Downloadable,
+        Playable,
+        DenuvoForceTimeTrial,
+        Denuvo,
+        FromSubscription, 
+        FromExpiredSubscription
     }
 
     public class JAppBranches

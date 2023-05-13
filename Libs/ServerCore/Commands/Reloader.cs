@@ -1,4 +1,5 @@
 ﻿using Core.DemuxResponders;
+using Newtonsoft.Json;
 using SharedLib.Server.DB;
 using SharedLib.Server.Json;
 
@@ -9,17 +10,9 @@ namespace Core.Commands
         public static void ReloadAll(object obj)
         {
             Console.WriteLine("ReloadAll Started");
-            //owners
-            var cachefiles = Directory.GetFiles("ServerFiles/CacheFiles");
-            foreach (var cachefile in cachefiles)
-            {
-                var file = cachefile.Replace("ServerFiles/CacheFiles\\", "");
-                if (file.Contains(".ownershipcache.txt"))
-                {
-                    file = file.Replace(".ownershipcache.txt", "");
-                    Owners.MakeOwnershipFromTXT(file);
-                }
-            }
+
+            Console.WriteLine(JsonConvert.SerializeObject(App.GetAppBranches(323)));
+
             Console.WriteLine("ReloadAll Finished");
         }
 
