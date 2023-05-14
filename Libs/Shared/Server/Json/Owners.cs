@@ -12,12 +12,7 @@ namespace SharedLib.Server.Json
             return OwnershipCache.Parser.ParseJson(File.ReadAllText($"ServerFiles/CacheFiles/{UserId}.ownershipcache.txt"));
         }
 
-        public static Uplay.Ownership.OwnedGames GetOwnershipGames(string UserId)
-        {
-            return GetOwnershipGames(UserId);
-        }
-
-        public static Uplay.Ownership.OwnedGames GetOwnershipGames(string UserId, Dictionary<uint, uint> branches)
+        public static Uplay.Ownership.OwnedGames GetOwnershipGames(string UserId, Dictionary<uint, uint>? branches)
         {
             var ownedGames = new Uplay.Ownership.OwnedGames()
             { 
@@ -33,9 +28,17 @@ namespace SharedLib.Server.Json
                     if (app == null)
                         continue;
 
-                    var branch = branches[ow.ProductId];
+                    uint branch = 0;
+                    var branchList = App.GetAppBranches(ow.ProductId);
+                    if (branchList == null)
+                        continue;
+                    if (branches != null)
+                        branches.TryGetValue(ow.ProductId, out branch);
 
-                    App.GetAppBranches(ow.ProductId);
+                    var appbranch = branchList.Find(x=>x.branch_id == branch);
+
+                    if (appbranch == null)
+                        continue;
 
                     ownedGames.OwnedGames_.Add(new Uplay.Ownership.OwnedGame()
                     {
@@ -55,7 +58,7 @@ namespace SharedLib.Server.Json
                         TargetPartner = ow.TargetPartner,
                         State = (uint)app.state,
                         StoreData = new()
-                        { 
+                        {
                             StoreRef = app.storereference,
                             PromotionScore = 0,
                             Associations = { app.associations },
@@ -85,45 +88,20 @@ namespace SharedLib.Server.Json
                         Platform = (uint)app.platform,
                         ProductType = (uint)app.product_type,
                         TitleId = 0,
-                        LatestManifest = ""
+                        LatestManifest = appbranch.latest_manifest,
+                        EncryptionKey = appbranch.encryption_key,
+                        AvailableBranches = 
+                        { 
+                            new Uplay.Ownership.OwnedGame.Types.ProductBranch()
+                            { 
+                                BranchId = appbranch.branch_id,
+                                BranchName = appbranch.branch_name
+                            }
+                        }
+
                     });
                 }
             }
-
-            /*
-
-            var owship = GetOwnershipTXT(UserId);
-            var owcount = owship.OwnedGames.Count();
-            for (int owhelper = 0; owhelper < owcount; owhelper++)
-            {
-                var og = owship.OwnedGames[owhelper];
-                Uplay.Ownership.OwnedGame ownedgame = new()
-                {
-                    ProductId = og.ProductId,
-                    ActivationIds = { og.ActivationIds },
-                    ProductAssociations = { og.ActivationIds },
-                    Owned = true,
-                    State = 3,
-                    GameCode = og.GameCode,
-                    Balance = 0,
-                    BrandId = 0,
-                    EncryptionKey = string.Empty,
-                    LockedBySubscription = false,
-                    ActivationType = Uplay.Ownership.OwnedGame.Types.ActivationType.Purchase,
-                    DenuvoActivationOverwrite = Uplay.Ownership.OwnedGame.Types.DenuvoActivationOverwrite.Default,
-                    PackageOwnershipState = Uplay.Ownership.OwnedGame.Types.PackageOwnershipState.Full,
-                    ProductType = og.ProductType
-                };
-                //var config = GameConfig.GetGameConfig(og.ProductId, branchId);
-                var config = App.GetAppConfig(og.ProductId);
-                if (config != null)
-                {
-                    ownedgame.Configuration = File.ReadAllText("ServerFiles/ProductConfigs/" + config.configuration);
-                }
-                //App.ge
-                ownedGames.OwnedGames_.Add(ownedgame);
-            }
-            */
             return ownedGames;
         }
 
@@ -159,5 +137,7 @@ namespace SharedLib.Server.Json
 
             return ownedgame;
         }
+
+        //TODO: OWnership Ownedgames parse and save to DB
     }
 }

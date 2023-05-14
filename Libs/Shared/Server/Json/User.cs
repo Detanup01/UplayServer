@@ -36,21 +36,11 @@ namespace SharedLib.Server.Json
             public uint? GameId { get; set; }
             public string? Key { get; set; }
             public string? Value { get; set; }
-            public CGameSession GameSession { get; set; } = new();
         }
         public class CPlaytime
         {
             public uint uplayId { get; set; }
             public uint playTime { get; set; }
-        }
-        public class CGameSession
-        {
-            public ulong? SessionId { get; set; }
-            public string? SessionIdV2 { get; set; }
-            public string SessionData { get; set; } = string.Empty;
-            public bool Joinable { get; set; }
-            public uint? Size { get; set; }
-            public uint? MaxSize { get; set; }
         }
 
         public static User? GetUser(string UserId)

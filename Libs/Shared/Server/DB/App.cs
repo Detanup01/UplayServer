@@ -97,23 +97,17 @@ namespace SharedLib.Server.DB
             using (var db = new LiteDatabase(DBName))
             {
                 var col = db.GetCollection<JAppConfig>(AppConfig);
-
-                var fId = col.FindOne(X => X.productId == jAppConfig.productId).Id;
-                jAppConfig.Id = fId;
                 col.Update(jAppConfig);
             }
         }
 
-        public static JAppConfig GetAppConfig(uint productId)
+        public static JAppConfig? GetAppConfig(uint productId)
         {
             using (var db = new LiteDatabase(DBName))
             {
                 var col = db.GetCollection<JAppConfig>(AppConfig);
-                var x = col.Query().Where(x => x.productId == productId);
-                if (x.Count() > 0)
-                    return x.First();
-                else
-                    return new() { productId = productId };
+                var x = col.FindOne(x => x.productId == productId);
+                return x;
             }
         }
 
@@ -123,8 +117,9 @@ namespace SharedLib.Server.DB
             {
                 var col = db.GetCollection<JAppConfig>(AppConfig);
 
-                var found = col.Find(X => X.productId == productId).First();
-                col.Delete(found.Id);
+                var found = col.FindOne(X => X.productId == productId);
+                if (found != null)
+                    col.Delete(found.Id);
             }
         }
 

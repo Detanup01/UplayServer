@@ -213,17 +213,24 @@ namespace Core.DemuxResponders
                     Downstream.Response.InitializeRsp.OwnedGamesContainer.Signature = GetOwnerSignature(userID);
                     Downstream.Response.InitializeRsp.OwnedGamesContainer.ProductIds.AddRange(owbasic.OwnedGamesIds);
                     Downstream.Response.InitializeRsp.OwnedGamesContainer.VisibleOrInstallableProductIds.AddRange(owbasic.OwnedGamesIds);
-                    Downstream.Response.InitializeRsp.OwnedGames = Owners.GetOwnershipGames(userID);
+                    Dictionary<uint, uint>? branches = new();
                     if (Initializer.Branches != null)
                     {
                         foreach (var item in Initializer.Branches)
                         {
-                            //item.ProductId;
-                            //item.ActiveBranchId;
-                            //item.
-                    }
-                    }
+                            //TODO: Check for password!
 
+                            branches.Add(item.ProductId,item.ActiveBranchId);
+                        }
+                    }
+                    if (branches.Any())
+                    {
+                        Downstream.Response.InitializeRsp.OwnedGames = Owners.GetOwnershipGames(userID, branches);
+                    }
+                    else
+                    {
+                        Downstream.Response.InitializeRsp.OwnedGames = Owners.GetOwnershipGames(userID, null);
+                    }
                 }
             }
 
@@ -554,10 +561,10 @@ namespace Core.DemuxResponders
                 if (UserInits[ClientNumb])
                 {
                     var userID = Globals.IdToUser[ClientNumb];
-                    var user = User.GetUser(userID);
+                    var user = DBUser.GetOwnershipBasic(userID);
                     if (user != null)
                     {
-                        if (ServerConfig.DMX.ownership.EnableConfigRequest || user.Ownership.OwnedGamesIds.Contains(getProductConfigReq.ProductId))
+                        if (ServerConfig.DMX.ownership.EnableConfigRequest || user.OwnedGamesIds.Contains(getProductConfigReq.ProductId))
                         {
                             var gameconfig = App.GetAppConfig(getProductConfigReq.ProductId);
                             if (gameconfig != null)
