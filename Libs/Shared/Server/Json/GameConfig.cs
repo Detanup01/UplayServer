@@ -63,27 +63,5 @@ namespace SharedLib.Server.Json
             }
             return GameConfig;
         }
-
-        public static GameConfig? GetGameConfig(uint ProdId, uint BranchId)
-        {
-            if (BranchId == uint.MaxValue | BranchId == uint.MinValue)
-                return GetGameConfig(ProdId);
-            GameConfig? GameConfig = null;
-            foreach (var file in Directory.GetFiles("ServerFiles/ProductConfigs"))
-            {
-                var filename = file.Replace("_Config.json", "").Replace("ServerFiles/ProductConfigs\\", "");
-                if (filename.Contains('_'))
-                {
-                    var filesplit = filename.Split("_");
-                    var id = filesplit[0];
-                    var branch = filesplit[1];
-                    if (ProdId.ToString() == id && BranchId.ToString() == branch)
-                    {
-                        GameConfig = JsonConvert.DeserializeObject<GameConfig>(File.ReadAllText(file));
-                    }
-                }
-            }
-            return GameConfig;
-        }
     }
 }

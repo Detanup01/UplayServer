@@ -43,6 +43,7 @@ namespace Core.DemuxResponders
                 if (req?.UrlReqCovid != null) { Url(ClientNumb, req.UrlReqCovid); }
                 IsIdDone = true;
             }
+
             public static void Initialize(Guid ClientNumb, InitializeReq initialize)
             {
                 bool TokenValid = false;

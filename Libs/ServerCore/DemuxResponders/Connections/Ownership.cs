@@ -516,21 +516,14 @@ namespace Core.DemuxResponders
                             var bId = switchProductBranchReq.SpecifiedBranch.BranchId;
                             var pass = switchProductBranchReq.SpecifiedBranch.Password;
                             var pid = switchProductBranchReq.SpecifiedBranch.ProductId;
-                            var game = GameConfig.GetGameConfig(pid, bId);
-                            if (game != null)
+
+                            var branch = App.GetAppBranch(pid,bId);
+                            if (branch != null)
                             {
-                                if (game.branches.current_branch_id == bId)
+                                if (branch.branch_password == pass)
                                 {
-                                    var branches = game.branches.product_branches;
-                                    foreach (var branch in branches)
-                                    {
-                                        if (branch.branch_password == pass)
-                                        {
-                                            ownedGames.OwnedGames_.Add(Owners.GetOwnershipGame(userId, pid, bId));
-                                            result = SwitchProductBranchRsp.Types.Result.Success;
-                                            break;
-                                        }
-                                    }
+                                    ownedGames.OwnedGames_.Add(Owners.GetOwnershipGame(userId, pid, bId));
+                                    result = SwitchProductBranchRsp.Types.Result.Success;
                                 }
 
                             }

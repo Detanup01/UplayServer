@@ -10,7 +10,7 @@ namespace SharedLib.Server.DB
         public readonly static string OwnershipBasic = "OwnershipBasic";
         public readonly static string Ownership = "Ownership";
         public readonly static string Activity = "Activity";
-        public readonly static string Friend = "Friend";
+        public readonly static string Friend = "Friends";
         public readonly static string Playtime = "Playtime";
         public readonly static string GameSession = "GameSession";
 
@@ -134,13 +134,13 @@ namespace SharedLib.Server.DB
             }
         }
 
-        public static JOwnership? GetOwnership(string UserId)
+        public static JOwnership? GetOwnership(string UserId, uint productId)
         {
             using (var db = new LiteDatabase(DBName))
             {
                 var col = db.GetCollection<JOwnership>(Ownership);
 
-                var fId = col.FindOne(X => X.UserId == UserId);
+                var fId = col.FindOne(X => X.UserId == UserId && X.ProductId == productId);
                 if (fId != null)
                 {
                     return fId;
@@ -239,16 +239,31 @@ namespace SharedLib.Server.DB
             }
         }
 
-        public static JFriend? GetFriend(string UserId)
+        public static JFriend? GetFriend(string UserId, string FriendUserId)
         {
             using (var db = new LiteDatabase(DBName))
             {
                 var col = db.GetCollection<JFriend>(Friend);
 
-                var fId = col.FindOne(X => X.UserId == UserId);
+                var fId = col.FindOne(X => X.UserId == FriendUserId && X.IdOfFriend == UserId);
                 if (fId != null)
                 {
                     return fId;
+                }
+            }
+            return null;
+        }
+
+        public static List<JFriend>? GetFriends(string UserId)
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JFriend>(Friend);
+
+                var fId = col.Find(X => X.IdOfFriend == UserId);
+                if (fId != null)
+                {
+                    return fId.ToList();
                 }
             }
             return null;

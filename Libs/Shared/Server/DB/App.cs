@@ -147,12 +147,12 @@ namespace SharedLib.Server.DB
             }
         }
 
-        public static JAppBranches? GetAppBranch(uint productId)
+        public static JAppBranches? GetAppBranch(uint productId, uint branchId)
         {
             using (var db = new LiteDatabase(DBName))
             {
                 var col = db.GetCollection<JAppBranches>(AppBranches);
-                var x = col.FindOne(x => x.productId == productId);
+                var x = col.FindOne(x => x.productId == productId && x.branch_id == branchId);
                 return x;
             }
         }

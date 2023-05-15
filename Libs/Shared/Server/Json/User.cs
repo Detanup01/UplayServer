@@ -7,15 +7,7 @@ namespace SharedLib.Server.Json
         public string UserId { get; set; }
         public string Name { get; set; }
         public List<CFriends> Friends { get; set; } = new();
-        public COwnership Ownership { get; set; } = new();
         public CActivity Activity { get; set; } = new();
-        public List<CPlaytime> Playtime { get; set; } = new();
-
-        public class COwnership
-        {
-            public List<uint> OwnedGamesIds { get; set; } = new();
-            public uint UbiPlus { get; set; }
-        }
 
         public class CFriends
         {
@@ -26,7 +18,6 @@ namespace SharedLib.Server.Json
             public bool IsBlacklisted { get; set; } = false;
             public int Relation { get; set; } = 0;
             public CActivity Activity { get; set; } = new();
-            public List<CPlaytime> Playtime { get; set; } = new();
         }
         public class CActivity
         {
@@ -36,11 +27,6 @@ namespace SharedLib.Server.Json
             public uint? GameId { get; set; }
             public string? Key { get; set; }
             public string? Value { get; set; }
-        }
-        public class CPlaytime
-        {
-            public uint uplayId { get; set; }
-            public uint playTime { get; set; }
         }
 
         public static User? GetUser(string UserId)

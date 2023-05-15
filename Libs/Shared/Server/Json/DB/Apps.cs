@@ -19,7 +19,6 @@
         public uint productId { get; set; }
         public uint config_version { get; set; } = 0;
         public uint download_version { get; set; } = 0;
-        public uint session_max_size { get; set; } = 4;
         public string product_name { get; set; } = string.Empty;
         public string space_id { get; set; } = string.Empty;
         public string app_id { get; set; } = string.Empty;
@@ -33,6 +32,15 @@
         public Uplay.Ownership.GetUplayPCTicketReq.Types.Platform platform { get; set; } = Uplay.Ownership.GetUplayPCTicketReq.Types.Platform.Normal;
         public Uplay.Ownership.OwnedGame.Types.ProductType product_type { get; set; } = Uplay.Ownership.OwnedGame.Types.ProductType.Game;
         public Uplay.Ownership.OwnedGame.Types.State state { get; set; } = Uplay.Ownership.OwnedGame.Types.State.Released;
+
+        //  Custom Non Ownership related
+        public uint session_max_size { get; set; } = 4;
+        public Richpresence RichPresence { get; set; } = new();
+        public class Richpresence
+        {
+            public uint presence_id { get; set; } = 0;
+            public List<string> Available_KeyValues = new();
+        }
     }
 
     public enum AppFlags

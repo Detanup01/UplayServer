@@ -22,7 +22,7 @@ namespace Core.HTTP
             */
             if (url.Contains("?"))
             {
-                JOwnershipBasic ownershipBasic = null;
+                JOwnershipBasic? ownershipBasic = null;
                 var reason = "FAILED";
                 var productid = url.Replace("/store/?p=", "");
                 if (!uint.TryParse(productid, out var pid))
@@ -45,7 +45,7 @@ namespace Core.HTTP
                     }
                     else
                     {
-                        var config = GameConfig.GetGameConfig(pid);
+                        var config = App.GetAppConfig(pid);
                         if (config != null)
                         {
                             ownershipBasic.OwnedGamesIds.Add(pid);

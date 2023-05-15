@@ -1,20 +1,13 @@
-﻿using Google.Protobuf;
-using Uplay.OwnershipCache;
-using SharedLib.Shared;
+﻿using Uplay.Ownership;
 using SharedLib.Server.DB;
 
 namespace SharedLib.Server.Json
 {
     public class Owners
     {
-        public static OwnershipCache GetOwnershipTXT(string UserId)
+        public static OwnedGames GetOwnershipGames(string UserId, Dictionary<uint, uint>? branches)
         {
-            return OwnershipCache.Parser.ParseJson(File.ReadAllText($"ServerFiles/CacheFiles/{UserId}.ownershipcache.txt"));
-        }
-
-        public static Uplay.Ownership.OwnedGames GetOwnershipGames(string UserId, Dictionary<uint, uint>? branches)
-        {
-            var ownedGames = new Uplay.Ownership.OwnedGames()
+            var ownedGames = new OwnedGames()
             { 
                 OwnedGames_ = { }
             };
@@ -40,104 +33,159 @@ namespace SharedLib.Server.Json
                     if (appbranch == null)
                         continue;
 
-                    ownedGames.OwnedGames_.Add(new Uplay.Ownership.OwnedGame()
-                    {
-                        PendingKeystorageOwnership = false,
-                        ProductId = ow.ProductId,
-                        ActivationIds = { ow.ActivationIds },
-                        Owned = ow.IsOwned,
-                        UplayId = ow.ProductId,
-                        PackageOwnershipState = ow.PackageState,
-                        LockedBySubscription = ow.IsLockedSubscription,
-                        SubscriptionTypes = { ow.Subscriptions },
-                        CdKey = ow.CD_Key,
-                        OrbitProductId = ow.ProductId,
-                        DenuvoActivationOverwrite = ow.DenuvoActivation,
-                        SuspensionType = ow.Suspension,
-                        ActivationType = ow.Activation,
-                        TargetPartner = ow.TargetPartner,
-                        State = (uint)app.state,
-                        StoreData = new()
-                        {
-                            StoreRef = app.storereference,
-                            PromotionScore = 0,
-                            Associations = { app.associations },
-                            Configuration = app.store_configuration
-                        },
-                        IngameStoreData = new()
-                        {
-                            StoreRef = app.storereference,
-                            PromotionScore = 0,
-                            Associations = { app.associations },
-                            Configuration = app.store_configuration
-                        },
-                        UbiservicesSpaceId = app.space_id,
-                        UbiservicesAppId = app.app_id,
-                        ActiveBranchId = branch,
-                        ProductAssociations = { app.associations },
-                        Balance = 0,
-                        BrandId = 0,
-                        Configuration = app.configuration,
-                        ConfigVersion = app.config_version,
-                        DeprecatedTestConfig = false,
-                        DownloadId = app.productId,
-                        DownloadVersion = app.download_version,
-                        GameCode = app.gamecode,
-                        OrbitGameVersion = app.productId,
-                        OrbitGameVersionUrl = "",
-                        Platform = (uint)app.platform,
-                        ProductType = (uint)app.product_type,
-                        TitleId = 0,
-                        LatestManifest = appbranch.latest_manifest,
-                        EncryptionKey = appbranch.encryption_key,
-                        AvailableBranches = 
-                        { 
-                            new Uplay.Ownership.OwnedGame.Types.ProductBranch()
-                            { 
-                                BranchId = appbranch.branch_id,
-                                BranchName = appbranch.branch_name
-                            }
-                        }
-
-                    });
+                    var game = GetOwnershipGame(UserId, ow.ProductId, branch);
+                    if (game == null)
+                        continue;
+                    
+                    ownedGames.OwnedGames_.Add(game);
                 }
             }
             return ownedGames;
         }
 
-        public static Uplay.Ownership.OwnedGame GetOwnershipGame(string UserId, uint productId, uint branchId)
+        public static OwnedGame? GetOwnershipGame(string UserId, uint productId, uint branchId)
         {
-            var owship = GetOwnershipTXT(UserId);
-            var og = owship.OwnedGames.Where(x=>x.ProductId == productId).FirstOrDefault();
-            Uplay.Ownership.OwnedGame ownedgame = new()
+            var owbasic = DBUser.GetOwnershipBasic(UserId);
+            if (owbasic == null)
+                return null;
+
+            var ow = DBUser.GetOwnership(UserId, productId);
+            if (ow == null)
+                return null;
+
+            var app = App.GetAppConfig(productId);
+            if (app == null)
+                return null;
+
+            uint branch = 0;
+            var appbranch = App.GetAppBranch(productId, branchId);
+            if (appbranch == null)
+                return null;
+
+
+            List<OwnedGame.Types.ProductBranch> productBranches = new();
+
+            if (owbasic.UnlockedBranches.TryGetValue(productId, out var branchlist))
             {
-                ProductId = og.ProductId,
-                ActivationIds = { og.ActivationIds },
-                ProductAssociations = { og.ActivationIds },
-                CdKey = og.CdKey,
-                Owned = true,
-                State = 3,
-                GameCode = og.GameCode,
-                Balance = 0,
-                BrandId = 0,
-                EncryptionKey = string.Empty,
-                LockedBySubscription = false,
-                ActivationType = Uplay.Ownership.OwnedGame.Types.ActivationType.Purchase,
-                DenuvoActivationOverwrite = Uplay.Ownership.OwnedGame.Types.DenuvoActivationOverwrite.Default,
-                PackageOwnershipState = Uplay.Ownership.OwnedGame.Types.PackageOwnershipState.Full
-            };
-            var config = GameConfig.GetGameConfig(og.ProductId, branchId);
-            if (config != null)
-            {
-                ownedgame.ActiveBranchId = config.branches.active_branch_id;
-                ownedgame.Configuration = File.ReadAllText("ServerFiles/ProductConfigs/" + config.configuration);
-                ownedgame.LatestManifest = config.latest_manifest;
-                ownedgame.ActiveBranchId = config.branches.active_branch_id;
+                foreach (var branch_id in branchlist)
+                {
+                    var branch_app = App.GetAppBranch(productId, branch_id);
+                    if (branch_app != null)
+                    {
+                        productBranches.Add(new OwnedGame.Types.ProductBranch()
+                        { 
+                            BranchId = branch_id,
+                            BranchName = branch_app.branch_name
+
+                        });
+                    }
+                }
             }
 
-            return ownedgame;
+            return new OwnedGame()
+            {
+                PendingKeystorageOwnership = false,
+                ProductId = ow.ProductId,
+                ActivationIds = { ow.ActivationIds },
+                Owned = ow.IsOwned,
+                UplayId = ow.ProductId,
+                PackageOwnershipState = ow.PackageState,
+                LockedBySubscription = ow.IsLockedSubscription,
+                SubscriptionTypes = { ow.Subscriptions },
+                CdKey = ow.CD_Key,
+                OrbitProductId = ow.ProductId,
+                DenuvoActivationOverwrite = ow.DenuvoActivation,
+                SuspensionType = ow.Suspension,
+                ActivationType = ow.Activation,
+                TargetPartner = ow.TargetPartner,
+                State = (uint)app.state,
+                StoreData = new()
+                {
+                    StoreRef = app.storereference,
+                    PromotionScore = 0,
+                    Associations = { app.associations },
+                    Configuration = app.store_configuration
+                },
+                IngameStoreData = new()
+                {
+                    StoreRef = app.storereference,
+                    PromotionScore = 0,
+                    Associations = { app.associations },
+                    Configuration = app.store_configuration
+                },
+                UbiservicesSpaceId = app.space_id,
+                UbiservicesAppId = app.app_id,
+                ActiveBranchId = branch,
+                ProductAssociations = { app.associations },
+                Balance = 0,
+                BrandId = 0,
+                Configuration = File.ReadAllText("ServerFiles/ProductConfigs/" + app.configuration),
+                ConfigVersion = app.config_version,
+                DeprecatedTestConfig = false,
+                DownloadId = app.productId,
+                DownloadVersion = app.download_version,
+                GameCode = app.gamecode,
+                OrbitGameVersion = app.productId,
+                OrbitGameVersionUrl = "",
+                Platform = (uint)app.platform,
+                ProductType = (uint)app.product_type,
+                TitleId = 0,
+                LatestManifest = appbranch.latest_manifest,
+                EncryptionKey = appbranch.encryption_key,
+                AvailableBranches = { productBranches },
+                UbiservicesDynamicConfig = new()    //Currently No option to set these values
+                {
+                    GfnAppId = app.app_id,
+                    LunaAppId = app.app_id
+                }
+            };
         }
 
-        //TODO: OWnership Ownedgames parse and save to DB
+        /// <summary>
+        /// Adding Dumped OwnedGames to the Database
+        /// </summary>
+        /// <param name="file"></param>
+        public static void AddOwnershipGameToDB(string file)
+        {
+            var ow = OwnedGames.Parser.ParseFrom(File.ReadAllBytes(file));
+
+            foreach (var games in ow.OwnedGames_)
+            {
+                string branchname = string.Empty;
+                var currentbrach = games.AvailableBranches.ToList().Find(x => x.BranchId == games.ActiveBranchId);
+                if (currentbrach != null)
+                    branchname = currentbrach.BranchName;
+
+                File.WriteAllText($"ServerFiles/ProductConfigs/{games.ProductId}.yml", games.Configuration, System.Text.Encoding.UTF8);
+
+
+                App.AddAppBranches(new DB.JAppBranches()
+                { 
+                    latest_manifest = games.LatestManifest,
+                    branch_id = games.ActiveBranchId,
+                    encryption_key = games.EncryptionKey,
+                    productId = games.ProductId,
+                    branch_name = branchname
+                });
+
+                App.AddAppConfig(new DB.JAppConfig()
+                { 
+                    productId = games.ProductId,
+                    staging = false,
+                    state = (OwnedGame.Types.State)games.State,
+                    space_id = games.UbiservicesSpaceId,
+                    appflags = new() { DB.AppFlags.Downloadable, DB.AppFlags.Playable },
+                    app_id = games.UbiservicesSpaceId,
+                    associations = games.ProductAssociations.ToList(),
+                    configuration = $"{games.ProductId}.yml",
+                    download_version = games.DownloadVersion,
+                    gamecode = games.GameCode,
+                    config_version = games.ConfigVersion,
+                    product_type = (OwnedGame.Types.ProductType)games.ProductType,
+                    platform = (GetUplayPCTicketReq.Types.Platform)games.Platform,
+                    product_name = $"Product {games.ProductId}",
+                });
+            }       
+        }
     }
 }
