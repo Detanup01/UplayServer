@@ -1,0 +1,142 @@
+# All the functions and parameters are inside uplay_r1(64).dll
+# I used IDA to reverse those.
+#
+# unkown:
+# IDA didnt show any specific things for this
+#
+bool UPLAY_ACH_EarnAchievement(uint aAchivementId, IntPtr aOverlapped)
+bool UPLAY_ACH_GetAchievementImage(uint aId, IntPtr aOutImage, IntPtr aOverlapped)
+bool UPLAY_ACH_GetAchievements(uint aFilter, IntPtr aAccountIdUtf8OrNULLIfCurrentUser, IntPtr aOutAchievementList, IntPtr aOverlapped)
+bool UPLAY_ACH_ReleaseAchievementImage(IntPtr aImage)
+bool UPLAY_ACH_ReleaseAchievementList(IntPtr aList)
+bool UPLAY_ACH_Write(IntPtr aAchievement)
+bool UPLAY_AVATAR_GetBitmap(IntPtr aAvatarId, int aAvatarSize, IntPtr aOutRGBA, IntPtr aOverlapped)
+bool UPLAY_AVATAR_GetAvatarIdForCurrentUser(IntPtr aOutAvatarId, IntPtr aOverlapped)
+bool UPLAY_AVATAR_Get(IntPtr aAccountIdUtf8, int aAvatarSize, IntPtr aOutRGBA, IntPtr aOverlapped)
+bool UPLAY_AVATAR_Release(IntPtr aRGBA)
+bool UPLAY_CHAT_GetHistory(IntPtr aAccountIdUtf8, uint aMaxNumberOfMessages, IntPtr aOutHistoryList, IntPtr aOverlapped)
+bool UPLAY_CHAT_Init(int aFlags)
+bool UPLAY_CHAT_ReleaseHistoryList(IntPtr aHistoryList)
+bool UPLAY_CHAT_SendMessage(IntPtr aAccountIdUtf8, IntPtr aMessageUtf8, IntPtr aData)
+bool UPLAY_CHAT_SetMessagesRead(IntPtr aAccountIdUtf8)
+bool UPLAY_ClearGameSession()
+bool UPLAY_FRIENDS_AddPlayedWith(IntPtr aDescriptionUtf8, IntPtr aAccountIdListUtf8, uint aAccountIdListLength)
+bool UPLAY_FRIENDS_AddToBlackList(IntPtr aAccountIdUtf8, IntPtr aOverlapped)
+bool UPLAY_FRIENDS_DisableFriendMenuItem(uint aId)
+bool UPLAY_FRIENDS_EnableFriendMenuItem(uint aId uint aMenuItemMode, uint aFilter)
+bool UPLAY_FRIENDS_GetFriendList(uint aFriendListFilter, IntPtr aOutFriendList)
+bool UPLAY_FRIENDS_Init(uint aFlags)
+bool UPLAY_FRIENDS_InviteToGame(IntPtr aAccountIdUtf8, IntPtr aOverlapped)
+bool UPLAY_FRIENDS_IsBlackListed(IntPtr aAccountIdUtf8)
+bool UPLAY_FRIENDS_IsFriend(IntPtr aAccountIdUtf8)
+bool UPLAY_FRIENDS_RemoveFriendship(IntPtr aAccountIdUtf8, IntPtr aOverlapped)
+bool UPLAY_FRIENDS_RemoveFromBlackList(IntPtr aAccountIdUtf8, IntPtr aOverlapped)
+bool UPLAY_FRIENDS_RequestFriendship(IntPtr aSearchStringUtf8, IntPtr aOverlapped)
+bool UPLAY_FRIENDS_RespondToGameInvite(uint aInvitationId, IntPtr aAccept)
+bool UPLAY_FRIENDS_ShowFriendSelectionUI(IntPtr aAccountIdFilterListUTF8, uint aAccountIdFilterListLength, IntPtr aOverlapped, IntPtr aOutResult)
+bool UPLAY_FRIENDS_ShowInviteFriendsToGameUI(IntPtr aAccountIdFilterListUtf8, uint aAccountIdFilterListLength)
+bool UPLAY_GetLastError(IntPtr aOutErrorString)
+bool UPLAY_GetNextEvent(IntPtr aEvent)
+bool UPLAY_GetOverlappedOperationResult(IntPtr aOverlapped, IntPtr aOutResult)
+bool UPLAY_HasOverlappedOperationCompleted(IntPtr aOverlapped)
+bool UPLAY_INSTALLER_AreChunksInstalled(IntPtr aChunkIds, uint aChunkCount)
+bool UPLAY_INSTALLER_GetChunkIdsFromTag(IntPtr aTagUtf8, IntPtr aOutChunkIdList)
+bool UPLAY_INSTALLER_GetChunks(IntPtr aOutChunkIdList)
+IntPtr UPLAY_INSTALLER_GetLanguageUtf8()
+bool UPLAY_INSTALLER_Init(uint aFlags)
+bool UPLAY_INSTALLER_ReleaseChunkIdList(IntPtr aChunkIdList)
+bool UPLAY_INSTALLER_UpdateInstallOrder(IntPtr aChunkIds, uint aChunkCount)
+bool UPLAY_Init()
+bool UPLAY_METADATA_ClearContinuousTag(IntPtr aStringNameUtf8)
+bool UPLAY_METADATA_SetContinuousTag(IntPtr aStringNameUtf8, IntPtr aStringValueUtf8)
+bool UPLAY_METADATA_SetSingleEventTag(IntPtr aStringNameUtf8, IntPtr aStringValueUtf8)
+bool UPLAY_OPTIONS_Apply(IntPtr aFileHandle, IntPtr aKeyValueList, IntPtr aOverlapped)
+bool UPLAY_OPTIONS_Close(IntPtr aFileHandle)
+bool UPLAY_OPTIONS_Enumerate(aFileHandle,aOutKeyValueList,aOverlapped)
+bool UPLAY_OPTIONS_Get(aKeyValueList,aKey)
+bool UPLAY_OPTIONS_Open(aName)
+bool UPLAY_OPTIONS_ReleaseKeyValueList(aKeyValueList)
+bool UPLAY_OPTIONS_Set(aKeyValueList,aKey,aValue)
+bool UPLAY_OPTIONS_SetInGameState(aFlags)
+bool UPLAY_OVERLAY_SetShopUrl(aUrl,aOverlapped)
+bool UPLAY_OVERLAY_Show(IntPtr aOverlaySection, IntPtr aOverlapped)
+bool UPLAY_OVERLAY_ShowBrowserUrl(aUrlUtf8)
+bool UPLAY_OVERLAY_ShowFacebookAuthentication(aFacebookAppId,aRedirectUri,aOverlapped)
+bool UPLAY_OVERLAY_ShowMicroApp(aAppName,aMicroAppParamList,aOverlapped)
+bool UPLAY_OVERLAY_ShowNotification(aNotificationId)
+bool UPLAY_OVERLAY_ShowShopUrl(aUrlUtf8)
+bool UPLAY_PARTY_DisablePartyMemberMenuItem()
+bool UPLAY_PARTY_EnablePartyMemberMenuItem()
+bool UPLAY_PARTY_GetFullMemberList
+bool UPLAY_PARTY_GetId
+bool UPLAY_PARTY_GetInGameMemberList
+bool UPLAY_PARTY_Init
+bool UPLAY_PARTY_InvitePartyToGame
+bool UPLAY_PARTY_InviteToParty
+bool UPLAY_PARTY_IsInParty
+bool UPLAY_PARTY_IsPartyLeader
+bool UPLAY_PARTY_PromoteToLeader
+bool UPLAY_PARTY_RespondToGameInvite
+bool UPLAY_PARTY_SetGuest(IntPtr guestId, IntPtr aOverlapped)
+bool UPLAY_PARTY_SetUserData
+bool UPLAY_PARTY_ShowGameInviteOverlayUI
+bool UPLAY_PRESENCE_SetPresence(uint presenceId, IntPtr tokens)
+bool UPLAY_PRODUCT_GetProductList(aOverlapped,aOutProductList)
+bool UPLAY_PRODUCT_ReleaseProductList(aProductList)
+bool UPLAY_PeekNextEvent()
+bool UPLAY_Quit()
+bool UPLAY_Release(IntPtr aPointer)
+bool UPLAY_SAVE_Close
+bool UPLAY_SAVE_GetSavegames
+bool UPLAY_SAVE_Open
+bool UPLAY_SAVE_Read
+bool UPLAY_SAVE_ReleaseGameList
+bool UPLAY_SAVE_Remove
+bool UPLAY_SAVE_SetName
+bool UPLAY_SAVE_Write
+bool UPLAY_STORE_Checkout
+bool UPLAY_STORE_GetPartner
+bool UPLAY_STORE_GetProducts
+bool UPLAY_STORE_IsEnabled
+bool UPLAY_STORE_ReleaseProductsList
+bool UPLAY_STORE_ShowProductDetails
+bool UPLAY_STORE_ShowProducts
+bool UPLAY_SetGameSession
+bool UPLAY_SetLanguage
+bool UPLAY_Start(uint aUplayId, uint aFlags)
+bool UPLAY_Startup(uint aUplayId, uint aGameVersion,IntPtr aLanguageCountryCodeUtf8)
+bool UPLAY_USER_ClearGameSession
+bool UPLAY_USER_ConsumeItem
+UPLAY_USER_GetAccountId
+IntPtr UPLAY_USER_GetAccountIdUtf8()
+UPLAY_USER_GetCPUScore
+UPLAY_USER_GetCdKeyUtf8
+UPLAY_USER_GetCdKeys
+UPLAY_USER_GetConsumableItems
+UPLAY_USER_GetCredentials
+UPLAY_USER_GetEmail
+UPLAY_USER_GetEmailUtf8
+UPLAY_USER_GetGPUScore
+UPLAY_USER_GetGPUScoreConfidenceLevel
+UPLAY_USER_GetNameUtf8
+UPLAY_USER_GetPassword
+UPLAY_USER_GetPasswordUtf8
+UPLAY_USER_GetProfile
+IntPtr UPLAY_USER_GetTicketUtf8()
+UPLAY_USER_GetUsername
+UPLAY_USER_GetUsernameUtf8
+UPLAY_USER_IsConnected
+bool UPLAY_USER_IsInOfflineMode()
+bool UPLAY_USER_IsOwned(uint aUplayId)
+UPLAY_USER_ReleaseCdKeyList
+UPLAY_USER_ReleaseConsumeItemResult
+UPLAY_USER_ReleaseProfile
+UPLAY_USER_SetGameSession
+bool UPLAY_Update()
+bool UPLAY_WIN_GetActions
+bool UPLAY_WIN_GetRewards
+bool UPLAY_WIN_GetUnitBalance
+bool UPLAY_WIN_RefreshActions
+bool UPLAY_WIN_ReleaseActionList
+bool UPLAY_WIN_ReleaseRewardList
+bool UPLAY_WIN_SetActionsCompleted
