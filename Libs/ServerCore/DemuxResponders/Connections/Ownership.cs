@@ -5,6 +5,7 @@ using Uplay.Ownership;
 using SharedLib.Shared;
 using SharedLib.Server.DB;
 using SharedLib.Server.Json;
+using SharedLib.Server;
 
 namespace Core.DemuxResponders
 {
@@ -78,13 +79,13 @@ namespace Core.DemuxResponders
 
         public static ByteString GetSignofOwnership(string UserId, uint ProdId)
         {
-            var gameconfig = GameConfig.GetGameConfig(ProdId);
-            if (gameconfig != null)
+            var ownership = DBUser.GetOwnership(UserId, ProdId);
+            if (ownership != null)
             {
                 var userId64 = CompressB64.GetZstdB64(UserId);
-                string gameconfigb64 = CompressB64.GetZstdB64(JsonConvert.SerializeObject(gameconfig));
+                string ownershipb64 = CompressB64.GetZstdB64(JsonConvert.SerializeObject(ownership));
 
-                return ByteString.CopyFrom(Encoding.UTF8.GetBytes(CompressB64.GetZstdB64(CompressB64.GetDeflateB64(userId64 + "_" + gameconfigb64))));
+                return ByteString.CopyFrom(Encoding.UTF8.GetBytes(CompressB64.GetZstdB64(CompressB64.GetDeflateB64(userId64 + "_" + ownershipb64))));
             }
             return ByteString.CopyFrom(Encoding.UTF8.GetBytes("T3duZXJTaWduYXR1cmVfSXNGYWlsZWQ="));
         }
@@ -247,10 +248,16 @@ namespace Core.DemuxResponders
                     {
                         if (ServerConfig.DMX.GlobalOwnerShipCheck || owbasic.OwnedGamesIds.Contains(OwnershipToken.ProductId))
                         {
-                            var gameconfig = GameConfig.GetGameConfig(OwnershipToken.ProductId);
-                            if (gameconfig != null)
+                            var ownership = DBUser.GetOwnership(userID, OwnershipToken.ProductId);
+                            var appconfig = App.GetAppConfig(OwnershipToken.ProductId);
+                            if (appconfig != null && ownership != null)
                             {
-                                Token = jwt.CreateOwnershipToken(userID, OwnershipToken.ProductId, OwnershipToken.ProductId, gameconfig.branches.active_branch_id, gameconfig.appflags);
+                                if (ownership.appflags.Count == 0)
+                                {
+                                    ownership.appflags = appconfig.global_appflags;
+                                }
+
+                                Token = jwt.CreateOwnershipToken(userID, OwnershipToken.ProductId, OwnershipToken.ProductId, ownership.current_branch_id, ownership.appflags);
                                 Exp = (ulong)jwt.GetExp(Token);
                                 IsSuccess = true;
                             }
@@ -284,14 +291,15 @@ namespace Core.DemuxResponders
                 {
                     var userID = Globals.IdToUser[ClientNumb];
                     var ownershipBasic = DBUser.GetOwnershipBasic(userID);
-                    if (ownershipBasic != null)
+                    var ownership = DBUser.GetOwnership(userID, SignOwnership.ProductId);
+                    if (ownershipBasic != null && ownership != null)
                     {
                         if (ServerConfig.DMX.GlobalOwnerShipCheck || ownershipBasic.OwnedGamesIds.Contains(SignOwnership.ProductId))
                         {
-                            var gameconfig = GameConfig.GetGameConfig(SignOwnership.ProductId);
+                            var gameconfig = App.GetAppConfig(SignOwnership.ProductId);
                             if (gameconfig != null)
                             {
-                                BranchId = gameconfig.branches.active_branch_id;
+                                BranchId = ownership.current_branch_id;
                                 signature = GetSignofOwnership(userID, SignOwnership.ProductId);
                                 IsSuccess = true;
                             }
@@ -332,16 +340,16 @@ namespace Core.DemuxResponders
 
                     foreach (var proId in prodlist)
                     {
-                        var gameconfig = GameConfig.GetGameConfig(proId);
-                        if (gameconfig != null)
+                        var branch = App.GetAppBranch(proId, 0);
+                        if (branch != null)
                         {
 
                             DeprecatedGetLatestManifestsRsp.Types.Manifest manifest = new()
                             {
                                 ProductId = proId,
-                                Manifest_ = gameconfig.latest_manifest
+                                Manifest_ = branch.latest_manifest
                             };
-                            if (File.Exists($"{ServerConfig.DMX.DownloadGamePath}{proId}/{gameconfig.latest_manifest}.manifest"))
+                            if (File.Exists($"{ServerConfig.DMX.DownloadGamePath}{proId}/{branch.latest_manifest}.manifest"))
                             {
                                 manifest.Result = DeprecatedGetLatestManifestsRsp.Types.Manifest.Types.Result.Success;
                             }
@@ -464,10 +472,9 @@ namespace Core.DemuxResponders
                 UnlockProductBranchRsp.Types.ProductBranch productBranch = new();
                 if (UserInits[ClientNumb])
                 {
-                    var game = GameConfig.GetGameConfig(pid);
-                    if (game != null)
+                    var branches = App.GetAppBranches(pid);
+                    if (branches != null)
                     {
-                        var branches = game.branches.product_branches;
                         foreach (var branch in branches)
                         {
                             if (branch.branch_password == pass)
@@ -517,7 +524,7 @@ namespace Core.DemuxResponders
                             var pass = switchProductBranchReq.SpecifiedBranch.Password;
                             var pid = switchProductBranchReq.SpecifiedBranch.ProductId;
 
-                            var branch = App.GetAppBranch(pid,bId);
+                            var branch = App.GetAppBranch(pid, bId);
                             if (branch != null)
                             {
                                 if (branch.branch_password == pass)

@@ -7,39 +7,34 @@ namespace ClientTester
     {
         static Socket socket;
         static LoginJson Login;
-        static List<Task> tasks = new List<Task>();
-        public static async void Run(LoginJson login)
+        static List<Action> actions = new();
+        public static void Run(LoginJson login)
         {
             socket = new();
             Login = login;
-            tasks.Add(SendVersion());
-            tasks.Add(VersionCheck());
-            tasks.Add(SendVersion());
-            tasks.Add(SendVersion());
-            tasks.Add(SendVersion());
-            await Task.WhenAll(tasks);
+            actions.Add(SendVersion);
+            actions.Add(VersionCheck);
+            actions.ForEach(x => x() );
             socket.Close();
             Console.WriteLine("DemuxTest Done!");
         }
 
-        public static async Task SendVersion()
+        static void SendVersion()
         {
             socket.PushVersion();
             if (socket.IsClosed)
             {
                 Console.WriteLine("Socket is closed!");
             }
-            return;
         }
 
-        public static async Task VersionCheck()
+        static void VersionCheck()
         {
             bool version = socket.VersionCheck();
             if (!version)
             {
                 Console.WriteLine("Version is Not same!");
             }
-            return;
         }
     }
 }

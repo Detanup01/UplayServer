@@ -174,7 +174,7 @@ namespace SharedLib.Server.Json
                     staging = false,
                     state = (OwnedGame.Types.State)games.State,
                     space_id = games.UbiservicesSpaceId,
-                    appflags = new() { DB.AppFlags.Downloadable, DB.AppFlags.Playable },
+                    global_appflags = new() { Enums.AppFlags.Downloadable, Enums.AppFlags.Playable },
                     app_id = games.UbiservicesSpaceId,
                     associations = games.ProductAssociations.ToList(),
                     configuration = $"{games.ProductId}.yml",

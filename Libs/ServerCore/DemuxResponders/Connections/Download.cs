@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf;
+using SharedLib.Server.DB;
 using SharedLib.Server.Json;
 using Uplay.DownloadService;
 
@@ -58,8 +59,8 @@ namespace Core.DemuxResponders
                     var userID = Globals.IdToUser[ClientNumb];
                     if (ServerConfig.DMX.GlobalOwnerShipCheck || (userID != null && initialize.Signature != null && Ownership.GetOwnerSignature(userID).ToBase64() != "T3duZXJTaWduYXR1cmVfSXNGYWlsZWQ="))
                     {
-                        var gameconf = GameConfig.GetGameConfig(initialize.ProductId);
-                        if (gameconf != null && (gameconf.branches.active_branch_id == initialize.BranchId || gameconf.branches.product_branches.Where(x => x.branch_id == initialize.BranchId).Any()))
+                        var branch = App.GetAppBranch(initialize.ProductId, initialize.BranchId);
+                        if (branch != null)
                         {
                             UserInits.TryAdd(ClientNumb, true);
                             TokenValid = true;
@@ -89,42 +90,13 @@ namespace Core.DemuxResponders
                     DownloadUrls = { }
                 };
 
-                foreach (var part in url.UrlRequests)
-                {
-                    Console.WriteLine(part.ToString());
-                    foreach (var relative in part.RelativeFilePath)
-                    {
-                        Console.WriteLine(part.ProductId);
-                        Console.WriteLine($"{ServerConfig.DMX.DownloadGamePath}{part.ProductId}/{relative}");
-                        if (!File.Exists($"{ServerConfig.DMX.DownloadGamePath}{part.ProductId}/{relative}"))
-                        {
-                            urlresp.Result = UrlRsp.Types.Result.NotOwned;
-                        }
-                        else
-                        {
-                            urlresp.Result = UrlRsp.Types.Result.Success;
-                            UrlRsp.Types.DownloadUrls urls = new()
-                            {
-                                Urls = { }
-                            };
-                            urls.Urls.Add($"{ServerConfig.DMX.DownloadGameUrl}{part.ProductId}/{relative}");
-                            urlresp.DownloadUrls.Add(urls);
-                        }
-                    }
-                    resp.Add(urlresp);
-                }
-
-                /*
-                if (Config.DMX.GlobalOwnerShipCheck)// || UserInits.TryGetValue(ClientNumb, out bool val) && val)
+                if (ServerConfig.DMX.GlobalOwnerShipCheck || (UserInits.TryGetValue(ClientNumb, out bool val) && val))
                 {
                     foreach (var part in url.UrlRequests)
                     {
-                        Console.WriteLine(part.ToString());
                         foreach (var relative in part.RelativeFilePath)
                         {
-                            Console.WriteLine(part.ProductId);
-                            Console.WriteLine($"{Config.DMX.DownloadGamePath}{part.ProductId}/{relative}");
-                            if (!File.Exists($"{Config.DMX.DownloadGamePath}{part.ProductId}/{relative}"))
+                            if (!File.Exists($"{ServerConfig.DMX.DownloadGamePath}{part.ProductId}/{relative}"))
                             {
                                 urlresp.Result = UrlRsp.Types.Result.NotOwned;
                             }
@@ -132,10 +104,10 @@ namespace Core.DemuxResponders
                             {
                                 urlresp.Result = UrlRsp.Types.Result.Success;
                                 UrlRsp.Types.DownloadUrls urls = new()
-                                { 
+                                {
                                     Urls = { }
                                 };
-                                urls.Urls.Add($"{Config.DMX.DownloadGameUrl}{part.ProductId}/{relative}");
+                                urls.Urls.Add($"{ServerConfig.DMX.DownloadGameUrl}{part.ProductId}/{relative}");
                                 urlresp.DownloadUrls.Add(urls);
                             }
                         }
@@ -150,7 +122,6 @@ namespace Core.DemuxResponders
                         resp.Add(urlresp);
                     }
                 }
-                */
 
                 Downstream = new()
                 {
@@ -159,7 +130,7 @@ namespace Core.DemuxResponders
                         RequestId = ReqId,
                         UrlRsp = new()
                         {
-                            TtlSeconds = 300,
+                            TtlSeconds = uint.MaxValue,
                             UrlResponses = { resp }
                         }
                     }

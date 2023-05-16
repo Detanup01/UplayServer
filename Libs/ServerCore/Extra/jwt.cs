@@ -2,6 +2,7 @@
 using JWT.Builder;
 using JWT.Exceptions;
 using Newtonsoft.Json;
+using SharedLib.Server;
 using SharedLib.Server.Json;
 using System.Security.Cryptography;
 
@@ -31,7 +32,7 @@ namespace Core
         /// <param name="flags">List of AppFlags</param>
         /// <param name="exp">Expire of time (UTCNOW + 15 MIN Default)</param>
         /// <returns>Ownership Token</returns>
-        public static string CreateOwnershipToken(string UserId, uint uplayId, uint ProdId, uint branchId, List<string> flags, long exp = long.MinValue)
+        public static string CreateOwnershipToken(string UserId, uint uplayId, uint ProdId, uint branchId, List<Enums.AppFlags> flags, long exp = long.MinValue)
         {
             RSA rsa = RSA.Create();
             rsa.FromXmlString(File.ReadAllText("cert/private.xml"));
@@ -39,6 +40,11 @@ namespace Core
             if (exp == long.MinValue)
             {
                 exp = DateTimeOffset.UtcNow.AddMinutes(15).ToUnixTimeSeconds();
+            }
+            List<string> appflags = new();
+            foreach (Enums.AppFlags flag in flags)
+            {
+                appflags.Add(flag.ToString());
             }
             var token = JwtBuilder.Create()
             .Subject(UserId)
@@ -48,7 +54,7 @@ namespace Core
             .AddClaim("uplay_id", uplayId)
             .AddClaim("product_id", ProdId)
             .AddClaim("branch_id", branchId)
-            .AddClaim("flags", flags)
+            .AddClaim("flags", appflags)
             .Encode();
 
             return token;

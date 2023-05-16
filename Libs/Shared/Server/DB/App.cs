@@ -1,5 +1,6 @@
 ﻿using LiteDB;
 using SharedLib.Server.Json.DB;
+using static SharedLib.Server.Enums;
 
 namespace SharedLib.Server.DB
 {
@@ -28,7 +29,7 @@ namespace SharedLib.Server.DB
                 productId = 0,
                 configuration = "0.yml",
                 store_configuration = "null",
-                appflags = { AppFlags.Downloadable, AppFlags.Playable },
+                global_appflags = { AppFlags.Downloadable, AppFlags.Playable },
                 app_id = "",
                 space_id = "",
                 staging = false,

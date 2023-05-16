@@ -45,10 +45,12 @@ namespace SharedLib.Server.Json.Ext
             if (user != null)
             {
                 user.Friends.Remove(FriendId);
+                Edit(user);
                 user = GetUser(FriendId);
                 if (user != null)
                 {
                     user.Friends.Remove(UserId);
+                    Edit(user);
                     return true;
                 }
             }

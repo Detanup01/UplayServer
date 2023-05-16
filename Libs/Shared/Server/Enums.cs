@@ -8,5 +8,16 @@
             Token = 2,
             Ticket = 3
         }
+
+        public enum AppFlags
+        {
+            NotAvailable,
+            Downloadable,
+            Playable,
+            DenuvoForceTimeTrial,
+            Denuvo,
+            FromSubscription,
+            FromExpiredSubscription
+        }
     }
 }

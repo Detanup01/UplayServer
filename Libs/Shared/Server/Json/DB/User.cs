@@ -26,6 +26,7 @@
         public bool IsLockedSubscription { get; set; }
         public string CD_Key { get; set; }
         public uint current_branch_id { get; set; } = 0;
+        public List<Enums.AppFlags> appflags { get; set; } = new();
         public List<uint> ActivationIds { get; set; } = new();
         public List<uint> Subscriptions { get; set; } = new();
         public Uplay.Ownership.OwnedGame.Types.PackageOwnershipState PackageState { get; set; }
@@ -38,6 +39,7 @@
     public class JActivity : JUserBase
     {
         public int Status { get; set; }
+        public int OnlineStatus { get; set; } = 0;
         public bool IsPlaying { get; set; }
         public string? ProductName { get; set; }
         public uint? GameId { get; set; }

@@ -1,8 +1,6 @@
 ﻿using Google.Protobuf;
 using SharedLib.Server.DB;
-using SharedLib.Server.Json;
 using SharedLib.Server.Json.Ext;
-using SharedLib.Shared;
 using Uplay.Friends;
 
 namespace Core.DemuxResponders
@@ -308,10 +306,11 @@ namespace Core.DemuxResponders
                             {
                                 PushUpdatedStatus = new()
                                 {
+                                    IsInitialStatus = true,
                                     UpdatesStatus = new()
                                     {
                                         ActivityStatus = initialize.ActivityStatus,
-                                        OnlineStatus = Status.Types.OnlineStatus.Online,
+                                        OnlineStatus = (Status.Types.OnlineStatus)activity.OnlineStatus,
                                         User = new()
                                         {
                                             AccountId = userID
@@ -403,10 +402,11 @@ namespace Core.DemuxResponders
                         {
                             PushUpdatedStatus = new()
                             {
+                                IsInitialStatus = false,
                                 UpdatesStatus = new()
                                 {
                                     ActivityStatus = SetActivityStatus.ActivityStatus,
-                                    OnlineStatus = Status.Types.OnlineStatus.Online,
+                                    OnlineStatus = (Status.Types.OnlineStatus)activity.OnlineStatus,
                                     User = new()
                                     {
                                         AccountId = userID
@@ -436,17 +436,12 @@ namespace Core.DemuxResponders
                 if (UserInits[ClientNumb])
                 {
                     var userID = Globals.IdToUser[ClientNumb];
-                    var user = User.GetUser(userID);
-
-                    if (user != null)
+                    var friend = DBUser.GetFriend(userID, SetNickname.AccountId);
+                    if (friend != null)
                     {
-                        var user2 = user.Friends.Where(x => x.UserId == SetNickname.AccountId).FirstOrDefault();
-                        if (user2 != null)
-                        {
-                            user2.Nickname = SetNickname.Nickname;
-                            IsSuccess = true;
-                            User.SaveUser(userID, user);
-                        }
+                        friend.Nickname = SetNickname.Nickname;
+                        DBUser.Edit(friend);
+                        IsSuccess = true;
                     }
                 }
 
@@ -483,8 +478,22 @@ namespace Core.DemuxResponders
                                 activity.Key = SetRichPresence.PresenceState.PresenceTokens[0].Key;
                                 activity.Value = SetRichPresence.PresenceState.PresenceTokens[0].Val;
                                 DBUser.Edit(activity);
-                                //  PushUpdatedStatus to all friend
-
+                                Pusher.PushToFriends(userID, new Push()
+                                {
+                                    PushUpdatedStatus = new()
+                                    {
+                                        IsInitialStatus = false,
+                                        UpdatesStatus = new()
+                                        {
+                                            ActivityStatus = (Status.Types.ActivityStatus)activity.Status,
+                                            OnlineStatus = (Status.Types.OnlineStatus)activity.OnlineStatus,
+                                            User = new()
+                                            {
+                                                AccountId = userID
+                                            }
+                                        }
+                                    }
+                                });
                             }
                         }
                     }
@@ -509,14 +518,29 @@ namespace Core.DemuxResponders
                 if (UserInits[ClientNumb])
                 {
                     var userID = Globals.IdToUser[ClientNumb];
-                    var user = User.GetUser(userID);
+                    var activity = DBUser.GetActivity(userID);
 
-                    if (user != null)
+                    if (activity != null)
                     {
                         DBUserExt.UplayFriendsGameParseToUser(userID, SetGame.Game);
+                        Pusher.PushToFriends(userID, new Push()
+                        {
+                            PushUpdatedStatus = new()
+                            {
+                                IsInitialStatus = false,
+                                UpdatesStatus = new()
+                                {
 
-                        //  PushUpdatedStatus to all friend
-
+                                    ActivityStatus = (Status.Types.ActivityStatus)activity.Status,
+                                    OnlineStatus = (Status.Types.OnlineStatus)activity.OnlineStatus,
+                                    User = new()
+                                    {
+                                        AccountId = userID
+                                    },
+                                    Game = SetGame.Game
+                                }
+                            }
+                        });
                         IsSuccess = true;
                     }
                 }
@@ -537,11 +561,11 @@ namespace Core.DemuxResponders
             public static void UbiTicketRefresh(Guid ClientNumb, UbiTicketRefreshReq UbiTicketRefresh)
             {
                 bool IsSuccess = false;
+
+                //  We are not storing tickets!
                 if (jwt.Validate(UbiTicketRefresh.UbiTicket))
-                {
-                    //  We are not storing tickets with refresh thingy.
                     IsSuccess = true;
-                }
+
                 Downstream = new()
                 {
                     Response = new()
@@ -568,24 +592,21 @@ namespace Core.DemuxResponders
 
                     if (UserFromFriend && FriendFromUser)
                     {
-                        IsSuccess = true;
-                        if (Globals.UserToId.TryGetValue(friendId, out var id))
+                        Pusher.PushToFriend(friendId, new()
                         {
-                            Pusher.Pushes(id, new()
+                            PushUpdatedRelationship = new()
                             {
-                                PushUpdatedRelationship = new()
+                                Relationship = new()
                                 {
-                                    Relationship = new()
+                                    Friend = new()
                                     {
-                                        Friend = new()
-                                        {
-                                            AccountId = userID
-                                        },
-                                        Relation = Relationship.Types.Relation.NoRelationship
-                                    }
+                                        AccountId = userID
+                                    },
+                                    Relation = Relationship.Types.Relation.NoRelationship
                                 }
-                            });
-                        }
+                            }
+                        });
+                        IsSuccess = true;
                     }
                 }
 
@@ -602,9 +623,13 @@ namespace Core.DemuxResponders
                 };
             }
 
+            /// <summary>
+            /// Sending a friend request for the accounts
+            /// </summary>
+            /// <param name="ClientNumb"></param>
+            /// <param name="RequestFriendships"></param>
             public static void RequestFriendships(Guid ClientNumb, RequestFriendshipsReq RequestFriendships)
             {
-
                 // This for be all false if something isnt go right 
                 List<bool> successes = new();
                 int userscount = RequestFriendships.Users.Count();
@@ -613,52 +638,43 @@ namespace Core.DemuxResponders
                     successes[i] = false;
                 }
 
-
                 if (UserInits[ClientNumb])
                 {
                     var userID = Globals.IdToUser[ClientNumb];
-                    var user = User.GetUser(userID);
 
-                    if (user != null)
+                    for (int i = 0; i < userscount; i++)
                     {
-                        int i = 0;
-                        foreach (var ruser in RequestFriendships.Users)
+                        var fuser = RequestFriendships.Users[i];
+                        var friend = DBUser.GetFriend(userID, fuser.AccountId);
+                        if (friend == null)
                         {
-                            // We checking If user has already sent/recieved as Friend if not then we add it
-                            if (user.Friends.Where(x => x.UserId == ruser.AccountId).Count() == 0)
+                            DBUser.Add(new SharedLib.Server.Json.DB.JFriend()
+                            { 
+                                IdOfFriend = userID,
+                                Relation = 1,
+                                UserId = fuser.AccountId
+                            });
+                            DBUser.Add(new SharedLib.Server.Json.DB.JFriend()
                             {
-                                var fuser = User.GetUser(ruser.AccountId);
-
-                                if (fuser != null)
+                                IdOfFriend = fuser.AccountId,
+                                Relation = 2,
+                                UserId = userID
+                            });
+                            Pusher.PushToFriend(fuser.AccountId, new()
+                            {
+                                PushUpdatedRelationship = new()
                                 {
-                                    // Rel 1 = Sent, Rel 2 = Rec
-                                    user.Friends.Add(new() { UserId = ruser.AccountId, Relation = 1 });
-                                    fuser.Friends.Add(new() { UserId = userID, Relation = 2 });
-
-                                    User.SaveUser(userID, user);
-                                    User.SaveUser(ruser.AccountId, fuser);
-
-                                    if (Globals.UserToId.TryGetValue(ruser.AccountId, out var id))
+                                    Relationship = new()
                                     {
-                                        Pusher.Pushes(id, new()
+                                        Friend = new()
                                         {
-                                            PushUpdatedRelationship = new()
-                                            {
-                                                Relationship = new()
-                                                {
-                                                    Friend = new()
-                                                    {
-                                                        AccountId = userID
-                                                    },
-                                                    Relation = Relationship.Types.Relation.NoRelationship
-                                                }
-                                            }
-                                        });
+                                            AccountId = userID
+                                        },
+                                        Relation = Relationship.Types.Relation.PendingReceivedInvite
                                     }
-
-                                    successes[i] = true;
                                 }
-                            }
+                            });
+                            successes[i] = true;
                         }
                     }
                 }
@@ -690,24 +706,21 @@ namespace Core.DemuxResponders
 
                     if (UserFromFriend && FriendFromUser)
                     {
-                        IsSuccess = true;
-                        if (Globals.UserToId.TryGetValue(friendId, out var id))
+                        Pusher.PushToFriend(friendId, new()
                         {
-                            Pusher.Pushes(id, new()
+                            PushUpdatedRelationship = new()
                             {
-                                PushUpdatedRelationship = new()
+                                Relationship = new()
                                 {
-                                    Relationship = new()
+                                    Friend = new()
                                     {
-                                        Friend = new()
-                                        {
-                                            AccountId = userID
-                                        },
-                                        Relation = Relationship.Types.Relation.NoRelationship
-                                    }
+                                        AccountId = userID
+                                    },
+                                    Relation = Relationship.Types.Relation.NoRelationship
                                 }
-                            });
-                        }
+                            }
+                        });
+                        IsSuccess = true;
                     }
                 }
 
@@ -732,21 +745,26 @@ namespace Core.DemuxResponders
                 {
                     var userID = Globals.IdToUser[ClientNumb];
 
-                    var user = User.GetUser(userID);
-
-                    if (user != null)
+                    var friends = DBUser.GetFriends(userID);
+                    if (friends != null)
                     {
                         if (GetBlacklist.HasUser)
                         {
-                            // IDK what it should be doing if we have a userId
+                            var friend = friends.Find(x => x.UserId == GetBlacklist.User);
+                            if (friend != null && friend.IsBlacklisted)
+                                blacklist.Add(friend.UserId);
                         }
-
-                        var frBlacklist = user.Friends.Where(x => x.IsBlacklisted == true).ToList();
-
-                        foreach (var fr in frBlacklist)
+                        else
                         {
-                            blacklist.Add(fr.UserId);
+
+                            var frBlacklist = friends.Where(x => x.IsBlacklisted == true).ToList();
+
+                            foreach (var fr in frBlacklist)
+                            {
+                                blacklist.Add(fr.UserId);
+                            }
                         }
+                        IsSuccess = true;
                     }
                 }
 
@@ -764,6 +782,7 @@ namespace Core.DemuxResponders
                 };
             }
 
+            //TODO: Make this better because currently IDK what it does and why
             public static void JoinGameInvitation(Guid ClientNumb, JoinGameInvitationReq JoinGameInvitation)
             {
                 bool IsSuccess = false;
@@ -802,6 +821,7 @@ namespace Core.DemuxResponders
                 };
             }
 
+            //TODO: Make this better because currently IDK what it does and why
             public static void DeclineGameInvite(Guid ClientNumb, DeclineGameInviteReq DeclineGameInvite)
             {
                 bool IsSuccess = false;
