@@ -233,6 +233,7 @@ namespace Core.DemuxResponders
                         Downstream.Response.InitializeRsp.OwnedGames = Owners.GetOwnershipGames(userID, null);
                     }
                 }
+                Console.WriteLine("Initialize Done!");
             }
 
             public static void OwnershipToken(Guid ClientNumb, OwnershipTokenReq OwnershipToken)
@@ -343,7 +344,6 @@ namespace Core.DemuxResponders
                         var branch = App.GetAppBranch(proId, 0);
                         if (branch != null)
                         {
-
                             DeprecatedGetLatestManifestsRsp.Types.Manifest manifest = new()
                             {
                                 ProductId = proId,

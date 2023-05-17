@@ -8,7 +8,14 @@ namespace SharedLib.Shared
         #region Manifest
         public static Uplay.Download.Manifest ParseManifest(Stream inputStream)
         {
-            inputStream.Seek(356, SeekOrigin.Begin);
+            //inputStream.Seek(356, SeekOrigin.Begin);
+            using (var reader = new BinaryReader(inputStream, Encoding.UTF8, true))
+            {
+                var compression = reader.ReadInt32();
+                var sign_lenght = reader.ReadInt32();
+                var manifest_length = reader.ReadInt32();
+                var signed = reader.ReadBytes(sign_lenght);
+            }
             var decompressor = new InflaterInputStream(inputStream);
             var result = Uplay.Download.Manifest.Parser.ParseFrom(decompressor);
             decompressor.Close();

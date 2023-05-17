@@ -42,16 +42,6 @@
             public List<string> Available_KeyValues = new();
         }
     }
-    /*
-    public enum AppFlags
-    { 
-        Downloadable,
-        Playable,
-        DenuvoForceTimeTrial,
-        Denuvo,
-        FromSubscription, 
-        FromExpiredSubscription
-    }*/
 
     public class JAppBranches
     {

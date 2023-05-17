@@ -193,11 +193,13 @@ namespace Core.DemuxResponders
                 switch (first)
                 {
                     case 0x12:
+                        Debug.WriteDebug("PUSH");
                         var req = Upstream.Parser.ParseFrom(buffer);
                         Demux.PushRSP.Push(Id, req.Push);
                         Which = 0;
                         break;
                     case 0x0A:
+                        Debug.WriteDebug("REQ");
                         var req2 = Upstream.Parser.ParseFrom(buffer);
                         Demux.ReqRSP.Requests(Id, req2.Request);
                         Which = 1;
@@ -221,12 +223,14 @@ namespace Core.DemuxResponders
                 {
                     if (Which == 0 && Demux.PushRSP.Downstream != null)
                     {
+                        Debug.PWDebug("Push RSP sent back!", "DMXSERVER");
                         File.AppendAllText($"logs/client_{Id}_rsp.log", Demux.PushRSP.Downstream.ToString() + "\n");
                         Send(Formatters.FormatUpstream(Demux.PushRSP.Downstream.ToByteArray()));
                         Demux.PushRSP.Downstream = null;
                     }
                     if (Which == 1 && Demux.ReqRSP.Downstream != null)
                     {
+                        Debug.PWDebug("Req RSP Sent back!", "DMXSERVER");
                         File.AppendAllText($"logs/client_{Id}_rsp.log", Demux.ReqRSP.Downstream.ToString() + "\n");
                         Send(Formatters.FormatUpstream(Demux.ReqRSP.Downstream.ToByteArray()));
                         Demux.ReqRSP.Downstream = null;

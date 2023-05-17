@@ -11,8 +11,8 @@ namespace ClientKit.Demux.Connection
         #region Base
         private uint connectionId;
         private Socket socket;
-        public bool isServiceSuccess = false;
-        public bool isConnectionClosed = false;
+        public bool IsServiceSuccess = false;
+        public bool IsConnectionClosed = false;
         public static readonly string ServiceName = "ownership_service";
         public event EventHandler<Push> PushEvent;
         private uint ReqId { get; set; } = 1;
@@ -25,7 +25,7 @@ namespace ClientKit.Demux.Connection
 
         public void Reconnect()
         {
-            if (isConnectionClosed)
+            if (IsConnectionClosed)
                 Connect();
         }
         internal void Connect()
@@ -47,15 +47,15 @@ namespace ClientKit.Demux.Connection
             }
             else
             {
-                isServiceSuccess = rsp.OpenConnectionRsp.Success;
+                IsServiceSuccess = rsp.OpenConnectionRsp.Success;
                 connectionId = rsp.OpenConnectionRsp.ConnectionId;
-                if (isServiceSuccess == true)
+                if (IsServiceSuccess == true)
                 {
                     Console.WriteLine("Ownership Connection successful");
                     socket.AddToObj(connectionId, this);
                     socket.AddToDict(connectionId, ServiceName);
                     socket.NewMessage += Socket_NewMessage;
-                    isConnectionClosed = false;
+                    IsConnectionClosed = false;
                 }
             }
         }
@@ -67,9 +67,9 @@ namespace ClientKit.Demux.Connection
                 Console.WriteLine($"Connection terminated via Socket {ServiceName}");
             }
             socket.RemoveConnection(connectionId);
-            isServiceSuccess = false;
+            IsServiceSuccess = false;
             connectionId = uint.MaxValue;
-            isConnectionClosed = true;
+            IsConnectionClosed = true;
             socket.NewMessage -= Socket_NewMessage;
         }
         #endregion
@@ -88,7 +88,7 @@ namespace ClientKit.Demux.Connection
         }
         public Rsp? SendRequest(Req req)
         {
-            if (isConnectionClosed)
+            if (IsConnectionClosed)
                 return null;
 
             Upstream post = new() { Request = req };
@@ -105,7 +105,7 @@ namespace ClientKit.Demux.Connection
             };
 
             var down = socket.SendUpstream(up);
-            if (isConnectionClosed || down == null || !down.Push.Data.HasData)
+            if (IsConnectionClosed || down == null || !down.Push.Data.HasData)
                 return null;
 
             var ds = Formatters.FormatData<Downstream>(down.Push.Data.Data.ToByteArray());
@@ -117,7 +117,7 @@ namespace ClientKit.Demux.Connection
         }
         #endregion
         #region Functions
-        public InitializeRsp? Initialize(bool GetAssociations = true)
+        public InitializeRsp? Initialize(List<InitializeReq.Types.ProductBranchData> branchDatas, bool GetAssociations = true)
         {
             Req req = new()
             {
@@ -126,19 +126,25 @@ namespace ClientKit.Demux.Connection
                 {
                     GetAssociations = GetAssociations,
                     ProtoVersion = 7,
-                    UseStaging = socket.TestConfig
+                    UseStaging = socket.TestConfig,
+                    Branches =
+                    {
+                        branchDatas
+                    }
                 }
             };
             ReqId += 1;
+            Console.WriteLine("Initialize!!!");
             var rsp = SendRequest(req);
+            Console.WriteLine("Initialize!!! DOOONEE");
             if (rsp != null)
             {
-                isServiceSuccess = rsp.InitializeRsp.Success;
+                IsServiceSuccess = rsp.InitializeRsp.Success;
                 return rsp.InitializeRsp;
             }
             else
             {
-                isServiceSuccess = false;
+                IsServiceSuccess = false;
                 return null;
             }
         }
@@ -166,7 +172,7 @@ namespace ClientKit.Demux.Connection
             var rsp = SendRequest(req);
             if (rsp != null)
             {
-                isServiceSuccess = rsp.InitializeRsp.Success;
+                IsServiceSuccess = rsp.InitializeRsp.Success;
 
                 if (writeToFile)
                 {
@@ -181,12 +187,12 @@ namespace ClientKit.Demux.Connection
             }
             else
             {
-                isServiceSuccess = false;
+                IsServiceSuccess = false;
                 return null;
             }
         }
 
-        public (string, ulong) GetOwnershipToken(uint productId)
+        public (string Token, ulong Expiration) GetOwnershipToken(uint productId)
         {
             Req req = new()
             {
@@ -200,12 +206,12 @@ namespace ClientKit.Demux.Connection
             var rsp = SendRequest(req);
             if (rsp != null)
             {
-                isServiceSuccess = rsp.OwnershipTokenRsp.Success;
+                IsServiceSuccess = rsp.OwnershipTokenRsp.Success;
                 return (rsp.OwnershipTokenRsp.Token, rsp.OwnershipTokenRsp.Expiration);
             }
             else
             {
-                isServiceSuccess = false;
+                IsServiceSuccess = false;
                 return ("", 0);
             }
         }
@@ -224,12 +230,12 @@ namespace ClientKit.Demux.Connection
             var rsp = SendRequest(req);
             if (rsp != null)
             {
-                isServiceSuccess = rsp.RegisterTemporaryOwnershipRsp.Success;
+                IsServiceSuccess = rsp.RegisterTemporaryOwnershipRsp.Success;
                 return rsp.RegisterTemporaryOwnershipRsp;
             }
             else
             {
-                isServiceSuccess = false;
+                IsServiceSuccess = false;
                 return null;
             }
         }
@@ -252,12 +258,12 @@ namespace ClientKit.Demux.Connection
             var rsp = SendRequest(req);
             if (rsp != null)
             {
-                isServiceSuccess = rsp.ConsumeOwnershipRsp.Result == ConsumeOwnershipRsp.Types.Result.Ok;
+                IsServiceSuccess = rsp.ConsumeOwnershipRsp.Result == ConsumeOwnershipRsp.Types.Result.Ok;
                 return rsp.ConsumeOwnershipRsp;
             }
             else
             {
-                isServiceSuccess = false;
+                IsServiceSuccess = false;
                 return null;
             }
         }
@@ -280,12 +286,12 @@ namespace ClientKit.Demux.Connection
             var rsp = SendRequest(req);
             if (rsp != null)
             {
-                isServiceSuccess = rsp.UnlockProductBranchRsp.Result == UnlockProductBranchRsp.Types.Result.Success;
+                IsServiceSuccess = rsp.UnlockProductBranchRsp.Result == UnlockProductBranchRsp.Types.Result.Success;
                 return rsp.UnlockProductBranchRsp;
             }
             else
             {
-                isServiceSuccess = false;
+                IsServiceSuccess = false;
                 return null;
             }
         }
@@ -305,12 +311,12 @@ namespace ClientKit.Demux.Connection
             var rsp = SendRequest(req);
             if (rsp != null)
             {
-                isServiceSuccess = rsp.GetUplayPcTicketRsp.Success;
+                IsServiceSuccess = rsp.GetUplayPcTicketRsp.Success;
                 return rsp.GetUplayPcTicketRsp.UplayPcTicket;
             }
             else
             {
-                isServiceSuccess = false;
+                IsServiceSuccess = false;
                 return "";
             }
         }
@@ -329,12 +335,12 @@ namespace ClientKit.Demux.Connection
             var rsp = SendRequest(req);
             if (rsp != null)
             {
-                isServiceSuccess = rsp.ClaimKeystorageKeyRsp.Result == ClaimKeystorageKeyRsp.Types.Result.Success;
+                IsServiceSuccess = rsp.ClaimKeystorageKeyRsp.Result == ClaimKeystorageKeyRsp.Types.Result.Success;
                 return rsp.ClaimKeystorageKeyRsp;
             }
             else
             {
-                isServiceSuccess = false;
+                IsServiceSuccess = false;
                 return null;
             }
         }
@@ -354,12 +360,12 @@ namespace ClientKit.Demux.Connection
             var rsp = SendRequest(req);
             if (rsp != null)
             {
-                isServiceSuccess = rsp.RegisterOwnershipRsp.Result == RegisterOwnershipRsp.Types.Result.Success;
+                IsServiceSuccess = rsp.RegisterOwnershipRsp.Result == RegisterOwnershipRsp.Types.Result.Success;
                 return rsp.RegisterOwnershipRsp;
             }
             else
             {
-                isServiceSuccess = false;
+                IsServiceSuccess = false;
                 return null;
             }
         }
@@ -378,12 +384,12 @@ namespace ClientKit.Demux.Connection
             var rsp = SendRequest(req);
             if (rsp != null)
             {
-                isServiceSuccess = rsp.RegisterOwnershipRsp.Result == RegisterOwnershipRsp.Types.Result.Success;
+                IsServiceSuccess = rsp.RegisterOwnershipRsp.Result == RegisterOwnershipRsp.Types.Result.Success;
                 return rsp.RegisterOwnershipRsp;
             }
             else
             {
-                isServiceSuccess = false;
+                IsServiceSuccess = false;
                 return null;
             }
         }
@@ -402,12 +408,12 @@ namespace ClientKit.Demux.Connection
             var rsp = SendRequest(req);
             if (rsp != null)
             {
-                isServiceSuccess = rsp.DeprecatedGetProductFromCdKeyRsp.Result == DeprecatedGetProductFromCdKeyRsp.Types.Result.Success;
+                IsServiceSuccess = rsp.DeprecatedGetProductFromCdKeyRsp.Result == DeprecatedGetProductFromCdKeyRsp.Types.Result.Success;
                 return rsp.DeprecatedGetProductFromCdKeyRsp;
             }
             else
             {
-                isServiceSuccess = false;
+                IsServiceSuccess = false;
                 return null;
             }
         }
@@ -427,12 +433,12 @@ namespace ClientKit.Demux.Connection
             var rsp = SendRequest(req);
             if (rsp != null)
             {
-                isServiceSuccess = rsp.GetProductConfigRsp.Result == GetProductConfigRsp.Types.Result.Success;
+                IsServiceSuccess = rsp.GetProductConfigRsp.Result == GetProductConfigRsp.Types.Result.Success;
                 return rsp.GetProductConfigRsp.Configuration;
             }
             else
             {
-                isServiceSuccess = false;
+                IsServiceSuccess = false;
                 return "";
             }
         }

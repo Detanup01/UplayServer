@@ -21,7 +21,7 @@ namespace Client
 
         static void Main(string[] args)
         {
-            Debug.isDebug = true;
+            Debug.IsDebug = true;
             /*
             var client = new RestClient("https://local-ubiservices.ubi.com:7777/store/?p=0");
             var request = new RestRequest();
@@ -47,7 +47,6 @@ namespace Client
             {
                 var ticket = login.Ticket;
                 Console.WriteLine(ticket);
-                Debug.isDebug = true;
                 Socket = new();
                 var patch = Socket.GetPatch();
 
@@ -85,7 +84,7 @@ namespace Client
                 else
                 {
                     OwnershipConnection ownershipConnection = new(Socket);
-                    var x = ownershipConnection.Initialize();
+                    var x = ownershipConnection.Initialize(new List<Uplay.Ownership.InitializeReq.Types.ProductBranchData>() { });
                     var sig = x.OwnedGamesContainer.Signature.ToBase64();
                     var tmp = ownershipConnection.RegisterTempOwnershipToken(sig);
                     Console.WriteLine(tmp.ProductIds.Count);
@@ -95,7 +94,8 @@ namespace Client
                 pipeServer.Readed -= PipeServer_Readed;
                 pipeServer.Stop();
                 pipeThread.Join();
-                Socket.Close();
+                Socket.DisconnectAsync();
+                Socket.Dispose();
             }
 
             /*

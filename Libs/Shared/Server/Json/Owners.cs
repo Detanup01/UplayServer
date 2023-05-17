@@ -1,5 +1,7 @@
 ﻿using Uplay.Ownership;
 using SharedLib.Server.DB;
+using Uplay.Friends;
+using Newtonsoft.Json;
 
 namespace SharedLib.Server.Json
 {
@@ -34,9 +36,9 @@ namespace SharedLib.Server.Json
                         continue;
 
                     var game = GetOwnershipGame(UserId, ow.ProductId, branch);
+                    Console.WriteLine(game);
                     if (game == null)
                         continue;
-                    
                     ownedGames.OwnedGames_.Add(game);
                 }
             }
@@ -62,7 +64,6 @@ namespace SharedLib.Server.Json
             if (appbranch == null)
                 return null;
 
-
             List<OwnedGame.Types.ProductBranch> productBranches = new();
 
             if (owbasic.UnlockedBranches.TryGetValue(productId, out var branchlist))
@@ -82,7 +83,10 @@ namespace SharedLib.Server.Json
                 }
             }
 
-            return new OwnedGame()
+            if (File.Exists("ServerFiles/ProductConfigs/" + app.configuration))
+                app.configuration = File.ReadAllText("ServerFiles/ProductConfigs/" + app.configuration);
+
+            var og = new OwnedGame()
             {
                 PendingKeystorageOwnership = false,
                 ProductId = ow.ProductId,
@@ -113,13 +117,11 @@ namespace SharedLib.Server.Json
                     Associations = { app.associations },
                     Configuration = app.store_configuration
                 },
-                UbiservicesSpaceId = app.space_id,
-                UbiservicesAppId = app.app_id,
                 ActiveBranchId = branch,
                 ProductAssociations = { app.associations },
                 Balance = 0,
                 BrandId = 0,
-                Configuration = File.ReadAllText("ServerFiles/ProductConfigs/" + app.configuration),
+                Configuration = app.configuration,
                 ConfigVersion = app.config_version,
                 DeprecatedTestConfig = false,
                 DownloadId = app.productId,
@@ -130,15 +132,22 @@ namespace SharedLib.Server.Json
                 Platform = (uint)app.platform,
                 ProductType = (uint)app.product_type,
                 TitleId = 0,
-                LatestManifest = appbranch.latest_manifest,
-                EncryptionKey = appbranch.encryption_key,
-                AvailableBranches = { productBranches },
-                UbiservicesDynamicConfig = new()    //Currently No option to set these values
-                {
-                    GfnAppId = app.app_id,
-                    LunaAppId = app.app_id
-                }
+                AvailableBranches = { productBranches }
             };
+
+            if (!string.IsNullOrEmpty(app.space_id))
+                og.UbiservicesSpaceId = app.space_id;
+
+            if (!string.IsNullOrEmpty(app.app_id))
+                og.UbiservicesAppId = app.app_id;
+
+            if (!string.IsNullOrEmpty(appbranch.latest_manifest))
+                og.LatestManifest = appbranch.latest_manifest;
+
+            if (!string.IsNullOrEmpty(appbranch.encryption_key))
+                og.EncryptionKey = appbranch.encryption_key;
+
+            return og;
         }
 
         /// <summary>

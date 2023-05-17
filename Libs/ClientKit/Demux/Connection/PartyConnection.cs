@@ -1,7 +1,6 @@
 ﻿using Google.Protobuf;
 using SharedLib.Shared;
 using Uplay.Party;
-using static ClientKit.Demux.Socket;
 
 namespace ClientKit.Demux.Connection
 {

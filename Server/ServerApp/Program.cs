@@ -18,9 +18,8 @@ namespace Tets
                     File.Delete(logfile);
                 }
                 Directory.Delete("Database", true);
-
             }
-            Debug.isDebug = true;
+            Debug.IsDebug = true;
             CoreRun.Start();
             
             string endCheck = "not";

@@ -14,12 +14,13 @@ namespace Downloader
         public static ulong Exp = 0;
         public static OwnershipConnection? ownershipConnection = null;
         public static Socket? socket = null;
+        public static bool IsCustomManifest = false;
         public static bool Main(string[] args, Socket? argsocket)
         {
             #region Argument thingy
             DLWorker.CreateNew();
             //var debug = ParameterLib.HasParameter(args, "-debug");
-            Debug.isDebug = true;
+            Debug.IsDebug = true;
             int WaitTime = ParameterLib.GetParameter(args, "-time", 5);
             DLWorker.Config.ProductId = ParameterLib.GetParameter<uint>(args, "-product", 0);
             DLWorker.Config.ManifestId = ParameterLib.GetParameter(args, "-manifest", "");
@@ -137,9 +138,9 @@ namespace Downloader
 
                 // Getting ownership token
                 var ownershipToken = ownershipConnection.GetOwnershipToken(DLWorker.Config.ProductId);
-                if (ownershipConnection.isServiceSuccess == false) { throw new("Product not owned"); }
-                OWToken = ownershipToken.Item1;
-                Exp = ownershipToken.Item2;
+                if (ownershipConnection.IsServiceSuccess == false) { throw new("Product not owned"); }
+                OWToken = ownershipToken.Token;
+                Exp = ownershipToken.Expiration;
                 Console.WriteLine($"Expires in {GetTimeFromEpoc(Exp)}");
                 downloadConnection.InitDownloadToken(OWToken);
 
@@ -147,6 +148,9 @@ namespace Downloader
                 {
                     File.Copy(manifest_path, DLWorker.Config.DownloadDirectory + "uplay_install.manifest", true);
                     parsedManifest = Parsers.ParseManifestFile(manifest_path);
+                    var signature = Parsers.GetManifestSignature(manifest_path);
+                    if (signature.StartsWith("START") && signature.EndsWith("END"))
+                        IsCustomManifest = true;
                 }
                 else
                 {
@@ -162,15 +166,18 @@ namespace Downloader
 
                     File.WriteAllBytes(DLWorker.Config.ProductManifest + ".manifest", manifestBytes);
                     parsedManifest = Parsers.ParseManifestFile(DLWorker.Config.ProductManifest + ".manifest");
+                    var signature = Parsers.GetManifestSignature(manifest_path);
+                    if (signature.StartsWith("START") && signature.EndsWith("END"))
+                        IsCustomManifest = true;
                 }
-
+                Console.WriteLine(IsCustomManifest);
             }
             #endregion
             #region Game from Argument
             else
             {
                 var ownershipToken = ownershipConnection.GetOwnershipToken(DLWorker.Config.ProductId);
-                if (ownershipConnection.isServiceSuccess == false) { throw new("Product not owned"); }
+                if (ownershipConnection.IsServiceSuccess == false) { throw new("Product not owned"); }
                 OWToken = ownershipToken.Item1;
                 Exp = ownershipToken.Item2;
                 Console.WriteLine($"Expires in {GetTimeFromEpoc(Exp)}");
@@ -329,7 +336,8 @@ namespace Downloader
             Console.ReadLine();
             downloadConnection.Close();
             ownershipConnection.Close();
-            socket.Close();
+            socket.Disconnect();
+            socket.Dispose();
             return true;
             #endregion
         }
@@ -353,10 +361,10 @@ namespace Downloader
             if (Exp <= GetEpocTime())
             {
                 Console.WriteLine("Your token has no more valid, getting new!");
-                if (ownershipConnection != null && !ownershipConnection.isConnectionClosed)
+                if (ownershipConnection != null && !ownershipConnection.IsConnectionClosed)
                 {
                     var token = ownershipConnection.GetOwnershipToken(ProdId);
-                    Console.WriteLine("Is Token get success? " + ownershipConnection.isServiceSuccess);
+                    Console.WriteLine("Is Token get success? " + ownershipConnection.IsServiceSuccess);
                     Exp = token.Item2;
                     OWToken = token.Item1;
                 }

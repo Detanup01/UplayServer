@@ -42,6 +42,12 @@ namespace Core.HTTP
                 IsFailed = true;
                 return "";
             }
+            var user = DBUser.GetUser(id);
+            if (user == null)
+            {
+                IsFailed = true;
+                return "";
+            }
 
             var SessionId = Utils.MakeNewID();
             if (headers.ContainsKey("ubi-sessionid"))
@@ -74,7 +80,7 @@ namespace Core.HTTP
                 userId = id,
                 sessionKey = B64.ToB64(SessionId),
                 spaceId = App.GetSpaceId(appId),
-                nameOnPlatform = DBUser.GetUser(id).Name,
+                nameOnPlatform = user.Name,
                 rememberDeviceTicket = devicetoken,
             };
             contentType = "application/json; charset=UTF-8";
