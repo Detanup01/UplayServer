@@ -42,7 +42,7 @@ namespace upc_r2.Exports
 
             List<UPC_Product> products = new()
             {
-                new(Main.GlobalContext.Config.AppId, 1)
+                new(Main.GlobalContext.Config.ProductId, 1)
             };
 
             var listptr = Basics.GetListPtr(products);

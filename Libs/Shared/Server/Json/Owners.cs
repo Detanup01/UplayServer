@@ -1,7 +1,5 @@
 ﻿using Uplay.Ownership;
 using SharedLib.Server.DB;
-using Uplay.Friends;
-using Newtonsoft.Json;
 
 namespace SharedLib.Server.Json
 {

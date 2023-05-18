@@ -105,6 +105,7 @@ namespace Downloader
                     failinplace.Add(fibytes.Length * (-1));
                 }
             }
+            fileread.Close();
 
         END:
             if (failinplace.Count != 0)

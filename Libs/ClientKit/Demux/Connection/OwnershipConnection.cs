@@ -134,9 +134,7 @@ namespace ClientKit.Demux.Connection
                 }
             };
             ReqId += 1;
-            Console.WriteLine("Initialize!!!");
             var rsp = SendRequest(req);
-            Console.WriteLine("Initialize!!! DOOONEE");
             if (rsp != null)
             {
                 IsServiceSuccess = rsp.InitializeRsp.Success;

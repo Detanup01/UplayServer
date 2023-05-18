@@ -1,4 +1,5 @@
-﻿using SharedLib.Shared;
+﻿using ServiceApp.NPHELPER;
+using SharedLib.Shared;
 using System.Runtime.InteropServices;
 
 namespace ServiceApp
@@ -22,6 +23,12 @@ namespace ServiceApp
                         File.Copy(file, curDir + file.Replace(patchpath, ""),true);
                     }
                 }
+            }
+
+            if (ParameterLib.HasParameter(args, "namedpipes"))
+            {
+                pshelper.Starter();
+                
             }
 
             if (ParameterLib.HasParameter(args, "service_cleanup"))

@@ -80,8 +80,7 @@ namespace Downloader
 
         public static byte[] Decompress(Saving.Root saved, byte[] downloadedSlice, uint outputsize)
         {
-            //Todo: saved must have a check if its custom lzham or not!
-            return DeComp.Decompress(saved.Compression.IsCompressed, true, saved.Compression.Method, downloadedSlice, outputsize);
+            return DeComp.Decompress(saved.Compression.IsCompressed, Program.IsCustomManifest, saved.Compression.Method, downloadedSlice, outputsize);
         }
     }
 }

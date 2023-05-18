@@ -10,8 +10,7 @@ namespace Core
     public class Creators
     {
 
-        public static string _ManifestSigner = "START_RandomBytesDoDecryptBecauseIDidntKnowHowToDecrpytTheOriginalDotManifestSignThingy_IfYourReadingThisYouUsingCustomUplayServer_RandomBytesDoDecryptBecauseIDidntKnowHowToDecrpytTheOriginalDotManifestSignThingy_IfYourReadingThisYouUsingCustomUplayServer_RandomBytesDoDecryptBecauseIDidntKnowHowToDecrpytTheOriginalDotManifestSignThingy_IfYourReadingThisYouUsingCustomUplayServer_RandomBytesDoDecryptBecauseIDidntKnowHowToDecrpytTheOriginalDotManifestSignThingy_IfYourReadingThisYouUsingCustomUplayServerFun_END";
-        public static string _ManfiestB64 = "U1RBUlRfUmFuZG9tQnl0ZXNEb0RlY3J5cHRCZWNhdXNlSURpZG50S25vd0hvd1RvRGVjcnB5dFRoZU9yaWdpbmFsRG90TWFuaWZlc3RTaWduVGhpbmd5X0lmWW91clJlYWRpbmdUaGlzWW91VXNpbmdDdXN0b21VcGxheVNlcnZlcl9SYW5kb21CeXRlc0RvRGVjcnlwdEJlY2F1c2VJRGlkbnRLbm93SG93VG9EZWNycHl0VGhlT3JpZ2luYWxEb3RNYW5pZmVzdFNpZ25UaGluZ3lfSWZZb3VyUmVhZGluZ1RoaXNZb3VVc2luZ0N1c3RvbVVwbGF5U2VydmVyX1JhbmRvbUJ5dGVzRG9EZWNyeXB0QmVjYXVzZUlEaWRudEtub3dIb3dUb0RlY3JweXRUaGVPcmlnaW5hbERvdE1hbmlmZXN0U2lnblRoaW5neV9JZllvdXJSZWFkaW5nVGhpc1lvdVVzaW5nQ3VzdG9tVXBsYXlTZXJ2ZXJfUmFuZG9tQnl0ZXNEb0RlY3J5cHRCZWNhdXNlSURpZG50S25vd0hvd1RvRGVjcnB5dFRoZU9yaWdpbmFsRG90TWFuaWZlc3RTaWduVGhpbmd5X0lmWW91clJlYWRpbmdUaGlzWW91VXNpbmdDdXN0b21VcGxheVNlcnZlckZ1bl9FTkQ=";
+        public static string _ManifestSigner = "START_UplayCustomManifest_{\"SignDate\":\"SignerDate\"}_END";
 
         /// <summary>
         /// Makeing manifest file to output
@@ -22,14 +21,6 @@ namespace Core
         {
             var mem = new MemoryStream();
             manifest.WriteTo(mem);
-            var writer = File.OpenWrite(FileOutput);
-            var binaryWriter = new BinaryWriter(writer, Encoding.UTF8, false);
-            binaryWriter.Write((int)manifest.CompressionMethod);
-            binaryWriter.Write(344);
-            binaryWriter.Write((int)mem.Length);
-            binaryWriter.Write(_ManfiestB64);
-            writer.Position = 356;
-
             var ms = new MemoryStream();
             var defl = new Deflater(Deflater.BEST_COMPRESSION, false);
             Stream deflate = new DeflaterOutputStream(ms, defl);
@@ -37,6 +28,18 @@ namespace Core
             deflate.Close();
 
             byte[] compressedData = ms.ToArray();
+            var time = DateTime.UtcNow.ToString("yyyy-MM-dd_HH-mm-ss");
+            var signer = _ManifestSigner.Replace("SignerDate",time);
+
+            var signerb64 = B64.ToB64(signer);
+
+            var writer = File.OpenWrite(FileOutput);
+            var binaryWriter = new BinaryWriter(writer, Encoding.UTF8, false);
+            binaryWriter.Write((int)manifest.CompressionMethod);
+            binaryWriter.Write(signerb64.Length);
+            binaryWriter.Write((int)compressedData.Length);
+            binaryWriter.Write(Encoding.UTF8.GetBytes(signerb64));
+            binaryWriter.Flush();
             writer.Write(compressedData);
             writer.Close();
             binaryWriter.Close();

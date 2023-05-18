@@ -27,7 +27,7 @@ namespace upc_r2.Exports
         public static int UPC_ApplicationIdGet(IntPtr inContext, IntPtr outAppId)
         {
             Basics.Log(nameof(UPC_ApplicationIdGet), new object[] { inContext });
-            var str = Marshal.StringToCoTaskMemAnsi(Main.GlobalContext.Config.AppId.ToString());
+            var str = Marshal.StringToCoTaskMemAnsi(Main.GlobalContext.Config.ProductId.ToString());
             Marshal.WriteIntPtr(outAppId, str);
             return 0;
         }

@@ -149,8 +149,14 @@ namespace Downloader
                     File.Copy(manifest_path, DLWorker.Config.DownloadDirectory + "uplay_install.manifest", true);
                     parsedManifest = Parsers.ParseManifestFile(manifest_path);
                     var signature = Parsers.GetManifestSignature(manifest_path);
-                    if (signature.StartsWith("START") && signature.EndsWith("END"))
-                        IsCustomManifest = true;
+                    try
+                    {
+                        signature = B64.FromB64(signature);
+                        Console.WriteLine(signature);
+                        if (signature.StartsWith("START") && signature.EndsWith("END"))
+                            IsCustomManifest = true;
+                    }
+                    catch { }
                 }
                 else
                 {
@@ -166,11 +172,16 @@ namespace Downloader
 
                     File.WriteAllBytes(DLWorker.Config.ProductManifest + ".manifest", manifestBytes);
                     parsedManifest = Parsers.ParseManifestFile(DLWorker.Config.ProductManifest + ".manifest");
-                    var signature = Parsers.GetManifestSignature(manifest_path);
-                    if (signature.StartsWith("START") && signature.EndsWith("END"))
-                        IsCustomManifest = true;
+                    var signature = Parsers.GetManifestSignature(DLWorker.Config.ProductManifest + ".manifest");
+                    try
+                    {
+                        signature = B64.FromB64(signature);
+                        Console.WriteLine(signature);
+                        if (signature.StartsWith("START") && signature.EndsWith("END"))
+                            IsCustomManifest = true;
+                    }
+                    catch { }
                 }
-                Console.WriteLine(IsCustomManifest);
             }
             #endregion
             #region Game from Argument

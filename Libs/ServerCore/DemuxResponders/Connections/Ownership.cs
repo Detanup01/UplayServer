@@ -219,9 +219,9 @@ namespace Core.DemuxResponders
                     {
                         foreach (var item in Initializer.Branches)
                         {
-                            //TODO: Check for password!
-
-                            branches.Add(item.ProductId,item.ActiveBranchId);
+                            var branch = App.GetAppBranch(item.ProductId, item.ActiveBranchId);
+                            if (branch != null && item.Passwords.Contains(branch.branch_password))
+                                branches.Add(item.ProductId,item.ActiveBranchId);
                         }
                     }
                     if (branches.Any())

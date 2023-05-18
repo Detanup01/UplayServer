@@ -4,6 +4,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Platforms>AnyCPU;x86;x64</Platforms>
+	<OutDir>bin\Debug\All\</OutDir>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,13 +13,28 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 	
-	<PropertyGroup>
-		<DnneAddGeneratedBinaryToProject>true</DnneAddGeneratedBinaryToProject>
-		<EnableDynamicLoading>true</EnableDynamicLoading>
-		<DnneNativeBinaryName>upc_r2</DnneNativeBinaryName>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<AssemblyName>$(MSBuildProjectName)_cs</AssemblyName>
-	</PropertyGroup>
+	<Choose>
+		<When Condition=" '$(Platform)'=='x64' ">
+			<PropertyGroup>
+				<DnneAddGeneratedBinaryToProject>true</DnneAddGeneratedBinaryToProject>
+				<EnableDynamicLoading>true</EnableDynamicLoading>
+				<DnneNativeBinaryName>upc_r264</DnneNativeBinaryName>
+				<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+				<AssemblyName>$(MSBuildProjectName)_cs</AssemblyName>
+				<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+			</PropertyGroup>
+		</When>
+		<When Condition=" '$(Platform)'=='x86' ">
+			<PropertyGroup>
+				<DnneAddGeneratedBinaryToProject>true</DnneAddGeneratedBinaryToProject>
+				<EnableDynamicLoading>true</EnableDynamicLoading>
+				<DnneNativeBinaryName>upc_r2</DnneNativeBinaryName>
+				<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+				<AssemblyName>$(MSBuildProjectName)_cs</AssemblyName>
+				<RuntimeIdentifier>win-x86</RuntimeIdentifier>
+			</PropertyGroup>
+		</When>
+	</Choose>
 	
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Libs\Shared\SharedLib.csproj" />

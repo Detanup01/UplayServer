@@ -59,7 +59,7 @@ namespace ClientApp.PipeConnection
 
         public void Stop()
         {
-            Debug.PWDebug("Closed.", "[PipeServer]");
+            Debug.PWDebug("Closed.", "PipeServer");
             Cancel = true;
             Thread.Sleep(10);
             if (pipeServer.IsConnected)

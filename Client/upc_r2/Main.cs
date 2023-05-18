@@ -1,46 +1,12 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using static upc_r2.Enums;
+using static upc_r2.Structures;
 
 namespace upc_r2
 {
     public class Main
     {
-        [StructLayout(LayoutKind.Sequential)]
-        public struct Callback
-        {
-            public Callback(IntPtr fn, IntPtr contextdata, int uarg)
-            {
-                context_data = contextdata;
-                arg = uarg;
-                fun = fn;
-            }
-
-            [MarshalAs(UnmanagedType.SysInt)]
-            public IntPtr fun;
-            [MarshalAs(UnmanagedType.I4)]
-            public int arg;
-            [MarshalAs(UnmanagedType.SysInt)]
-            public IntPtr context_data;
-
-        }
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        public struct Config
-        {
-            public string name;
-            public uint AppId;
-            public string savePath;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct Context
-        {
-            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.LPStruct)]
-            public Callback[] Callbacks;
-            public Config Config;
-        }
-
         public static Context GlobalContext = new Context();
         public static IntPtr GlobalContextPTR = IntPtr.Zero;
 
@@ -48,12 +14,8 @@ namespace upc_r2
         public static IntPtr UPC_ContextCreate(uint inVersion, IntPtr inOptSetting)
         {
             Basics.Log(nameof(UPC_ContextCreate), new object[] { inVersion, inOptSetting });
-            GlobalContext = new Context();
-            GlobalContext.Config = new();
-            GlobalContext.Callbacks = new Callback[1];
             GlobalContextPTR = Marshal.AllocHGlobal(Marshal.SizeOf(GlobalContext));
             Marshal.StructureToPtr(GlobalContext, GlobalContextPTR, false);
-            GlobalContext.Config.savePath = Path.Combine(Environment.CurrentDirectory, "SAVE");
             return GlobalContextPTR;
         }
 
@@ -71,7 +33,7 @@ namespace upc_r2
         [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
         public static unsafe int UPC_Update(IntPtr data)
         {
-            Basics.Log(nameof(UPC_Update), new object[] { data });
+            //Basics.Log(nameof(UPC_Update), new object[] { data });
 
             var cblist = GlobalContext.Callbacks.ToList();
             foreach (var cb in cblist)
@@ -123,17 +85,22 @@ namespace upc_r2
         }
 
         [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-        public static int UPC_Init(uint inVersion, int appid)
+        public static int UPC_Init(uint inVersion, int productId)
         {
-            GlobalContext.Config.AppId = (uint)appid;
-            Basics.Log(nameof(UPC_Init), new object[] { inVersion, appid });
+            GlobalContext = new Context();
+            GlobalContext.Config = new();
+            GlobalContext.Config.Saved = new();
+            GlobalContext.Callbacks = new Callback[1];
+            GlobalContext.Config.ProductId = (uint)productId;
+            GlobalContext.Config.Saved.savePath = Path.Combine(Environment.CurrentDirectory, "SAVE_GAMES", GlobalContext.Config.ProductId.ToString());
+            Basics.Log(nameof(UPC_Init), new object[] { inVersion, productId });
             Basics.SendReq(new Uplay.Uplaydll.Req()
             { 
                 InitProcessReq = new()
                 { 
                     ApiVersion = inVersion,
                     UplayEnvIsSet = false,
-                    UplayId = (uint)appid,
+                    UplayId = (uint)productId,
                     ProcessId = (uint)Process.GetCurrentProcess().Id
                 }
             }, out var rsp);

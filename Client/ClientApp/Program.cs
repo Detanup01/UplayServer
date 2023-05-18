@@ -91,11 +91,13 @@ namespace Client
                 }
 
                 Console.ReadLine();
-                pipeServer.Readed -= PipeServer_Readed;
-                pipeServer.Stop();
-                pipeThread.Join();
                 Socket.DisconnectAsync();
                 Socket.Dispose();
+                pipeServer.Readed -= PipeServer_Readed;
+                pipeServer.Stop();
+                pipeThread.Join(TimeSpan.FromSeconds(1));
+                Console.WriteLine("END!");
+                Environment.Exit(0);
             }
 
             /*

@@ -34,21 +34,17 @@ namespace ClientKit.Demux
 
         public int WaitInTimeMS = 10;
 
-        public Socket() : base(new SslContext(SslProtocols.Tls12), new DnsEndPoint(ConnectionHost, ConnectionPort, System.Net.Sockets.AddressFamily.InterNetwork)) 
+        public Socket() : base(new SslContext(SslProtocols.Tls12), new DnsEndPoint(ConnectionHost, ConnectionPort, AddressFamily.InterNetwork)) 
         {
             Start();
         }
 
-        public Socket(SslContext context) : base(context, new DnsEndPoint(ConnectionHost, ConnectionPort, System.Net.Sockets.AddressFamily.InterNetwork))
+        public Socket(SslContext context) : base(context, new DnsEndPoint(ConnectionHost, ConnectionPort, AddressFamily.InterNetwork))
         {
             Start();
         }
         void Start()
         {
-            Console.WriteLine(Address);
-            Console.WriteLine(Port);
-            var x = Endpoint as DnsEndPoint;
-            Console.WriteLine(x.AddressFamily);
             if (Debug.IsDebug)
             {
                 Directory.CreateDirectory("SendReq");
@@ -66,7 +62,7 @@ namespace ClientKit.Demux
         #region Override
         protected override void OnReceived(byte[] buffer, long offset, long size)
         {
-            Debug.PWDebug($"OnReceived! Bytes to send: {BytesSent} | Bytes sending: {BytesSending} | Bytes Pending {BytesPending} | Bytes Recieved {BytesReceived}");
+            Debug.WriteDebug($"OnReceived! Bytes to send: {BytesSent} | Bytes sending: {BytesSending} | Bytes Pending {BytesPending} | Bytes Recieved {BytesReceived}");
             var _InternalReadedLenght = Formatters.FormatLength(BitConverter.ToUInt32(buffer[..4], 0));
             var _InternalReaded = buffer.Skip(4).Take((int)_InternalReadedLenght).ToArray();
             if (!IsWaitingData)
@@ -110,7 +106,7 @@ namespace ClientKit.Demux
 
         protected override void OnDisconnecting()
         {
-            Console.WriteLine("DISCONNECTING!!");
+            Debug.PWDebug("DISCONNECTING!!");
         }
 
         #endregion
@@ -131,7 +127,6 @@ namespace ClientKit.Demux
             {
                 while (InternalReaded == null)
                 {
-                    Console.WriteLine("SendReq waiting...");
                     Thread.Sleep(WaitInTimeMS);
                 }
                 IsWaitingData = false;
@@ -162,7 +157,6 @@ namespace ClientKit.Demux
             {
                 while (InternalReaded == null)
                 {
-                    Console.WriteLine("SendUpstream waiting...");
                     Thread.Sleep(WaitInTimeMS);
                 }
                 IsWaitingData = false;
