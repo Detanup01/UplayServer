@@ -23,7 +23,7 @@ bool UPLAY_ClearGameSession()
 bool UPLAY_FRIENDS_AddPlayedWith(IntPtr aDescriptionUtf8, IntPtr aAccountIdListUtf8, uint aAccountIdListLength)
 bool UPLAY_FRIENDS_AddToBlackList(IntPtr aAccountIdUtf8, IntPtr aOverlapped)
 bool UPLAY_FRIENDS_DisableFriendMenuItem(uint aId)
-bool UPLAY_FRIENDS_EnableFriendMenuItem(uint aId uint aMenuItemMode, uint aFilter)
+bool UPLAY_FRIENDS_EnableFriendMenuItem(uint aId, uint aMenuItemMode, uint aFilter)
 bool UPLAY_FRIENDS_GetFriendList(uint aFriendListFilter, IntPtr aOutFriendList)
 bool UPLAY_FRIENDS_Init(uint aFlags)
 bool UPLAY_FRIENDS_InviteToGame(IntPtr aAccountIdUtf8, IntPtr aOverlapped)
@@ -52,91 +52,91 @@ bool UPLAY_METADATA_SetContinuousTag(IntPtr aStringNameUtf8, IntPtr aStringValue
 bool UPLAY_METADATA_SetSingleEventTag(IntPtr aStringNameUtf8, IntPtr aStringValueUtf8)
 bool UPLAY_OPTIONS_Apply(IntPtr aFileHandle, IntPtr aKeyValueList, IntPtr aOverlapped)
 bool UPLAY_OPTIONS_Close(IntPtr aFileHandle)
-bool UPLAY_OPTIONS_Enumerate(aFileHandle,aOutKeyValueList,aOverlapped)
-bool UPLAY_OPTIONS_Get(aKeyValueList,aKey)
-bool UPLAY_OPTIONS_Open(aName)
-bool UPLAY_OPTIONS_ReleaseKeyValueList(aKeyValueList)
-bool UPLAY_OPTIONS_Set(aKeyValueList,aKey,aValue)
-bool UPLAY_OPTIONS_SetInGameState(aFlags)
-bool UPLAY_OVERLAY_SetShopUrl(aUrl,aOverlapped)
+bool UPLAY_OPTIONS_Enumerate(IntPtr aFileHandle, IntPtr aOutKeyValueList, IntPtr aOverlapped)
+bool UPLAY_OPTIONS_Get(IntPtr aKeyValueList, IntPtr aKey)
+bool UPLAY_OPTIONS_Open(IntPtr aName)
+bool UPLAY_OPTIONS_ReleaseKeyValueList(IntPtr aKeyValueList)
+bool UPLAY_OPTIONS_Set(IntPtr aKeyValueList, IntPtr aKey, IntPtr aValue)
+bool UPLAY_OPTIONS_SetInGameState(uint aFlags)
+bool UPLAY_OVERLAY_SetShopUrl(IntPtr aUrl, IntPtr aOverlapped)
 bool UPLAY_OVERLAY_Show(IntPtr aOverlaySection, IntPtr aOverlapped)
-bool UPLAY_OVERLAY_ShowBrowserUrl(aUrlUtf8)
-bool UPLAY_OVERLAY_ShowFacebookAuthentication(aFacebookAppId,aRedirectUri,aOverlapped)
-bool UPLAY_OVERLAY_ShowMicroApp(aAppName,aMicroAppParamList,aOverlapped)
-bool UPLAY_OVERLAY_ShowNotification(aNotificationId)
-bool UPLAY_OVERLAY_ShowShopUrl(aUrlUtf8)
+bool UPLAY_OVERLAY_ShowBrowserUrl(IntPtr aUrlUtf8)
+bool UPLAY_OVERLAY_ShowFacebookAuthentication(IntPtr aFacebookAppId, IntPtr aRedirectUri, IntPtr aOverlapped)
+bool UPLAY_OVERLAY_ShowMicroApp(IntPtr aAppName, IntPtr aMicroAppParamList, IntPtr aOverlapped)
+bool UPLAY_OVERLAY_ShowNotification(uint aNotificationId)
+bool UPLAY_OVERLAY_ShowShopUrl(IntPtr aUrlUtf8)
 bool UPLAY_PARTY_DisablePartyMemberMenuItem()
 bool UPLAY_PARTY_EnablePartyMemberMenuItem()
-bool UPLAY_PARTY_GetFullMemberList
-bool UPLAY_PARTY_GetId
-bool UPLAY_PARTY_GetInGameMemberList
-bool UPLAY_PARTY_Init
-bool UPLAY_PARTY_InvitePartyToGame
-bool UPLAY_PARTY_InviteToParty
-bool UPLAY_PARTY_IsInParty
-bool UPLAY_PARTY_IsPartyLeader
-bool UPLAY_PARTY_PromoteToLeader
-bool UPLAY_PARTY_RespondToGameInvite
+bool UPLAY_PARTY_GetFullMemberList(IntPtr aOutMemberList)
+int UPLAY_PARTY_GetId()
+bool UPLAY_PARTY_GetInGameMemberList(IntPtr aOutMemberList)
+bool UPLAY_PARTY_Init(uint aFlags)
+bool UPLAY_PARTY_InvitePartyToGame(IntPtr aOverlapped)
+bool UPLAY_PARTY_InviteToParty(IntPtr aAccountIdUtf8, IntPtr aOverlapped)
+bool UPLAY_PARTY_IsInParty(IntPtr aAccountIdUtf8)
+bool UPLAY_PARTY_IsPartyLeader(IntPtr aAccountIdUtf8)
+bool UPLAY_PARTY_PromoteToLeader(IntPtr aAccountIdUtf8, IntPtr aOverlapped)
+bool UPLAY_PARTY_RespondToGameInvite(uint aInvitationId, bool aAccept)
 bool UPLAY_PARTY_SetGuest(IntPtr guestId, IntPtr aOverlapped)
-bool UPLAY_PARTY_SetUserData
-bool UPLAY_PARTY_ShowGameInviteOverlayUI
+bool UPLAY_PARTY_SetUserData(IntPtr aDataBlob)
+bool UPLAY_PARTY_ShowGameInviteOverlayUI(uint aInvitationId)
 bool UPLAY_PRESENCE_SetPresence(uint presenceId, IntPtr tokens)
-bool UPLAY_PRODUCT_GetProductList(aOverlapped,aOutProductList)
-bool UPLAY_PRODUCT_ReleaseProductList(aProductList)
+bool UPLAY_PRODUCT_GetProductList(IntPtr aOverlapped, IntPtr aOutProductList)
+bool UPLAY_PRODUCT_ReleaseProductList(IntPtr aProductList)
 bool UPLAY_PeekNextEvent()
 bool UPLAY_Quit()
 bool UPLAY_Release(IntPtr aPointer)
-bool UPLAY_SAVE_Close
-bool UPLAY_SAVE_GetSavegames
-bool UPLAY_SAVE_Open
-bool UPLAY_SAVE_Read
-bool UPLAY_SAVE_ReleaseGameList
-bool UPLAY_SAVE_Remove
-bool UPLAY_SAVE_SetName
-bool UPLAY_SAVE_Write
-bool UPLAY_STORE_Checkout
-bool UPLAY_STORE_GetPartner
-bool UPLAY_STORE_GetProducts
-bool UPLAY_STORE_IsEnabled
-bool UPLAY_STORE_ReleaseProductsList
-bool UPLAY_STORE_ShowProductDetails
-bool UPLAY_STORE_ShowProducts
-bool UPLAY_SetGameSession
-bool UPLAY_SetLanguage
+bool UPLAY_SAVE_Close(IntPtr aOutSaveHandle)
+bool UPLAY_SAVE_GetSavegames(IntPtr aOutGamesList, IntPtr aOverlapped)
+bool UPLAY_SAVE_Open(uint aSlotId, uint aMode, IntPtr aOutSaveHandle, IntPtr aOverlapped)
+bool UPLAY_SAVE_Read(IntPtr aSaveHandle, uint aNumOfBytesToRead, uint aOffset, IntPtr aOutBuffer, uint aOutNumOfBytesRead, IntPtr aOverlapped)
+bool UPLAY_SAVE_ReleaseGameList(IntPtr aGamesList)
+bool UPLAY_SAVE_Remove(uint aSlotId, IntPtr aOverlapped)
+bool UPLAY_SAVE_SetName(IntPtr aSaveHandle, IntPtr aNameUtf8)
+bool UPLAY_SAVE_Write(IntPtr aSaveHandle, uint aNumOfBytesToWrite, IntPtr aBuffer, IntPtr aOverlapped)
+bool UPLAY_STORE_Checkout(uint aId)
+bool UPLAY_STORE_GetPartner()
+bool UPLAY_STORE_GetProducts(IntPtr aOverlapped, IntPtr aOutProductList)
+bool UPLAY_STORE_IsEnabled()
+bool UPLAY_STORE_ReleaseProductsList(IntPtr aProductList)
+bool UPLAY_STORE_ShowProductDetails(uint aId)
+bool UPLAY_STORE_ShowProducts(uint aTags)
+bool UPLAY_SetGameSession(IntPtr aGameSessionIdentifier, IntPtr aSessionData, uint aFlags)
+bool UPLAY_SetLanguage(IntPtr aLanguageCountryCode)
 bool UPLAY_Start(uint aUplayId, uint aFlags)
-bool UPLAY_Startup(uint aUplayId, uint aGameVersion,IntPtr aLanguageCountryCodeUtf8)
-bool UPLAY_USER_ClearGameSession
-bool UPLAY_USER_ConsumeItem
-UPLAY_USER_GetAccountId
+bool UPLAY_Startup(uint aUplayId, uint aGameVersion, IntPtr aLanguageCountryCodeUtf8)
+bool UPLAY_USER_ClearGameSession()
+bool UPLAY_USER_ConsumeItem(IntPtr aTransactionIdUtf8, uint aUplayId, uint aQuantity, IntPtr aSignatureUtf8, IntPtr aOverlapped, IntPtr aOutResult)
+IntPtr UPLAY_USER_GetAccountId(IntPtr aOutAccountId)
 IntPtr UPLAY_USER_GetAccountIdUtf8()
-UPLAY_USER_GetCPUScore
-UPLAY_USER_GetCdKeyUtf8
-UPLAY_USER_GetCdKeys
-UPLAY_USER_GetConsumableItems
-UPLAY_USER_GetCredentials
-UPLAY_USER_GetEmail
-UPLAY_USER_GetEmailUtf8
-UPLAY_USER_GetGPUScore
-UPLAY_USER_GetGPUScoreConfidenceLevel
-UPLAY_USER_GetNameUtf8
-UPLAY_USER_GetPassword
-UPLAY_USER_GetPasswordUtf8
-UPLAY_USER_GetProfile
+bool UPLAY_USER_GetCPUScore(IntPtr aOutCpuScore)
+IntPtr UPLAY_USER_GetCdKeyUtf8(uint aUplayId)
+bool UPLAY_USER_GetCdKeys(IntPtr aOutCdKeyList, IntPtr aOverlapped)
+bool UPLAY_USER_GetConsumableItems(IntPtr aOutConsumableItemsList)
+bool UPLAY_USER_GetCredentials(IntPtr aOutUserCredentials, IntPtr aOverlapped)
+IntPtr UPLAY_USER_GetEmail(IntPtr aOutEmail)
+IntPtr UPLAY_USER_GetEmailUtf8()
+bool UPLAY_USER_GetGPUScore(IntPtr aOutGpuScore)
+bool UPLAY_USER_GetGPUScoreConfidenceLevel(IntPtr aOutConfidenceLevel)
+IntPtr UPLAY_USER_GetNameUtf8()
+IntPtr UPLAY_USER_GetPassword(IntPtr aOutPassword)
+IntPtr UPLAY_USER_GetPasswordUtf8()
+bool UPLAY_USER_GetProfile(IntPtr aAccountIdUtf8, IntPtr aOverlapped, IntPtr aOutProfile)
 IntPtr UPLAY_USER_GetTicketUtf8()
-UPLAY_USER_GetUsername
-UPLAY_USER_GetUsernameUtf8
-UPLAY_USER_IsConnected
+IntPtr UPLAY_USER_GetUsername(IntPtr aOutUsername)
+IntPtr UPLAY_USER_GetUsernameUtf8()
+bool UPLAY_USER_IsConnected()
 bool UPLAY_USER_IsInOfflineMode()
 bool UPLAY_USER_IsOwned(uint aUplayId)
-UPLAY_USER_ReleaseCdKeyList
-UPLAY_USER_ReleaseConsumeItemResult
-UPLAY_USER_ReleaseProfile
-UPLAY_USER_SetGameSession
+bool UPLAY_USER_ReleaseCdKeyList(IntPtr aCdKeyList)
+bool UPLAY_USER_ReleaseConsumeItemResult(IntPtr aConsumeItemResult)
+bool UPLAY_USER_ReleaseProfile(IntPtr aOutProfile)
+bool UPLAY_USER_SetGameSession(IntPtr aGameSessionIdentifier, IntPtr aSessionData, uint aFlags)
 bool UPLAY_Update()
-bool UPLAY_WIN_GetActions
-bool UPLAY_WIN_GetRewards
-bool UPLAY_WIN_GetUnitBalance
-bool UPLAY_WIN_RefreshActions
-bool UPLAY_WIN_ReleaseActionList
-bool UPLAY_WIN_ReleaseRewardList
-bool UPLAY_WIN_SetActionsCompleted
+bool UPLAY_WIN_GetActions(IntPtr aOutActionList, IntPtr aOverlapped)
+bool UPLAY_WIN_GetRewards(IntPtr aOutRewardList, IntPtr aOverlapped)
+bool UPLAY_WIN_GetUnitBalance(int aOutBalance, IntPtr aOverlapped)
+bool UPLAY_WIN_RefreshActions()
+bool UPLAY_WIN_ReleaseActionList(IntPtr aActionList)
+bool UPLAY_WIN_ReleaseRewardList(IntPtr aRewardList)
+bool UPLAY_WIN_SetActionsCompleted(IntPtr aActionIdsUtf8, uint aActionIdsCount, IntPtr aOverlapped)

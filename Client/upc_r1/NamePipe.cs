@@ -1,9 +1,9 @@
 ﻿using Google.Protobuf;
 using System.IO.Pipes;
 using SharedLib.Shared;
-using static upc_r2.Basics;
+using static upc_r1.Basics;
 
-namespace upc_r2
+namespace upc_r1
 {
     public class NamePipe
     {
@@ -13,7 +13,7 @@ namespace upc_r2
             rsp = new();
             try
             {
-                var pipeClient = new NamedPipeClientStream(".", "custom_r2_pipe", PipeDirection.InOut);
+                var pipeClient = new NamedPipeClientStream(".", "custom_r1_pipe", PipeDirection.InOut);
                 byte[] buffer = new byte[4];
                 pipeClient.Connect(1000);
                 if (pipeClient.IsConnected)

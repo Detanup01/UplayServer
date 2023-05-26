@@ -45,7 +45,7 @@ namespace upc_r2
                     @delegate(cb.arg, cb.context_data);
                 }
             }
-            GlobalContext.Callbacks = new Callback[1];
+            GlobalContext.Callbacks = new Callback[0];
             return 0;
         }
 
@@ -90,7 +90,7 @@ namespace upc_r2
             GlobalContext = new Context();
             GlobalContext.Config = new();
             GlobalContext.Config.Saved = new();
-            GlobalContext.Callbacks = new Callback[1];
+            GlobalContext.Callbacks = new Callback[0];
             GlobalContext.Config.ProductId = (uint)productId;
             GlobalContext.Config.Saved.savePath = Path.Combine(Environment.CurrentDirectory, "SAVE_GAMES", GlobalContext.Config.ProductId.ToString());
             Basics.Log(nameof(UPC_Init), new object[] { inVersion, productId });
