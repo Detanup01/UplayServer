@@ -61,6 +61,7 @@
             UPC_OnlineStatus_Away = 4U,
             UPC_OnlineStatus_Online = 8U
         }
+
         [Flags]
         public enum UPC_ContextSubsystem : uint
         {

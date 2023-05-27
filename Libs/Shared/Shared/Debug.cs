@@ -14,8 +14,9 @@ namespace SharedLib.Shared
             if (IsDebug == true)
             {
                 Console.WriteLine($"[{label}] {obj}");
-                logger.Log(label, obj.ToString() + " | " + memberName);
+                
             }
+            logger.Log(label, obj.ToString() + " | " + memberName);
         }
 
         public static void PrintDebug(object obj)
@@ -28,10 +29,7 @@ namespace SharedLib.Shared
 
         public static void WriteDebug(string strLog, string label = "debug", [CallerMemberName] string memberName = "Shared")
         {
-            if (IsDebug == true)
-            {
-                logger.Log(label, strLog + " | " + memberName);
-            }
+            logger.Log(label, strLog + " | " + memberName);
         }
 
         public static void WriteAllBytes(byte[] bytes, string logname = "_debug.txt")

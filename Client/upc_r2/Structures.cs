@@ -1,4 +1,6 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
+using static upc_r2.Enums;
 
 namespace upc_r2
 {
@@ -7,9 +9,12 @@ namespace upc_r2
         [StructLayout(LayoutKind.Sequential)]
         public struct Context
         {
-            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.LPStruct)]
+            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.LPStruct, SizeConst = 1)]
             public Callback[] Callbacks;
             public Config Config;
+            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.LPStruct, SizeConst = 1)]
+            public Event[] Events;
+
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -44,5 +49,25 @@ namespace upc_r2
             public string savePath;
         }
 
+        [StructLayout(LayoutKind.Sequential)]
+        public struct Event
+        {
+            public Event(UPC_EventType eventType, IntPtr handler, IntPtr optdata)
+            {
+                EventType = eventType;
+                Handler = handler;
+                OptData = optdata;
+            }
+
+            public UPC_EventType EventType;
+            public IntPtr Handler;
+            public IntPtr OptData;
+        }
+
+
+        public struct UPC_ContextSettings
+        {
+            public UPC_ContextSubsystem subsystems;
+        }
     }
 }

@@ -39,6 +39,7 @@ namespace Core.DemuxResponders
             {
                 if (req?.InitReq != null) { Init(req.InitReq); }
                 if (req?.InitProcessReq != null) { InitProcess(req.InitProcessReq); }
+                if (req.Equals(new Req())) { Console.WriteLine("Update!"); }
                 IsIdDone = true;
             }
 
@@ -57,21 +58,29 @@ namespace Core.DemuxResponders
 
             public static void InitProcess(InitProcessReq init)
             {
-                Rsp = new()
+                if (init.ApiVersion == uint.MaxValue)
                 {
-                    InitProcessRsp = new()
+                    // App quit
+                    Rsp = new();
+                }
+                else
+                {
+                    Rsp = new()
                     {
-                        Result = InitResult.Success,
-                        UplayPID = init.UplayId,
-                        OverlayInjectionMethod = OverlayInjectionMethod.None,
-                        OverlayEnabled = false,
-                        Devmode = false,
-                        SdkMonitoringConfig = new()
+                        InitProcessRsp = new()
                         {
-                            SdkMonitoringEnabled = false,
+                            Result = InitResult.Success,
+                            UplayPID = init.UplayId,
+                            OverlayInjectionMethod = OverlayInjectionMethod.None,
+                            OverlayEnabled = false,
+                            Devmode = false,
+                            SdkMonitoringConfig = new()
+                            {
+                                SdkMonitoringEnabled = false,
+                            }
                         }
-                    }
-                };
+                    };
+                }
             }
         }
     }
