@@ -62,7 +62,9 @@ namespace ClientKit.Demux
         #region Override
         protected override void OnReceived(byte[] buffer, long offset, long size)
         {
-            Debug.WriteDebug($"OnReceived! Bytes to send: {BytesSent} | Bytes sending: {BytesSending} | Bytes Pending {BytesPending} | Bytes Recieved {BytesReceived}");
+            Debug.WriteDebug("OnReceived!");
+            Debug.WriteDebug($"Buffer L: {buffer.Length} | Offset : {offset} | Size: {size}");
+            Debug.WriteDebug($"Bytes to send: {BytesSent} | Bytes sending: {BytesSending} | Bytes Pending {BytesPending} | Bytes Recieved {BytesReceived}");
             var _InternalReadedLenght = Formatters.FormatLength(BitConverter.ToUInt32(buffer[..4], 0));
             var _InternalReaded = buffer.Skip(4).Take((int)_InternalReadedLenght).ToArray();
             if (!IsWaitingData)
@@ -83,8 +85,8 @@ namespace ClientKit.Demux
                 }
                 else
                 {
-                    Debug.PWDebug("Unknown byte! " + _InternalReaded[0], "ERROR");
-                    File.WriteAllBytes("All_Received_Bytes", buffer);
+                    Debug.PWDebug($"Unknown byte! {_InternalReaded[0]}   ", "ERROR");
+                    File.WriteAllBytes("Error_Received_Bytes", _InternalReaded);
                 }
             }
             else

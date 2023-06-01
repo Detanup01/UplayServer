@@ -85,7 +85,10 @@ namespace upc_r2.Exports
         public static int UPC_UserGet(IntPtr inContext, IntPtr inOptUserIdUtf8, IntPtr outUser, IntPtr inCallback, IntPtr inCallbackData)
         {
             Basics.Log(nameof(UPC_UserGet), new object[] { inContext, inOptUserIdUtf8, outUser, inCallback, inCallbackData });
-            Main.GlobalContext.Callbacks.Append(new(inCallback, inCallbackData, 0));
+
+            var cbList = Main.GlobalContext.Callbacks.ToList();
+            cbList.Add(new(inCallback, inCallbackData, 0));
+            Main.GlobalContext.Callbacks = cbList.ToArray();
 
             UPC_User user = new();
             user.idUtf8 = "80f33a39-e682-4d1f-b693-39267e890df2";

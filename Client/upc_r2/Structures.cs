@@ -47,6 +47,7 @@ namespace upc_r2
         {
             public Uplay.Uplaydll.Account account;
             public string savePath;
+            public string ubiTicket;
         }
 
         [StructLayout(LayoutKind.Sequential)]

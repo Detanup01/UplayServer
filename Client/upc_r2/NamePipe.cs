@@ -34,7 +34,7 @@ namespace upc_r2
                             {
                                 if (downstream.Response.ServiceRsp != null)
                                 {
-                                    Log("NamePipeReqRsp", new object[] { "Success? ", downstream.Response.ServiceRsp.Success });
+                                    //Log("NamePipeReqRsp", new object[] { "Success? ", downstream.Response.ServiceRsp.Success });
                                     rsp = Uplay.Uplaydll.Rsp.Parser.ParseFrom(downstream.Response.ServiceRsp.Data.ToArray());
                                 }
                                 break;

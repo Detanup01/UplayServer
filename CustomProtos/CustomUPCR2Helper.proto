@@ -1,0 +1,40 @@
+syntax = "proto2";
+
+package Custom.R2Helper;
+
+message Path
+{
+	required string path = 1;
+}
+
+
+message CustomReq
+{
+	required int32 req_id = 1;
+	optional Path InstalledPathReq = 2;
+}
+
+message CustomPush
+{
+}
+
+message CustomRsp
+{
+	required uint32 req_id = 1;
+	optional Path InstalledPathRsp = 2;
+}
+
+message CustomUpstream
+{
+	required uint32 req_id = 1;
+	optional CustomReq Req = 2;
+	optional CustomPush Push = 3;
+}
+
+
+message CustomDownstream
+{
+	required uint32 req_id = 1;
+	optional CustomReq Req = 2;
+	optional CustomPush Push = 3;
+}

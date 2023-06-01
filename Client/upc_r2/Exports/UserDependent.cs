@@ -33,7 +33,7 @@ namespace upc_r2.Exports
         public static IntPtr UPC_IdGet(IntPtr inContext)
         {
             Basics.Log(nameof(UPC_IdGet), new object[] { inContext });
-            var ret = Marshal.StringToHGlobalAnsi("80f33a39-e682-4d1f-b693-39267e890df2");
+            var ret = Marshal.StringToHGlobalAnsi("c0d3c0d3-c0d3-c0d3-c0d3-c0d3c0d3c0d3");
             return ret;
         }
 
@@ -41,7 +41,7 @@ namespace upc_r2.Exports
         public static int UPC_IdGet_Extended(IntPtr inContext, IntPtr idptr)
         {
             Basics.Log(nameof(UPC_IdGet_Extended), new object[] { inContext });
-            var ret = Marshal.StringToHGlobalAnsi("80f33a39-e682-4d1f-b693-39267e890df2");
+            var ret = Marshal.StringToHGlobalAnsi("c0d3c0d3-c0d3-c0d3-c0d3-c0d3c0d3c0d3");
             Marshal.WriteIntPtr(idptr, 0, ret);
             return 0;
         }
@@ -85,7 +85,7 @@ namespace upc_r2.Exports
         public static IntPtr UPC_TicketGet(IntPtr inContext)
         {
             Basics.Log(nameof(UPC_TicketGet), new object[] { inContext });
-            var ret = Marshal.StringToHGlobalAnsi("TICKET");
+            var ret = Marshal.StringToHGlobalAnsi("");
             return ret;
         }
 
@@ -93,7 +93,7 @@ namespace upc_r2.Exports
         public static int UPC_TicketGet_Extended(IntPtr inContext, IntPtr ticketPtr)
         {
             Basics.Log(nameof(UPC_TicketGet_Extended), new object[] { inContext });
-            var ret = Marshal.StringToHGlobalAnsi("TICKET");
+            var ret = Marshal.StringToHGlobalAnsi("");
             Marshal.WriteIntPtr(ticketPtr, 0 , ret);
             return 0;
         }

@@ -110,7 +110,9 @@ namespace upc_r2.Exports
             var readed = stream.Read(buff, (int)inBytesReadOffset, inBytesToRead);
             Marshal.WriteInt32(outBytesRead, readed);
             Marshal.Copy(buff, 0, outData, buff.Length);
-            Main.GlobalContext.Callbacks.Append(new(inCallback, inCallbackData, 0));
+            var cbList = Main.GlobalContext.Callbacks.ToList();
+            cbList.Add(new(inCallback, inCallbackData, 0));
+            Main.GlobalContext.Callbacks = cbList.ToArray();
             return 0x10000;
         }
 
@@ -123,8 +125,10 @@ namespace upc_r2.Exports
             var buff = new byte[inSize];
             Marshal.Copy(inData, buff, 0, inSize);
             stream.Write(buff, 0, inSize);
-            stream.Flush(true);
-            Main.GlobalContext.Callbacks.Append(new(inCallback, inCallbackData, 0));
+            stream.Flush(true); 
+            var cbList = Main.GlobalContext.Callbacks.ToList();
+            cbList.Add(new(inCallback, inCallbackData, 0));
+            Main.GlobalContext.Callbacks = cbList.ToArray();
             return 0x10000;
         }
 

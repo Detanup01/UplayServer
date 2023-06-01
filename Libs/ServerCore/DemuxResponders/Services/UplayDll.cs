@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf;
+using SharedLib.Server.DB;
 using Uplay.Uplaydll;
 
 namespace Core.DemuxResponders
@@ -18,7 +19,7 @@ namespace Core.DemuxResponders
                 {
                     if (Upsteam != null)
                     {
-                        ReqRSP.Requests(Upsteam);
+                        ReqRSP.Requests(ClientNumb, Upsteam);
                         while (ReqRSP.IsIdDone == false)
                         {
 
@@ -35,15 +36,15 @@ namespace Core.DemuxResponders
             public static Rsp Rsp = null;
             public static uint ReqId = 0;
             public static bool IsIdDone = false;
-            public static void Requests(Req req)
+            public static void Requests(Guid ClientNumb, Req req)
             {
-                if (req?.InitReq != null) { Init(req.InitReq); }
+                if (req?.InitReq != null) { Init(ClientNumb, req.InitReq); }
                 if (req?.InitProcessReq != null) { InitProcess(req.InitProcessReq); }
-                if (req.Equals(new Req())) { Console.WriteLine("Update!"); }
+                if (req.Equals(new Req())) { Rsp = new(); }
                 IsIdDone = true;
             }
 
-            public static void Init(InitReq init)
+            public static void Init(Guid ClientNumb, InitReq init)
             {
                 Rsp = new()
                 {
@@ -53,6 +54,24 @@ namespace Core.DemuxResponders
                         UplayPID = init.UplayId
                     }
                 };
+
+                var UserId = Globals.IdToUser[ClientNumb];
+
+                var user = DBUser.GetUser(UserId);
+
+                var auth = Auth.GetTokenByUserId(UserId, SharedLib.Server.Enums.TokenType.Ticket);
+                Rsp.InitRsp.UpcTicket = auth;
+                Rsp.InitRsp.Account = new()
+                { 
+                    AccountId = UserId,
+                    Email = "customuplay@protonmail.com",
+                    NameOnPlatform = user.Name,
+                    Password = "CustomUplay12345!",
+                    Username = user.Name
+                };
+                Rsp.InitRsp.IsInOfflineMode = true; //force it while testing!
+                Rsp.InitRsp.Connected = true;   //idk what this should do
+
             }
 
 

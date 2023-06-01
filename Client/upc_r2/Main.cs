@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using Newtonsoft.Json;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using static upc_r2.Enums;
@@ -11,15 +12,22 @@ namespace upc_r2
         public static Stopwatch Stopwatch = new Stopwatch();
         public static Context GlobalContext = new Context();
         public static IntPtr GlobalContextPTR = IntPtr.Zero;
-        public static long TimeBettweenUpdate = 2000000;
+        public static long TimeBettweenUpdate = 20000000;
 
         [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
         public static IntPtr UPC_ContextCreate(uint inVersion, IntPtr inOptSetting)
         {
             Basics.Log(nameof(UPC_ContextCreate), new object[] { inVersion, inOptSetting });
 
-            var contextSettings =  Basics.IntPtrToStruct<UPC_ContextSettings>(inOptSetting);
-            Basics.Log(nameof(UPC_ContextCreate), new object[] { contextSettings.subsystems });
+            UPC_ContextSettings contextSettings = new()
+            {
+                subsystems = UPC_ContextSubsystem.UPC_ContextSubsystem_None
+            };
+            if (inOptSetting != IntPtr.Zero) 
+            {
+                contextSettings = Basics.IntPtrToStruct<UPC_ContextSettings>(inOptSetting);
+            }
+            Basics.Log(nameof(UPC_ContextCreate), new object[] { "Subsystems: ", contextSettings.subsystems });
             Basics.SendReq(new Uplay.Uplaydll.Req()
             {
                 InitReq = new()
@@ -38,6 +46,12 @@ namespace upc_r2
                 }
             }, out var rsp);
             Basics.Log(nameof(UPC_ContextCreate), new object[] { rsp });
+
+            var initRsp = rsp.InitRsp;
+            GlobalContext.Config.Saved.account = initRsp.Account;
+            //GlobalContext.Config.Saved.savePath = initRsp.Storage.SavegameStoragePath;
+            if (initRsp.HasUpcTicket)
+                GlobalContext.Config.Saved.ubiTicket = initRsp.UpcTicket;
             try
             {
                 GlobalContextPTR = Marshal.AllocHGlobal(Marshal.SizeOf(GlobalContext));
@@ -47,7 +61,7 @@ namespace upc_r2
             catch (Exception ex)
             {
                 Basics.Log(nameof(UPC_ContextCreate), new object[] { ex });
-                return IntPtr.MinValue;
+                throw;
             }
 
         }
@@ -66,27 +80,33 @@ namespace upc_r2
         [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
         public static unsafe int UPC_Update(IntPtr inContext)
         {
+            //Internal waiting update for reason
             Stopwatch.Stop();
             if (Stopwatch.ElapsedTicks <= TimeBettweenUpdate)
             {
                 Stopwatch.Start();
                 return 0;
             }
-            Basics.Log(nameof(UPC_Update), new object[] { Stopwatch.ElapsedTicks });
+            //Basics.Log(nameof(UPC_Update), new object[] { Stopwatch.ElapsedTicks });
             Stopwatch.Restart();
             //Basics.Log(nameof(UPC_Update), new object[] { inContext });
             Basics.SendReq(new Uplay.Uplaydll.Req(), out var rsp);
             var cblist = GlobalContext.Callbacks.ToList();
-            foreach (var cb in cblist)
+            //Basics.Log(nameof(UPC_Update), new object[] { cblist.Count, cblist.Count() });
+            for (int i = 0; i < cblist.Count; i++)
             {
+                var cb = cblist[i];
                 if (cb.fun != IntPtr.Zero)
                 {
+                    Basics.Log(nameof(UPC_Update), new object[] { JsonConvert.SerializeObject(cb) });
+                    Basics.Log(nameof(UPC_Update), new object[] { "Delegate run with: ", cb.fun, cb.arg, cb.context_data });
                     delegate* unmanaged<int, IntPtr, void> @delegate;
                     @delegate = (delegate* unmanaged<int, IntPtr, void>)cb.fun;
                     @delegate(cb.arg, cb.context_data);
+                    cblist.Remove(cb);
                 }
             }
-            GlobalContext.Callbacks = new Callback[0];
+            GlobalContext.Callbacks = cblist.ToArray();
             var events = GlobalContext.Events.ToList();
             foreach (var ev in events)
             {
@@ -140,6 +160,7 @@ namespace upc_r2
         {
             Basics.Log(nameof(UPC_EventRegisterHandler), new object[] { inContext, inType, inHandler, inOptData });
             var eventType = (UPC_EventType)inType;
+            Basics.Log(nameof(UPC_EventRegisterHandler), new object[] { "EventType: ", eventType });
             GlobalContext.Events.Append(new Event(eventType, inHandler, inOptData));
             return 0;
         }
@@ -148,6 +169,13 @@ namespace upc_r2
         public static int UPC_EventUnregisterHandler(IntPtr inContext, uint inType)
         {
             Basics.Log(nameof(UPC_EventUnregisterHandler), new object[] { inContext, inType });
+            var eventRemove = GlobalContext.Events.Where(x=>x.EventType == (UPC_EventType)inType);
+            if (eventRemove.Any())
+            {
+                var evList = GlobalContext.Events.ToList();
+                evList.Remove(eventRemove.First());
+                GlobalContext.Events = evList.ToArray();
+            }
             return 0;
         }
 

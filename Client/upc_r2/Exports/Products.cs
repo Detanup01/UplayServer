@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using static upc_r2.Basics;
+using static upc_r2.Enums;
 
 namespace upc_r2.Exports
 {
@@ -36,16 +37,19 @@ namespace upc_r2.Exports
         [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
         public static unsafe int UPC_ProductListGet(IntPtr inContext, IntPtr inOptUserIdUtf8, uint inFilter, [Out] IntPtr outProductList, IntPtr inCallback, IntPtr inOptCallbackData)
         {
-            Basics.Log(nameof(UPC_ProductListGet), new object[] { inContext, inOptUserIdUtf8, inFilter, outProductList, inCallback, inOptCallbackData });
-
-            Main.GlobalContext.Callbacks.Append(new(inCallback, inOptCallbackData, 0));
+            Log(nameof(UPC_ProductListGet), new object[] { inContext, inOptUserIdUtf8, inFilter, outProductList, inCallback, inOptCallbackData });
+            string userId = Marshal.PtrToStringUTF8(inOptUserIdUtf8);
+            Log(nameof(UPC_ProductListGet), new object[] { userId });
+            var cbList = Main.GlobalContext.Callbacks.ToList();
+            cbList.Add(new(inCallback, inOptCallbackData, 0));
+            Main.GlobalContext.Callbacks = cbList.ToArray();
 
             List<UPC_Product> products = new()
             {
                 new(Main.GlobalContext.Config.ProductId, 1)
             };
 
-            var listptr = Basics.GetListPtr(products);
+            var listptr = GetListPtr(products);
             BasicList productList = new()
             {
                 count = products.Count,
@@ -53,8 +57,10 @@ namespace upc_r2.Exports
             };
             IntPtr ptr = Marshal.AllocHGlobal(sizeof(BasicList));
             Marshal.StructureToPtr(productList, ptr, false);
-            Marshal.WriteIntPtr(outProductList, ptr);
-            return 0x10000;
+            Marshal.WriteIntPtr(outProductList, 0, ptr);
+            int returner = 0x10000;
+            Log(nameof(UPC_ProductListGet), new object[] { returner });
+            return returner;
         }
 
         [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]

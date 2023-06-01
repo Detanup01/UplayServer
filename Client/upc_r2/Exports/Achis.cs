@@ -30,7 +30,9 @@ namespace upc_r2.Exports
         public static int UPC_AchievementListGet(IntPtr inContext, IntPtr inOptUserIdUtf8, uint inFilter, IntPtr outAchievementList, IntPtr inCallback, IntPtr inCallbackData)
         {
             Basics.Log(nameof(UPC_AchievementListGet), new object[] { inContext, inOptUserIdUtf8, outAchievementList, inCallback, inCallbackData });
-            Main.GlobalContext.Callbacks.Append(new(inCallback, inCallbackData, -4));
+            var cbList = Main.GlobalContext.Callbacks.ToList();
+            cbList.Add(new(inCallback, inCallbackData, -4));
+            Main.GlobalContext.Callbacks = cbList.ToArray();
             return 0x200;
         }
 

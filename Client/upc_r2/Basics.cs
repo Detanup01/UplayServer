@@ -27,8 +27,6 @@ namespace upc_r2
             File.AppendAllText(GetCuPath() + "\\upc_r2_rsp.log", $"{rsp.ToString()}\n");
         }
 
-        public static uint ReqId = uint.MinValue;
-
         public static void SendReq(Uplay.Uplaydll.Req req, out Uplay.Uplaydll.Rsp rsp)
         {
             if (IfReqLog())
@@ -40,7 +38,7 @@ namespace upc_r2
             {
                 Request = new()
                 {
-                    RequestId = ReqId,
+                    RequestId = 0,
                     ServiceRequest = new()
                     {
                         Service = "uplaydll",
@@ -48,14 +46,13 @@ namespace upc_r2
                     }
                 }
             };
-            ReqId++;
             rsp = new();
             NamePipe.NamePipeReqRsp(upstream, out rsp);
             if (IfRspLog())
             {
                 LogRsp(rsp);
             }
-            Log("SendReq", new object[] { "Done!" });
+            //Log("SendReq", new object[] { "Done!" });
         }
 
         public static bool IfReqLog()

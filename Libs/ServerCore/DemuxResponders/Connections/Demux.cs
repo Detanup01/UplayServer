@@ -331,7 +331,7 @@ namespace Core.DemuxResponders
                 if (Globals.Services.Contains(service.Service))
                 {
                     IsSucces = true;
-                    Console.WriteLine(service.Service);
+                    //Console.WriteLine(service.Service);
                     if (service.Service == Utility.Name)
                     {
                         Utility.Up.UpstreamConverter(ClientNumb, service.Data);
@@ -340,7 +340,7 @@ namespace Core.DemuxResponders
                             returnData = ByteString.CopyFrom(Utility.Up.Downstream.ToByteArray());
                         }
                     }
-                    if (service.Service == UplayDll.Name)
+                    else if (service.Service == UplayDll.Name)
                     {
                         UplayDll.Up.UpstreamConverter(ClientNumb, service.Data);
                         if (UplayDll.Up.Rsp != null)
@@ -348,13 +348,17 @@ namespace Core.DemuxResponders
                             returnData = ByteString.CopyFrom(UplayDll.Up.Rsp.ToByteArray());
                         }
                     }
-                    if (service.Service == ClientConfig.Name)
+                    else if (service.Service == ClientConfig.Name)
                     {
                         ClientConfig.Up.UpstreamConverter(service.Data);
                         if (ClientConfig.Up.Downstream != null)
                         {
                             returnData = ByteString.CopyFrom(ClientConfig.Up.Downstream.ToByteArray());
                         }
+                    }
+                    else
+                    {
+                        Console.WriteLine(service.Service);
                     }
                 }
 

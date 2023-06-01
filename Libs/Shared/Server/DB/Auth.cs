@@ -358,6 +358,23 @@ namespace SharedLib.Server.DB
             }
         }
 
+        public static string GetTokenByUserId(string userId, Enums.TokenType tokentype)
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JCurrent>(Current);
+                var toGet = col.FindOne(x => x.userId == userId && x.type == tokentype);
+
+                if (toGet != null)
+                {
+                    return toGet.token;
+                }
+                else
+                    return "";
+
+            }
+        }
+
         public static void DeleteCurrent(string userId)
         {
             using (var db = new LiteDatabase(DBName))
