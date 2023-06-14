@@ -1,6 +1,9 @@
-﻿using System.Diagnostics;
+﻿using Newtonsoft.Json;
+using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace upc_r2.Exports
 {
@@ -31,14 +34,51 @@ namespace upc_r2.Exports
             Marshal.WriteIntPtr(outAppId, str);
             return 0;
         }
-
-        [UnmanagedCallersOnly(EntryPoint = "UPC_ErrorToString", CallConvs = new[] { typeof(CallConvCdecl) })]
-        public static IntPtr UPC_ErrorToString(int error)
+        public struct UPC_RichPresenceToken
         {
+            [MarshalAs(UnmanagedType.LPUTF8Str)]
+            public string idUtf8;
+            [MarshalAs(UnmanagedType.LPUTF8Str)]
+            public string valueIdUtf8;
+        }
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+        public static unsafe int UPC_RichPresenceSet(IntPtr inContext, uint inId, IntPtr inOptTokenList)
+        {
+            Basics.Log(nameof(UPC_RichPresenceSet), new object[] { inContext, inId, inOptTokenList });
+
+            var list = Basics.IntPtrToStruct<Basics.BasicList>(inOptTokenList);
+            Basics.Log(nameof(UPC_RichPresenceSet), new object[] { JsonConvert.SerializeObject(list) });
+            try
+            {
+                for (int i = 0; i < list.count; i++)
+                {
+                    var ptr = Marshal.ReadIntPtr(list.list, i * sizeof(UPC_RichPresenceToken));
+                    var token = Basics.IntPtrToStruct<UPC_RichPresenceToken>(ptr);
+                    Basics.Log(nameof(UPC_RichPresenceSet), new object[] { JsonConvert.SerializeObject(token) });
+                }
+            }
+            catch (Exception ex)
+            {
+                Basics.Log(nameof(UPC_RichPresenceSet), new object[] { ex });
+            }
+
+            return 0;
+        }
+
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+        public static int UPC_LaunchApp(IntPtr inContext, uint inProductId, IntPtr MustBeZero)
+        {
+            Basics.Log(nameof(UPC_RichPresenceSet), new object[] { inContext, inProductId, MustBeZero });
+            return 1;
+        }
+
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+        public static IntPtr UPC_ErrorToString(int error)
+        {/*
             var data = Newtonsoft.Json.JsonConvert.DeserializeObject<json.Root>(File.ReadAllText("upc.json"));
             data.Base.PID = Process.GetCurrentProcess().Id;
             data.ErrorToString.error = error;
-            File.WriteAllText("upc.json", Newtonsoft.Json.JsonConvert.SerializeObject(data));
+            File.WriteAllText("upc.json", Newtonsoft.Json.JsonConvert.SerializeObject(data));*/
             string switch_ret = "get";
             switch (error)
             {

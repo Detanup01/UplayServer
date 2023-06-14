@@ -11,6 +11,7 @@ namespace upc_r2.Exports
         public static IntPtr UPC_EmailGet(IntPtr inContext)
         {
             Basics.Log(nameof(UPC_EmailGet), new object[] { inContext });
+            /*
             if (Main.GlobalContext.Config.Saved.account == null)
             {
                 Basics.SendReq(new Uplay.Uplaydll.Req()
@@ -25,6 +26,7 @@ namespace upc_r2.Exports
                     }
                 }, out var rsp);
             }
+            */
             var ret = Marshal.StringToHGlobalAnsi("uplay@user");
             return ret;
         }

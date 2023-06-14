@@ -3,7 +3,7 @@
 voidFunc = "UPC_Uninit"
 IntPtrFuncs = ["UPC_ErrorToString", "UPC_ContextCreate" , "UPC_EmailGet" , "UPC_IdGet", "UPC_InstallLanguageGet", "UPC_NameGet", "UPC_TicketGet"]
 uint = "unsigned"
-IntPtr = "intptr_t"
+IntPtr = "const char*"
 
 
 normal = """EXPORT int """

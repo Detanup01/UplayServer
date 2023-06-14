@@ -127,5 +127,12 @@ namespace upc_r2.Exports
             Marshal.FreeHGlobal(inUser);
             return 0;
         }
+
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+        public static int UPC_UserPlayedWithAdd(IntPtr inContext, IntPtr inUserIdUtf8List, uint inListLength)
+        {
+            Basics.Log(nameof(UPC_UserPlayedWithAdd), new object[] { inContext, inUserIdUtf8List, inListLength });
+            return 0;
+        }
     }
 }

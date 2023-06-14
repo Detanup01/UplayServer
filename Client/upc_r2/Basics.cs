@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -96,6 +97,17 @@ namespace upc_r2
                 indx++;
             }
             return main_ptr;
+        }
+
+        public static unsafe List<T> GetListFromPtr<T>(BasicList list) where T : struct
+        {
+            List<T> returner = new List<T>();
+            for (int i = 0; i < list.count; i++)
+            {
+                var ptr = Marshal.ReadIntPtr(list.list, i * sizeof(IntPtr));
+                returner.Add(IntPtrToStruct<T>(ptr));
+            }
+            return returner;
         }
 
         public static unsafe void FreeListPtr(int count, IntPtr listPointer)

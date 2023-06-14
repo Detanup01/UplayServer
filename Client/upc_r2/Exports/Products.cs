@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using Newtonsoft.Json;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using static upc_r2.Basics;
 using static upc_r2.Enums;
@@ -35,11 +36,12 @@ namespace upc_r2.Exports
         }
 
         [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-        public static unsafe int UPC_ProductListGet(IntPtr inContext, IntPtr inOptUserIdUtf8, uint inFilter, [Out] IntPtr outProductList, IntPtr inCallback, IntPtr inOptCallbackData)
+        public static int UPC_ProductListGet(IntPtr inContext, IntPtr inOptUserIdUtf8, uint inFilter, [Out] IntPtr outProductList, IntPtr inCallback, IntPtr inOptCallbackData)
         {
             Log(nameof(UPC_ProductListGet), new object[] { inContext, inOptUserIdUtf8, inFilter, outProductList, inCallback, inOptCallbackData });
             string userId = Marshal.PtrToStringUTF8(inOptUserIdUtf8);
             Log(nameof(UPC_ProductListGet), new object[] { userId });
+
             var cbList = Main.GlobalContext.Callbacks.ToList();
             cbList.Add(new(inCallback, inOptCallbackData, 0));
             Main.GlobalContext.Callbacks = cbList.ToArray();
@@ -48,23 +50,21 @@ namespace upc_r2.Exports
             {
                 new(Main.GlobalContext.Config.ProductId, 1)
             };
-
+            Log(nameof(UPC_ProductListGet), new object[] { "Products: ", JsonConvert.SerializeObject(products) });
             var listptr = GetListPtr(products);
             BasicList productList = new()
             {
                 count = products.Count,
                 list = listptr
             };
-            IntPtr ptr = Marshal.AllocHGlobal(sizeof(BasicList));
-            Marshal.StructureToPtr(productList, ptr, false);
-            Marshal.WriteIntPtr(outProductList, 0, ptr);
-            int returner = 0x10000;
-            Log(nameof(UPC_ProductListGet), new object[] { returner });
-            return returner;
+            IntPtr iptr = Marshal.AllocHGlobal(Marshal.SizeOf<BasicList>());
+            Marshal.StructureToPtr(productList, iptr, false);
+            Marshal.WriteIntPtr(outProductList, 0, iptr);
+            return 0x100000;
         }
 
         [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-        public static unsafe int UPC_ProductListFree(IntPtr inContext, IntPtr inProductList)
+        public static int UPC_ProductListFree(IntPtr inContext, IntPtr inProductList)
         {
             Basics.Log(nameof(UPC_ProductListFree), new object[] { inContext, inProductList });
             BasicList upc_ProductList = Basics.IntPtrToStruct<BasicList>(inProductList);

@@ -20,7 +20,7 @@
 				<EnableDynamicLoading>true</EnableDynamicLoading>
 				<DnneNativeBinaryName>upc_r264</DnneNativeBinaryName>
 				<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-				<AssemblyName>$(MSBuildProjectName)_cs</AssemblyName>
+				<AssemblyName>$(MSBuildProjectName)_cs64</AssemblyName>
 				<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 			</PropertyGroup>
 		</When>
@@ -30,7 +30,7 @@
 				<EnableDynamicLoading>true</EnableDynamicLoading>
 				<DnneNativeBinaryName>upc_r2</DnneNativeBinaryName>
 				<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-				<AssemblyName>$(MSBuildProjectName)_cs</AssemblyName>
+				<AssemblyName>$(MSBuildProjectName)_cs86</AssemblyName>
 				<RuntimeIdentifier>win-x86</RuntimeIdentifier>
 			</PropertyGroup>
 		</When>

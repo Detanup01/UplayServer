@@ -12,7 +12,7 @@ namespace upc_r2
         public static Stopwatch Stopwatch = new Stopwatch();
         public static Context GlobalContext = new Context();
         public static IntPtr GlobalContextPTR = IntPtr.Zero;
-        public static long TimeBettweenUpdate = 20000000;
+        public static long TimeBetweenUpdate = 20000000;
 
         [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
         public static IntPtr UPC_ContextCreate(uint inVersion, IntPtr inOptSetting)
@@ -82,7 +82,7 @@ namespace upc_r2
         {
             //Internal waiting update for reason
             Stopwatch.Stop();
-            if (Stopwatch.ElapsedTicks <= TimeBettweenUpdate)
+            if (Stopwatch.ElapsedTicks <= TimeBetweenUpdate)
             {
                 Stopwatch.Start();
                 return 0;

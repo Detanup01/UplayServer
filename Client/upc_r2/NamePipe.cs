@@ -15,7 +15,7 @@ namespace upc_r2
             {
                 var pipeClient = new NamedPipeClientStream(".", "custom_r2_pipe", PipeDirection.InOut);
                 byte[] buffer = new byte[4];
-                pipeClient.Connect(1000);
+                pipeClient.Connect(10000);
                 if (pipeClient.IsConnected)
                 {
                     var push = Formatters.FormatUpstream(upstream.ToByteArray());
@@ -47,6 +47,10 @@ namespace upc_r2
                     Log("NamePipeReqRsp", new object[] { "Socket not connected" });
                 }
                 pipeClient.Dispose();
+            }
+            catch (TimeoutException)
+            {
+                Log("NamePipeReqRsp", new object[] { "Timeout!" });
             }
             catch (Exception ex)
             {

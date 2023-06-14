@@ -33,7 +33,7 @@ namespace upc_r2.Exports
             var cbList = Main.GlobalContext.Callbacks.ToList();
             cbList.Add(new(inCallback, inCallbackData, -4));
             Main.GlobalContext.Callbacks = cbList.ToArray();
-            return 0x200;
+            return 0x2000;
         }
 
         [UnmanagedCallersOnly(EntryPoint = "UPC_AchievementUnlock", CallConvs = new[] { typeof(CallConvCdecl) })]

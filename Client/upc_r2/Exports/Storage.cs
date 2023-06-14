@@ -40,7 +40,7 @@ namespace upc_r2.Exports
                     UPC_StorageFile storageFile = new();
                     storageFile.fileNameUtf8 = info.Name;
                     storageFile.legacyNameUtf8 = info.Name;
-                    storageFile.size = (uint)((uint)info.Length - EXTRA_SAVE_PADDING);
+                    storageFile.size = (uint)((uint)info.Length);
                     storageFile.lastModifiedMs = (ulong)(info.LastWriteTime - new DateTime(1970, 1, 1)).TotalMilliseconds;
                     storageFiles.Add(storageFile);
                 }
@@ -103,13 +103,16 @@ namespace upc_r2.Exports
         public static unsafe int UPC_StorageFileRead(IntPtr inContext, IntPtr inHandle, int inBytesToRead, uint inBytesReadOffset, IntPtr outData, IntPtr outBytesRead, IntPtr inCallback, IntPtr inCallbackData)
         {
             Basics.Log(nameof(UPC_StorageFileRead), new object[] { inContext, inHandle, inBytesToRead, inBytesReadOffset, outData, outBytesRead, inCallback, inCallbackData });
-            SafeFileHandle fileHandle = new(inHandle, false);
-            var stream = new FileStream(fileHandle, FileAccess.ReadWrite);
-            stream.Seek(0+EXTRA_SAVE_PADDING, SeekOrigin.Begin);
-            var buff = new byte[inBytesToRead];
-            var readed = stream.Read(buff, (int)inBytesReadOffset, inBytesToRead);
-            Marshal.WriteInt32(outBytesRead, readed);
-            Marshal.Copy(buff, 0, outData, buff.Length);
+
+            if (inBytesToRead != 0)
+            {
+                SafeFileHandle fileHandle = new(inHandle, false);
+                var stream = new FileStream(fileHandle, FileAccess.ReadWrite);
+                var buff = new byte[inBytesToRead];
+                var readed = stream.Read(buff, (int)inBytesReadOffset, inBytesToRead);
+                Marshal.WriteInt32(outBytesRead, readed);
+                Marshal.Copy(buff, 0, outData, buff.Length);
+            }
             var cbList = Main.GlobalContext.Callbacks.ToList();
             cbList.Add(new(inCallback, inCallbackData, 0));
             Main.GlobalContext.Callbacks = cbList.ToArray();
@@ -124,7 +127,7 @@ namespace upc_r2.Exports
             var stream = new FileStream(fileHandle, FileAccess.ReadWrite);
             var buff = new byte[inSize];
             Marshal.Copy(inData, buff, 0, inSize);
-            stream.Write(buff, 0, inSize);
+            stream.Write(buff);
             stream.Flush(true); 
             var cbList = Main.GlobalContext.Callbacks.ToList();
             cbList.Add(new(inCallback, inCallbackData, 0));
@@ -138,6 +141,13 @@ namespace upc_r2.Exports
             Basics.Log(nameof(UPC_StorageFileClose), new object[] { inContext, inHandle });
             SafeFileHandle fileHandle = new(inHandle, false);
             fileHandle.Close();
+            return 0;
+        }
+
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+        public static int UPC_StorageFileDelete(IntPtr inContext, IntPtr inFileNameUtf8)
+        {
+            Basics.Log(nameof(UPC_StorageFileDelete), new object[] { inContext, inFileNameUtf8 });
             return 0;
         }
     }

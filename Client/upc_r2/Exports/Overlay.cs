@@ -6,6 +6,13 @@ namespace upc_r2.Exports
     internal class Overlay
     {
         [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+        public static int UPC_ShowBrowserUrl(IntPtr inContext, IntPtr inBrowserUrlUtf8)
+        {
+            Basics.Log(nameof(UPC_OverlayBrowserUrlShow), new object[] { inContext, inBrowserUrlUtf8 });
+            return 0;
+        }
+
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
         public static int UPC_OverlayBrowserUrlShow(IntPtr inContext, IntPtr inBrowserUrlUtf8, IntPtr inOptCallback, IntPtr inOptCallbackData)
         {
             Basics.Log(nameof(UPC_OverlayBrowserUrlShow), new object[] { inContext, inBrowserUrlUtf8, inOptCallback, inOptCallbackData });
