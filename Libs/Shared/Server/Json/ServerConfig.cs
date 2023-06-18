@@ -1,33 +1,75 @@
-﻿namespace SharedLib.Server.Json
+﻿using Newtonsoft.Json;
+
+namespace SharedLib.Server.Json
 {
     public class ServerConfig
     {
-        public static string DemuxIp = "127.0.0.1";
-        public static int DemuxPort = 443;
-        public static string DemuxUrl = $"dmx.local.upc.ubisoft.com:{DemuxPort}";
-        public static string HTTPS_Ip = "127.0.0.1";
-        public static int HTTPS_Port = 7777;
-        public static string HTTPSUrl = $"https://local-ubiservices.ubi.com:{HTTPS_Port}";
+        private static ServerConfig _Instance;
+        public static ServerConfig Instance
+        {
+            get
+            {
+                if (_Instance == null)
+                    _Instance = LoadConfig();
+                return _Instance;
+            }
+            set { _Instance = value; }
+        }
+
+        public string DemuxIp = "127.0.0.1";
+        public int DemuxPort = 443;
+        public string DemuxUrl = $"dmx.local.upc.ubisoft.com:443";
+        public bool DemuxHOST = true;
+        public bool DemuxLocal = true;
+        public string HTTPS_Ip = "127.0.0.1";
+        public int HTTPS_Port = 7777;
+        public string HTTPS_Url = $"https://local-ubiservices.ubi.com:7777";
+        public bool HTTPSHOST = true;
+
+        public cert CERT = new();
+        public class cert
+        {
+            public string ServicesCertPassword = "CustomUplay";
+        }
+
+        public DMX Demux = new();
         public class DMX
         {
-            public static string PatchBaseUrl = HTTPSUrl + "/patch/";
-            public static string DownloadGameUrl = HTTPSUrl + "/download/";
-            public static string ServerFilesPath = Directory.GetCurrentDirectory() + "/ServerFiles/";
-            public static string DownloadGamePath = ServerFilesPath + "Download/";
-            public static string DefaultCountryCode = "HU";
-            public static string DefaultContinentCode = "EU";
-            public static bool GlobalOwnerShipCheck = true;
+            public string ServerFilesPath = "/ServerFiles/";
+            public string DownloadGamePath = "/ServerFiles/Download/";
+            public string DefaultCountryCode = "HU";
+            public string DefaultContinentCode = "EU";
+            public bool GlobalOwnerShipCheck = true;
+            public ownership Ownership = new();
             public class ownership
             {
-                public static bool EnableManifestRequest = true;
-                public static bool EnableConfigRequest = true;
+                public bool EnableManifestRequest = true;
+                public bool EnableConfigRequest = true;
             }
         }
+        public SQL sql = new();
         public class SQL
         {
-            public static string AuthSalt = "_CUSTOMDEMUX";
+            public string AuthSalt = "_CUSTOMDEMUX";
         }
-    }
 
-    //TODO: Making this configurable in json file(?)
+
+        /// <summary>
+        /// Loading existing server config
+        /// or if not exist it makes one
+        /// </summary>
+        /// <returns>New ServerConfig</returns>
+        public static ServerConfig LoadConfig()
+        {
+            if (!File.Exists("ServerConfig.json"))
+            {
+                _Instance = new();
+                File.WriteAllText("ServerConfig.json", JsonConvert.SerializeObject(_Instance,Formatting.Indented));
+                return _Instance;
+            }
+            _Instance = JsonConvert.DeserializeObject<ServerConfig>(File.ReadAllText("ServerConfig.json"));
+            return _Instance;
+        }
+
+    }
 }

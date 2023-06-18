@@ -26,8 +26,8 @@ namespace Core.HTTP
                 var reason = "FAILED";
                 var productid = url.Replace("/store/?p=", "");
                 if (!uint.TryParse(productid, out var pid))
-                { 
-                
+                {
+                    Console.WriteLine("Failed to convert ProductId to uint");
                 }
                 if (headers.TryGetValue("authorization", out var auth))
                 {
@@ -49,7 +49,7 @@ namespace Core.HTTP
                         if (config != null)
                         {
                             ownershipBasic.OwnedGamesIds.Add(pid);
-                            DBUserExt.AddOwnership(pid,0, ownershipBasic.UserId, CDKey.GenerateKey(pid),new(),new());
+                            DBUserExt.AddOwnership(pid,uint.MinValue, ownershipBasic.UserId, CDKey.GenerateKey(pid),new(),new());
                             //Owners.MakeOwnershipFromUser(user.UserId, user.Ownership);
                             reason = "SUCCESS";
                         }
@@ -60,7 +60,7 @@ namespace Core.HTTP
                     }
                 }
 
-                var storepath = Path.Combine(ServerConfig.DMX.ServerFilesPath, "Web/Store/BaseStore.html");
+                var storepath = Path.Combine(ServerConfig.Instance.Demux.ServerFilesPath, "Web/Store/BaseStore.html");
                 result = File.ReadAllText(storepath);
 
                 result = result.Replace("__REPLACEME_PRODUCT__", productid);
@@ -74,7 +74,7 @@ namespace Core.HTTP
             else
             {
                 url = url.Replace("/store/", "");
-                var storepath = Path.Combine(ServerConfig.DMX.ServerFilesPath, $"Web/Store/{url}.html");
+                var storepath = Path.Combine(ServerConfig.Instance.Demux.ServerFilesPath, $"Web/Store/{url}.html");
 
                 if (File.Exists(storepath))
                 {

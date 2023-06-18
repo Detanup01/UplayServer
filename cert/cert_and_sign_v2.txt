@@ -1,0 +1,46 @@
+# Openssl
+
+CA:
+
+#generate the RSA private key
+openssl genpkey -outform PEM -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out global.key
+
+#Create the CSR 
+openssl req -new -nodes -key global.key -config global.conf -nameopt utf8 -utf8 -out global.csr
+
+#Self-sign your CSR
+openssl req -x509 -nodes -in global.csr -days 365 -key global.key -config global.conf -extensions req_ext -nameopt utf8 -utf8 -out global.crt
+
+SERVICES:
+#generate the RSA private key
+openssl genpkey -outform PEM -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out services.key
+
+#Create the CSR 
+openssl req -new -nodes -key services.key -config services_csr.conf -nameopt utf8 -utf8 -out services.csr
+
+#Sign your CSR with a root CA cert
+openssl x509 -req -in services.csr -days 365 -CA global.crt -CAkey global.key -extfile services_cert.conf -extensions req_ext -CAserial services.srl -CAcreateserial -nameopt utf8 -sha256 -out services.crt
+
+SIGNER:
+
+#generate the RSA private key
+openssl genpkey -outform PEM -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out signer.key
+
+#Create the CSR 
+openssl req -new -nodes -key signer.key -config signer_csr.conf -nameopt utf8 -utf8 -out signer.csr
+
+#Sign your CSR with a root CA cert
+openssl x509 -req -in signer.csr -days 365 -CA global.crt -CAkey global.key -extfile signer_cert.conf -extensions req_ext -CAserial signer.srl -CAcreateserial -nameopt utf8 -sha256 -out signer.crt
+
+# PFX
+# replace CustomUplay for your desired password (Must edit in the ServerConfig.json!)
+
+certutil -p "CustomUplay,CustomUplay" -mergepfx global.crt global.pfx
+certutil -p "CustomUplay,CustomUplay" -mergepfx signer.crt signer.pfx
+certutil -p "CustomUplay,CustomUplay" -mergepfx services.crt services.pfx
+
+SIGNTOOL:
+"C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" sign /f "signer.pfx" /p "CustomUplay" /t http://timestamp.digicert.com "SOMETHING"
+
+Auto:
+COPY dll,exe,bat from v2_run paste here and run the bat!

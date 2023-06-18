@@ -43,7 +43,7 @@ namespace Core.DemuxResponders
 
             public static void GameToken(Guid ClientNumb, GetGameTokenReq gameTokenReq)
             {
-                if (ServerConfig.DMX.GlobalOwnerShipCheck || jwt.Validate(gameTokenReq.OwnershipToken))
+                if (ServerConfig.Instance.Demux.GlobalOwnerShipCheck || jwt.Validate(gameTokenReq.OwnershipToken))
                 {
                     Downstream = new()
                     {
@@ -73,7 +73,7 @@ namespace Core.DemuxResponders
 
             public static void GameTimeToken(Guid ClientNumb, GetGameTimeTokenReq gameTimeTokenReq)
             {
-                if (ServerConfig.DMX.GlobalOwnerShipCheck || jwt.Validate(gameTimeTokenReq.OwnershipToken))
+                if (ServerConfig.Instance.Demux.GlobalOwnerShipCheck || jwt.Validate(gameTimeTokenReq.OwnershipToken))
                 {
                     Downstream = new()
                     {

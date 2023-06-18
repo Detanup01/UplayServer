@@ -16,18 +16,11 @@ namespace Core.DemuxResponders
         #region DemuxServer
         public static ConcurrentDictionary<Guid, DMXSession> DMXSessions = new ConcurrentDictionary<Guid, DMXSession>();
         static DMXServer server;
-        public static bool IsLocal;
-        public static void Start(bool isLocal = true)
+        public static void Start()
         {
             Directory.CreateDirectory("logs");
-            IsLocal = isLocal;
-            SslContext context;
-            if (IsLocal)
-                context = new SslContext(SslProtocols.Tls12, Utils.GetCert("dmx_local", "dmx.local.upc.ubisoft.com"));
-            else
-                context = new SslContext(SslProtocols.Tls12, Utils.GetCert("dmx", "dmx.upc.ubisoft.com"));
-
-            server = new DMXServer(context, IPAddress.Parse(ServerConfig.DemuxIp), ServerConfig.DemuxPort);
+            SslContext context = new SslContext(SslProtocols.Tls12, Utils.GetCert("services", ServerConfig.Instance.CERT.ServicesCertPassword));
+            server = new DMXServer(context, IPAddress.Parse(ServerConfig.Instance.DemuxIp), ServerConfig.Instance.DemuxPort);
             Console.WriteLine("[DMX] Server Started");
             server.Start();
         }

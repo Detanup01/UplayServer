@@ -8,9 +8,9 @@ namespace Core.HTTP
         {
             byte[] returner = { };
             url = url.Replace("/download", "");
-            if (File.Exists($"{ServerConfig.DMX.DownloadGamePath}{url}"))
+            if (File.Exists($"{ServerConfig.Instance.Demux.DownloadGamePath}{url}"))
             {
-                returner = File.ReadAllBytes($"{ServerConfig.DMX.DownloadGamePath}{url}");
+                returner = File.ReadAllBytes($"{ServerConfig.Instance.Demux.DownloadGamePath}{url}");
             }
             contentType = "application/octet-stream";
             return returner;

@@ -190,7 +190,7 @@ namespace Core.DemuxResponders
                             Success = true,
                             LatestVersion = Globals.AcceptVersions.Last(),
                             PatchTrackId = req.PatchTrackId,
-                            PatchBaseUrl = ServerConfig.DMX.PatchBaseUrl
+                            PatchBaseUrl = ServerConfig.Instance.HTTPS_Url + "/patch/"
                         }
                     }
                 };

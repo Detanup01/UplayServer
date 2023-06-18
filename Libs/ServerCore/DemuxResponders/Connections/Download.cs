@@ -57,7 +57,7 @@ namespace Core.DemuxResponders
                 else
                 {
                     var userID = Globals.IdToUser[ClientNumb];
-                    if (ServerConfig.DMX.GlobalOwnerShipCheck || (userID != null && initialize.Signature != null && Ownership.GetOwnerSignature(userID).ToBase64() != "T3duZXJTaWduYXR1cmVfSXNGYWlsZWQ="))
+                    if (ServerConfig.Instance.Demux.GlobalOwnerShipCheck || (userID != null && initialize.Signature != null && Ownership.GetOwnerSignature(userID).ToBase64() != "T3duZXJTaWduYXR1cmVfSXNGYWlsZWQ="))
                     {
                         var branch = App.GetAppBranch(initialize.ProductId, initialize.BranchId);
                         if (branch != null)
@@ -90,13 +90,13 @@ namespace Core.DemuxResponders
                     DownloadUrls = { }
                 };
 
-                if (ServerConfig.DMX.GlobalOwnerShipCheck || (UserInits.TryGetValue(ClientNumb, out bool val) && val))
+                if (ServerConfig.Instance.Demux.GlobalOwnerShipCheck || (UserInits.TryGetValue(ClientNumb, out bool val) && val))
                 {
                     foreach (var part in url.UrlRequests)
                     {
                         foreach (var relative in part.RelativeFilePath)
                         {
-                            if (!File.Exists($"{ServerConfig.DMX.DownloadGamePath}{part.ProductId}/{relative}"))
+                            if (!File.Exists($"{ServerConfig.Instance.Demux.DownloadGamePath}{part.ProductId}/{relative}"))
                             {
                                 urlresp.Result = UrlRsp.Types.Result.NotOwned;
                             }
@@ -107,7 +107,7 @@ namespace Core.DemuxResponders
                                 {
                                     Urls = { }
                                 };
-                                urls.Urls.Add($"{ServerConfig.DMX.DownloadGameUrl}{part.ProductId}/{relative}");
+                                urls.Urls.Add($"{ServerConfig.Instance.HTTPS_Url}/download/{part.ProductId}/{relative}");
                                 urlresp.DownloadUrls.Add(urls);
                             }
                         }

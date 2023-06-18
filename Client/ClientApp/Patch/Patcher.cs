@@ -58,7 +58,7 @@ namespace Client.Patch
             var dfile = Path.GetDirectoryName(filename);
             if (dfile.Trim() != string.Empty)
             {
-                Directory.CreateDirectory("Patch" + Path.DirectorySeparatorChar + dfile);
+                Directory.CreateDirectory(Path.Combine("Patch",dfile));
             }
 
             Crc32 crc32 = new();
@@ -69,7 +69,7 @@ namespace Client.Patch
             if (crcstring == crc)
             {
                 Console.WriteLine("File OK!");
-                File.WriteAllBytes($"Patch{Path.DirectorySeparatorChar}{filename}", data);
+                File.WriteAllBytes(Path.Combine("Patch", filename), data);
             }
             else
             {

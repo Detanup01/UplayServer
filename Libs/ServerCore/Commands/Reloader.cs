@@ -1,6 +1,4 @@
 ﻿using Core.DemuxResponders;
-using Newtonsoft.Json;
-using SharedLib.Server.DB;
 using SharedLib.Server.Json;
 
 namespace Core.Commands
@@ -10,9 +8,7 @@ namespace Core.Commands
         public static void ReloadAll(object obj)
         {
             Console.WriteLine("ReloadAll Started");
-
-            Console.WriteLine(JsonConvert.SerializeObject(App.GetAppBranches(323)));
-
+            ServerConfig.LoadConfig();
             Console.WriteLine("ReloadAll Finished");
         }
 

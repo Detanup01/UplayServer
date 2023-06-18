@@ -7,15 +7,15 @@ namespace Core
 {
     public class CoreRun
     {
-        public static void Start(bool IsLocal = true)
+        public static void Start()
         {
             Prepare.MakeAll();
             jwt.CreateRSA();
             PluginHandle.LoadPlugins();
             HTTPServer.Start();
-            Console.WriteLine(ServerConfig.HTTPSUrl);
-            DemuxServer.Start(IsLocal);
-            Console.WriteLine(ServerConfig.DemuxUrl);
+            Console.WriteLine(ServerConfig.Instance.HTTPS_Url + ServerConfig.Instance.HTTPS_Port);
+            DemuxServer.Start();
+            Console.WriteLine(ServerConfig.Instance.DemuxUrl + ServerConfig.Instance.DemuxPort);
         }
 
         public static void Stop()

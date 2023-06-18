@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf;
+using SharedLib.Server.DB;
 using Uplay.Playtime;
 
 namespace Core.DemuxResponders
@@ -35,11 +36,12 @@ namespace Core.DemuxResponders
             public static bool IsIdDone = false;
             public static void Requests(Guid ClientNumb, Req req)
             {
-                if (req?.GetPlaytimeReq != null) { GetPlaytime(req.GetPlaytimeReq); }
+                if (req?.GetPlaytimeReq != null) { GetPlaytime(ClientNumb, req.GetPlaytimeReq); }
+                if (req?.UpdatePlaytimeReq != null) { UpdatePlaytime(ClientNumb, req.UpdatePlaytimeReq); }
                 IsIdDone = true;
             }
 
-            public static void GetPlaytime(GetPlaytimeReq req)
+            public static void GetPlaytime(Guid ClientNumb, GetPlaytimeReq req)
             {
                 Downstream = new()
                 {
@@ -48,6 +50,25 @@ namespace Core.DemuxResponders
                         GetPlaytimeRsp = new()
                         {
                             Result = Result.ServerError
+                        }
+                    }
+                };
+            }
+
+            public static void UpdatePlaytime(Guid ClientNumb, UpdatePlaytimeReq req)
+            {
+                var UserId = Globals.IdToUser[ClientNumb];
+                var playtime = DBUser.GetPlaytime(UserId, req.GameId);
+                if (playtime != null)
+                    playtime.playTime += req.SecondsToAdd;
+
+                Downstream = new()
+                {
+                    Response = new()
+                    {
+                        UpdatePlaytimeRsp = new()
+                        {
+                            Result = Result.Success
                         }
                     }
                 };

@@ -1,9 +1,14 @@
 ﻿using Core.HTTP;
 using NetCoreServer;
+using ServerCore.HTTP;
 using SharedLib.Server.Json;
 using System.Net;
+using System.Net.Mime;
 using System.Net.Sockets;
+using System.Reflection.Metadata;
+using System.Reflection.PortableExecutable;
 using System.Security.Authentication;
+using static Uplay.Party.PartyInviteResponseReq.Types;
 
 namespace Core
 {
@@ -12,8 +17,8 @@ namespace Core
         static HttpsBackendServer server;
         public static void Start()
         {
-            var context = new SslContext(SslProtocols.Tls12, Utils.GetCert("services", "local-ubiservices.ubi.com"));
-            server = new HttpsBackendServer(context, IPAddress.Parse(ServerConfig.HTTPS_Ip), ServerConfig.HTTPS_Port);
+            var context = new SslContext(SslProtocols.Tls12, Utils.GetCert("services", ServerConfig.Instance.CERT.ServicesCertPassword));
+            server = new HttpsBackendServer(context, IPAddress.Parse(ServerConfig.Instance.HTTPS_Ip), ServerConfig.Instance.HTTPS_Port);
             Console.WriteLine("[HTTPS] Server Started");
             server.Start();
         }
@@ -121,6 +126,12 @@ namespace Core
                         content = StoreHandler.StoreHandlerCallback(Headers, key, out contentType);
                         handled = true;
                     }
+                    if (key.StartsWith("/cloudsave/"))
+                    {
+
+                        content = CloudSave.GET(key, Headers, out contentType);
+                        handled = true;
+                    }
 
                     if (!handled)
                         Console.WriteLine("\n" + request.Method + "\n" + key);
@@ -157,6 +168,11 @@ namespace Core
                             content = Sessions.SessionsCallback(Headers, request.Body, out contentType, out isfailed);
                             break;
                     }
+                    if (key.StartsWith("/cloudsave/"))
+                    {
+
+                        content = CloudSave.PUT(key, Headers, request.BodyBytes, out contentType);
+                    }
                     Console.WriteLine("IsFailed? " + isfailed);
                     Console.WriteLine("Content Type: " + contentType);
                     if (isfailed)
@@ -171,7 +187,22 @@ namespace Core
                 }
                 else if (request.Method == "DELETE")
                 {
-                    SendResponseAsync(Response.MakeOkResponse());
+                    string ErrorRSP = "Something is wrong!";
+                    bool isfailed = false;
+                    if (key.StartsWith("/cloudsave/"))
+                    {
+
+                        isfailed = CloudSave.DELETE(key, Headers, out ErrorRSP);
+                    }
+                    if (isfailed)
+                    {
+                        SendResponseAsync(Response.MakeErrorResponse(ErrorRSP));
+                    }
+                    else
+                    {
+                        SendResponseAsync(Response.MakeOkResponse());
+
+                    }
                 }
                 else if (request.Method == "OPTIONS")
                     SendResponseAsync(Response.MakeOptionsResponse());

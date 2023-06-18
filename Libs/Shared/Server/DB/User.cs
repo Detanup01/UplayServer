@@ -5,14 +5,15 @@ namespace SharedLib.Server.DB
 {
     public class DBUser
     {
-        public readonly static string DBName = Prepare.DatabasePath + "User.db";
-        public readonly static string USER = "User";
-        public readonly static string OwnershipBasic = "OwnershipBasic";
-        public readonly static string Ownership = "Ownership";
-        public readonly static string Activity = "Activity";
-        public readonly static string Friend = "Friends";
-        public readonly static string Playtime = "Playtime";
-        public readonly static string GameSession = "GameSession";
+        readonly static string DBName = Prepare.DatabasePath + "User.db";
+        readonly static string USER = "User";
+        readonly static string OwnershipBasic = "OwnershipBasic";
+        readonly static string Ownership = "Ownership";
+        readonly static string Activity = "Activity";
+        readonly static string Friend = "Friends";
+        readonly static string Playtime = "Playtime";
+        readonly static string GameSession = "GameSession";
+        readonly static string CloudSave = "CloudSave";
 
         #region JUser
         public static void Add(JUser user)
@@ -54,6 +55,20 @@ namespace SharedLib.Server.DB
                 if (fId != null)
                 {
                     return fId;
+                }
+            }
+            return null;
+        }
+        public static List<JUser>? GetUsers()
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JUser>(USER);
+
+                var fId = col.FindAll();
+                if (fId != null)
+                {
+                    return fId.ToList();
                 }
             }
             return null;
@@ -299,16 +314,30 @@ namespace SharedLib.Server.DB
             }
         }
 
-        public static JPlaytime? GetPlaytime(string UserId)
+        public static JPlaytime? GetPlaytime(string UserId, uint ProdId)
         {
             using (var db = new LiteDatabase(DBName))
             {
                 var col = db.GetCollection<JPlaytime>(Playtime);
 
-                var fId = col.FindOne(X => X.UserId == UserId);
+                var fId = col.FindOne(X => X.UserId == UserId && X.uplayId == ProdId);
                 if (fId != null)
                 {
                     return fId;
+                }
+            }
+            return null;
+        }
+        public static List<JPlaytime>? GetPlaytimes(string UserId)
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JPlaytime>(Playtime);
+
+                var fId = col.Find(X => X.UserId == UserId);
+                if (fId != null)
+                {
+                    return fId.ToList();
                 }
             }
             return null;
@@ -351,6 +380,81 @@ namespace SharedLib.Server.DB
                 var col = db.GetCollection<JGameSession>(Playtime);
 
                 var fId = col.FindOne(X => X.UserId == UserId);
+                if (fId != null)
+                {
+                    return fId;
+                }
+            }
+            return null;
+        }
+        #endregion
+        #region JGameSession
+        public static void Add(JCloudSave session)
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JCloudSave>(CloudSave);
+
+                if (!col.Exists(X => X.Id == session.Id && X.UserId == session.UserId))
+                {
+                    col.Insert(session);
+                }
+            }
+        }
+
+        public static void Edit(JCloudSave session)
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JCloudSave>(CloudSave);
+
+                var fId = col.FindOne(X => X.Id == session.Id);
+                if (fId != null)
+                {
+                    session.Id = fId.Id;
+                    col.Update(session);
+                }
+
+            }
+        }
+
+        public static List<JCloudSave>? GetCloudSaves(string UserId, uint ProductId)
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JCloudSave>(CloudSave);
+
+                var fId = col.Find(X => X.UserId == UserId && X.uplayId == ProductId);
+                if (fId != null)
+                {
+                    return fId.ToList();
+                }
+            }
+            return null;
+        }
+
+        public static JCloudSave? GetCloudSave(string UserId, uint ProductId, uint SaveId)
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JCloudSave>(CloudSave);
+
+                var fId = col.FindOne(X => X.UserId == UserId && X.uplayId == ProductId && X.SaveId == SaveId);
+                if (fId != null)
+                {
+                    return fId;
+                }
+            }
+            return null;
+        }
+
+        public static JCloudSave? GetCloudSave(string UserId, uint ProductId, string saveName)
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JCloudSave>(CloudSave);
+
+                var fId = col.FindOne(X => X.UserId == UserId && X.uplayId == ProductId && X.SaveName == saveName);
                 if (fId != null)
                 {
                     return fId;

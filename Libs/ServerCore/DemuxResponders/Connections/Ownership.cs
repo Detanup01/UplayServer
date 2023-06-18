@@ -247,7 +247,7 @@ namespace Core.DemuxResponders
                     var owbasic = DBUser.GetOwnershipBasic(userID);
                     if (owbasic != null)
                     {
-                        if (ServerConfig.DMX.GlobalOwnerShipCheck || owbasic.OwnedGamesIds.Contains(OwnershipToken.ProductId))
+                        if (ServerConfig.Instance.Demux.GlobalOwnerShipCheck || owbasic.OwnedGamesIds.Contains(OwnershipToken.ProductId))
                         {
                             var ownership = DBUser.GetOwnership(userID, OwnershipToken.ProductId);
                             var appconfig = App.GetAppConfig(OwnershipToken.ProductId);
@@ -295,7 +295,7 @@ namespace Core.DemuxResponders
                     var ownership = DBUser.GetOwnership(userID, SignOwnership.ProductId);
                     if (ownershipBasic != null && ownership != null)
                     {
-                        if (ServerConfig.DMX.GlobalOwnerShipCheck || ownershipBasic.OwnedGamesIds.Contains(SignOwnership.ProductId))
+                        if (ServerConfig.Instance.Demux.GlobalOwnerShipCheck || ownershipBasic.OwnedGamesIds.Contains(SignOwnership.ProductId))
                         {
                             var gameconfig = App.GetAppConfig(SignOwnership.ProductId);
                             if (gameconfig != null)
@@ -334,7 +334,7 @@ namespace Core.DemuxResponders
                     }
                 };
 
-                if (ServerConfig.DMX.ownership.EnableManifestRequest)
+                if (ServerConfig.Instance.Demux.Ownership.EnableManifestRequest)
                 {
                     Downstream.Response.DeprecatedGetLatestManifestsRsp.Result = DeprecatedGetLatestManifestsRsp.Types.Result.Success;
                     var prodlist = DeprecatedGetLatestManifests.DeprecatedProductIds.ToList();
@@ -349,7 +349,7 @@ namespace Core.DemuxResponders
                                 ProductId = proId,
                                 Manifest_ = branch.latest_manifest
                             };
-                            if (File.Exists($"{ServerConfig.DMX.DownloadGamePath}{proId}/{branch.latest_manifest}.manifest"))
+                            if (File.Exists($"{ServerConfig.Instance.Demux.DownloadGamePath}{proId}/{branch.latest_manifest}.manifest"))
                             {
                                 manifest.Result = DeprecatedGetLatestManifestsRsp.Types.Manifest.Types.Result.Success;
                             }
@@ -389,12 +389,12 @@ namespace Core.DemuxResponders
                     {
                         var path = reg.RelativeFilePaths[j];
                         GetBatchDownloadUrlsRsp.Types.UrlResponse url = new();
-                        if (Directory.Exists($"{ServerConfig.DMX.DownloadGamePath}/{reg.ProductId}") && File.Exists($"{ServerConfig.DMX.DownloadGamePath}/{reg.ProductId}/{path}"))
+                        if (Directory.Exists($"{ServerConfig.Instance.Demux.DownloadGamePath}/{reg.ProductId}") && File.Exists($"{ServerConfig.Instance.Demux.DownloadGamePath}/{reg.ProductId}/{path}"))
                         {
                             url.Result = GetBatchDownloadUrlsRsp.Types.Result.Success;
                             url.DownloadUrls.Add(new GetBatchDownloadUrlsRsp.Types.DownloadUrls()
                             {
-                                Urls = { $"{ServerConfig.DMX.DownloadGameUrl}/{reg.ProductId}/{path}" }
+                                Urls = { $"{ServerConfig.Instance.HTTPS_Url}/download/{reg.ProductId}/{path}" }
                             });
                         }
                         else
@@ -416,7 +416,7 @@ namespace Core.DemuxResponders
                     var ownershipBasic = DBUser.GetOwnershipBasic(userID);
                     if (ownershipBasic != null)
                     {
-                        if (ServerConfig.DMX.GlobalOwnerShipCheck || ownershipBasic.OwnedGamesIds.Contains(getUplayPCTicketReq.UplayId))
+                        if (ServerConfig.Instance.Demux.GlobalOwnerShipCheck || ownershipBasic.OwnedGamesIds.Contains(getUplayPCTicketReq.UplayId))
                         {
                             ticket = jwt.CreateUplayTicket(userID, getUplayPCTicketReq.UplayId, (int)getUplayPCTicketReq.Platform);
                             isSucces = true;
@@ -564,7 +564,7 @@ namespace Core.DemuxResponders
                     var user = DBUser.GetOwnershipBasic(userID);
                     if (user != null)
                     {
-                        if (ServerConfig.DMX.ownership.EnableConfigRequest || user.OwnedGamesIds.Contains(getProductConfigReq.ProductId))
+                        if (ServerConfig.Instance.Demux.Ownership.EnableConfigRequest || user.OwnedGamesIds.Contains(getProductConfigReq.ProductId))
                         {
                             var gameconfig = App.GetAppConfig(getProductConfigReq.ProductId);
                             if (gameconfig != null)

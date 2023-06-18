@@ -67,7 +67,7 @@ namespace Core.HTTP
             SessionsResponse rsp = new()
             {
                 clientIp = "172.0.0.1",
-                clientIpCountry = ServerConfig.DMX.DefaultCountryCode,
+                clientIpCountry = ServerConfig.Instance.Demux.DefaultCountryCode,
                 twoFactorAuthenticationTicket = "",
                 serverTime = DateTime.Now.ToString("yyyy-MM-dd"),
                 environment = "Prod",

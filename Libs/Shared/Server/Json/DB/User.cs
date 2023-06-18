@@ -71,4 +71,11 @@
         public uint Size { get; set; }
         public uint MaxSize { get; set; }
     }
+
+    public class JCloudSave : JUserBase
+    {
+        public uint uplayId { get; set; }
+        public int SaveId { get; set; }
+        public string SaveName { get; set; }
+    }
 }

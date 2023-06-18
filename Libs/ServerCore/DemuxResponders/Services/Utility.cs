@@ -51,8 +51,8 @@ namespace Core.DemuxResponders
                     {
                         GeoipRsp = new()
                         {
-                            ContinentCode = ServerConfig.DMX.DefaultContinentCode,
-                            CountryCode = ServerConfig.DMX.DefaultCountryCode
+                            ContinentCode = ServerConfig.Instance.Demux.DefaultContinentCode,
+                            CountryCode = ServerConfig.Instance.Demux.DefaultCountryCode
                         }
                     }
                 };
