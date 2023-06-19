@@ -2,4 +2,6 @@
 From ZstdNet: The .target file
 From Lzham.Net: Everything else
 
+
+From source:
 In the build folder please rename build_x64/x86 to just x64/x86 

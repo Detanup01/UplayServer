@@ -11,12 +11,10 @@
   </PropertyGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="Google.Protobuf" Version="3.22.1" />
 		<PackageReference Include="NetCoreServer" Version="6.7.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="RestSharp" Version="109.0.1" />
 		<PackageReference Include="SharpZipLib" Version="1.4.2" />
-		<PackageReference Include="Uplay-Protobufs" Version="140.0.10857" />
 		<PackageReference Include="ZstdNet" Version="1.4.5" />
 	</ItemGroup>
 	

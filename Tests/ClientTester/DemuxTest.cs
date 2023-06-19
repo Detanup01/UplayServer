@@ -22,14 +22,14 @@ namespace ClientTester
             actions.Add(VersionCheck);
             actions.ForEach(x => x() );
             socket.NewMessage -= Socket_NewMessage;
-            socket.Close();
+            socket.Disconnect();
             Console.WriteLine("DemuxTest Done!");
         }
 
         static void SendVersion()
         {
             socket.PushVersion();
-            if (socket.IsClosed)
+            if (!socket.IsConnected)
             {
                 Console.WriteLine("Socket is closed!");
             }
@@ -57,8 +57,7 @@ namespace ClientTester
         {
             OwnershipTest.Run(socket,new ClientKit.Demux.Connection.OwnershipConnection(socket));
         }
-
-        private static void Socket_NewMessage(object? sender, Socket.DMXEventArgs e)
+        private static void Socket_NewMessage(object? sender, DMXEventArgs e)
         {
             Console.WriteLine("Socket_NewMessage fired!");
             Debug.WriteDebug(e.ToString(), "[Socket_NewMessage]");

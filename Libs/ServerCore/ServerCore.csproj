@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Protobuf" Version="3.23.2" />
+    <PackageReference Include="Google.Protobuf" Version="3.23.3" />
     <PackageReference Include="JWT" Version="10.0.2" />
     <PackageReference Include="NetCoreServer" Version="6.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
