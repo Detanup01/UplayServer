@@ -58,7 +58,7 @@ namespace upc_r2.Exports
                 impl.nameUtf8 = upc_User.nameUtf8;
                 impl.relationship = upc_User.relationship;
                 var presetimpl = UPC_PresenceImpl.BuildFrom(upc_User.presence);
-                IntPtr ptr = Marshal.AllocHGlobal(sizeof(UPC_PresenceImpl));
+                IntPtr ptr = Marshal.AllocHGlobal(Marshal.SizeOf<UPC_PresenceImpl>());
                 Marshal.StructureToPtr(presetimpl, ptr, false);
                 impl.presence = ptr;
                 return impl;
@@ -107,7 +107,7 @@ namespace upc_r2.Exports
                 titleNameUtf8 = ""
             };
             var impl = UPC_UserImpl.BuildFrom(user);
-            IntPtr ptr = Marshal.AllocHGlobal(sizeof(UPC_UserImpl));
+            IntPtr ptr = Marshal.AllocHGlobal(Marshal.SizeOf<UPC_UserImpl>());
             Marshal.StructureToPtr(impl, ptr, false);
             Marshal.WriteIntPtr(outUser, ptr);
             return 0x10000;

@@ -52,7 +52,8 @@ namespace upc_r2.Exports
             {
                 for (int i = 0; i < list.count; i++)
                 {
-                    var ptr = Marshal.ReadIntPtr(list.list, i * sizeof(UPC_RichPresenceToken));
+                   
+                    var ptr = Marshal.ReadIntPtr(list.list, i * Marshal.SizeOf<UPC_RichPresenceToken>());
                     var token = Basics.IntPtrToStruct<UPC_RichPresenceToken>(ptr);
                     Basics.Log(nameof(UPC_RichPresenceSet), new object[] { JsonConvert.SerializeObject(token) });
                 }

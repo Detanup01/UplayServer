@@ -91,7 +91,7 @@ namespace upc_r2
             int indx = 0;
             foreach (var item in values)
             {
-                IntPtr iptr = Marshal.AllocHGlobal(sizeof(T));
+                IntPtr iptr = Marshal.AllocHGlobal(Marshal.SizeOf<T>());
                 Marshal.StructureToPtr(item, iptr, false);
                 Marshal.WriteIntPtr(main_ptr, indx * sizeof(IntPtr), iptr);
                 indx++;
@@ -104,7 +104,7 @@ namespace upc_r2
             List<T> returner = new List<T>();
             for (int i = 0; i < list.count; i++)
             {
-                var ptr = Marshal.ReadIntPtr(list.list, i * sizeof(IntPtr));
+                var ptr = Marshal.ReadIntPtr(list.list, i * Marshal.SizeOf<IntPtr>());
                 returner.Add(IntPtrToStruct<T>(ptr));
             }
             return returner;
@@ -114,7 +114,7 @@ namespace upc_r2
         {
             for (int i = 0; i < count; i++)
             {
-                var ptr = Marshal.ReadIntPtr(listPointer, i * sizeof(IntPtr));
+                var ptr = Marshal.ReadIntPtr(listPointer, i * Marshal.SizeOf<IntPtr>());
                 Marshal.FreeHGlobal(ptr);
             }
             Marshal.FreeHGlobal(listPointer);

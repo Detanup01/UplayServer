@@ -32,7 +32,7 @@ namespace dummydll
         {
             test test = new();
             test.nameUtf8 = "yeeeet";
-            var ptr = Marshal.AllocHGlobal(sizeof(test));
+            var ptr = Marshal.AllocHGlobal(Marshal.SizeOf<test>());
             Marshal.StructureToPtr(test, ptr, false);
             Marshal.WriteIntPtr(outProductList, ptr);
             return 0;
