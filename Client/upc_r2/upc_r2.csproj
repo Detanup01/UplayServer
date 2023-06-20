@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Platforms>AnyCPU;x86;x64</Platforms>
-	<OutDir>bin\Debug\All\</OutDir>
+	<OutDir>bin\$(Configuration)\All\</OutDir>
   </PropertyGroup>
 
   <ItemGroup>
