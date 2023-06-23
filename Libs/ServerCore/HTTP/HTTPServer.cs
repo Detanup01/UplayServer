@@ -129,7 +129,9 @@ namespace Core
                     if (key.StartsWith("/cloudsave/"))
                     {
 
-                        content = CloudSave.GET(key, Headers, out contentType);
+                        var res = CloudSave.GET(key, Headers, out contentType);
+                        content = res.returnString;
+                        contentBytes = res.byteArray;
                         handled = true;
                     }
 

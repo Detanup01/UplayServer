@@ -14,6 +14,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Remove="ServerFiles\Saves\00000000-0000-0000-0000-000000000000\0\readme.txt" />
     <None Remove="serverfiles\web\store\0.html" />
     <None Remove="ServerFiles\Web\Store\BaseStore.html" />
   </ItemGroup>

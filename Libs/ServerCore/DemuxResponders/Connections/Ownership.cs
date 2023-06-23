@@ -90,7 +90,7 @@ namespace Core.DemuxResponders
             return ByteString.CopyFrom(Encoding.UTF8.GetBytes("T3duZXJTaWduYXR1cmVfSXNGYWlsZWQ="));
         }
 
-        public static readonly string Name = "ownership_service";
+        public const string Name = "ownership_service";
         public class Up
         {
             public static Downstream Downstream = null;

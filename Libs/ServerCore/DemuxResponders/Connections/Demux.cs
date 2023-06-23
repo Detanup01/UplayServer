@@ -50,35 +50,45 @@ namespace Core.DemuxResponders
                     {
                         switch (ConnectName)
                         {
-                            case "download_service":
+                            case Download.Name:
                                 Download.Up.UpstreamConverter(ClientNumb, data.Data);
                                 File.AppendAllText($"logs/client_{ClientNumb}_download_rsp.log", Download.Up.Downstream.ToString() + "\n");
                                 rspBytes = Download.Up.Downstream.ToByteString();
                                 break;
-                            case "denuvo_service":
+                            case Denuvo.Name:
                                 Denuvo.Up.UpstreamConverter(ClientNumb, data.Data);
                                 File.AppendAllText($"logs/client_{ClientNumb}_denuvo_rsp.log", Denuvo.Up.Downstream.ToString() + "\n");
                                 rspBytes = Denuvo.Up.Downstream.ToByteString();
                                 break;
-                            case "friends_service":
+                            case Friends.Name:
                                 Friends.Up.UpstreamConverter(ClientNumb, data.Data);
                                 File.AppendAllText($"logs/client_{ClientNumb}_friends_rsp.log", Friends.Up.Downstream.ToString() + "\n");
                                 rspBytes = Friends.Up.Downstream.ToByteString();
                                 break;
-                            case "ownership_service":
+                            case Ownership.Name:
                                 Ownership.Up.UpstreamConverter(ClientNumb, data.Data);
                                 File.AppendAllText($"logs/client_{ClientNumb}_ownership_rsp.log", Ownership.Up.Downstream.ToString() + "\n");
                                 rspBytes = Ownership.Up.Downstream.ToByteString();
                                 break;
-                            case "party_service":
+                            case Party.Name:
                                 Party.Up.UpstreamConverter(ClientNumb, data.Data);
                                 File.AppendAllText($"logs/client_{ClientNumb}_party_rsp.log", Party.Up.Downstream.ToString() + "\n");
                                 rspBytes = Party.Up.Downstream.ToByteString();
                                 break;
-                            case "store_service":
+                            case Store.Name:
                                 Store.Up.UpstreamConverter(ClientNumb, data.Data);
                                 File.AppendAllText($"logs/client_{ClientNumb}_store_rsp.log", Store.Up.Downstream.ToString() + "\n");
                                 rspBytes = Store.Up.Downstream.ToByteString();
+                                break;
+                            case CloudSave.Name:
+                                CloudSave.Up.UpstreamConverter(ClientNumb, data.Data);
+                                File.AppendAllText($"logs/client_{ClientNumb}_cloudsave_rsp.log", CloudSave.Up.Downstream.ToString() + "\n");
+                                rspBytes = CloudSave.Up.Downstream.ToByteString();
+                                break;
+                            case Achievement.Name:
+                                Achievement.Up.ReqConverter(ClientNumb, data.Data);
+                                File.AppendAllText($"logs/client_{ClientNumb}_ach_rsp.log", Achievement.Up.Rsp.ToString() + "\n");
+                                rspBytes = Achievement.Up.Rsp.ToByteString();
                                 break;
                         }
                     }

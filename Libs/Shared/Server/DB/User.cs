@@ -462,6 +462,20 @@ namespace SharedLib.Server.DB
             }
             return null;
         }
+
+        public static void DeleteCloudSave(string UserId, uint ProductId, uint SaveId)
+        {
+            using (var db = new LiteDatabase(DBName))
+            {
+                var col = db.GetCollection<JCloudSave>(CloudSave);
+
+                var fId = col.FindOne(X => X.UserId == UserId && X.uplayId == ProductId && X.SaveId == SaveId);
+                if (fId != null)
+                {
+                    col.Delete(fId.Id);
+                }
+            }
+        }
         #endregion
     }
 }

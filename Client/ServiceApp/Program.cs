@@ -1,6 +1,5 @@
 ﻿using ServiceApp.NPHELPER;
 using SharedLib.Shared;
-using System.Runtime.InteropServices;
 
 namespace ServiceApp
 {
@@ -61,15 +60,6 @@ namespace ServiceApp
                     File.Delete("UbiServices_Rest.txt");
 
             }
-            if (ParameterLib.HasParameter(args, "test"))
-            {
-                UPC_Init(0,0);
-
-
-            }
         }
-
-        [DllImport("upc_r2_loader64", CallingConvention = CallingConvention.Cdecl, EntryPoint = "UPC_Init")]
-        public static extern int UPC_Init(uint version, int appID);
     }
 }

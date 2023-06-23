@@ -5,6 +5,7 @@ namespace Core.DemuxResponders
 {
     public class Store
     {
+        public const string Name = "store_service";
         public class Up
         {
             public static Downstream Downstream = null;
@@ -35,6 +36,7 @@ namespace Core.DemuxResponders
             public static bool IsIdDone = false;
             public static void Requests(Guid ClientNumb, Req req)
             {
+                File.AppendAllText($"logs/client_{ClientNumb}_store_req.log", req.ToString() + "\n");
                 ReqId = req.RequestId;
                 if (req?.InitializeReq != null) { Init(req.InitializeReq); }
                 if (req?.GetDataReq != null) { Init(req.InitializeReq); }

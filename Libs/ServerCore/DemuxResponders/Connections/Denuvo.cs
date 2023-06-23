@@ -6,6 +6,7 @@ namespace Core.DemuxResponders
 {
     public class Denuvo
     {
+        public const string Name = "denuvo_service";
         public class Up
         {
             public static Downstream Downstream = null;
@@ -35,6 +36,7 @@ namespace Core.DemuxResponders
             public static bool IsIdDone = false;
             public static void Requests(Guid ClientNumb, Req req)
             {
+                File.AppendAllText($"logs/client_{ClientNumb}_denuvo_req.log", req.ToString() + "\n");
                 ReqId = req.RequestId;
                 if (req?.GetGameTokenReq != null) { GameToken(ClientNumb, req.GetGameTokenReq); }
                 if (req?.GetGameTimeTokenReq != null) { GameTimeToken(ClientNumb, req.GetGameTimeTokenReq); }

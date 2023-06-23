@@ -106,5 +106,15 @@ namespace SharedLib.Shared
             }
             return bytesToCompress;
         }
+
+        public static byte[] ZlibCompress(byte[] input)
+        {
+            return Ionic.Zlib.ZlibStream.CompressBuffer(input);
+        }
+
+        public static byte[] ZlibDecompress(byte[] input)
+        {
+            return Ionic.Zlib.ZlibStream.UncompressBuffer(input);
+        }
     }
 }

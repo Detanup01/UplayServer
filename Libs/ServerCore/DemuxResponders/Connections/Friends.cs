@@ -7,7 +7,7 @@ namespace Core.DemuxResponders
 {
     public class Friends
     {
-        public static readonly string Name = "friends_service";
+        public const string Name = "friends_service";
         public class Up
         {
             public static Downstream Downstream = null;
@@ -40,6 +40,7 @@ namespace Core.DemuxResponders
 
             public static void Requests(Guid ClientNumb, Req req)
             {
+                File.AppendAllText($"logs/client_{ClientNumb}_friends_req.log", req.ToString() + "\n");
                 //All Deprecated func should return false or emtpy data
                 ReqId = req.RequestId;
                 //Deprecated func

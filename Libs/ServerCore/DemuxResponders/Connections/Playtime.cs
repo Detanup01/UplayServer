@@ -36,6 +36,7 @@ namespace Core.DemuxResponders
             public static bool IsIdDone = false;
             public static void Requests(Guid ClientNumb, Req req)
             {
+                File.AppendAllText($"logs/client_{ClientNumb}_playtime_req.log", req.ToString() + "\n");
                 if (req?.GetPlaytimeReq != null) { GetPlaytime(ClientNumb, req.GetPlaytimeReq); }
                 if (req?.UpdatePlaytimeReq != null) { UpdatePlaytime(ClientNumb, req.UpdatePlaytimeReq); }
                 IsIdDone = true;

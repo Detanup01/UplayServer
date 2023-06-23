@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.23.3" />
+    <PackageReference Include="Ionic.Zlib.Core" Version="1.0.0" />
     <PackageReference Include="L" Version="5.0.0" />
     <PackageReference Include="LiteDB" Version="5.0.16" />
     <PackageReference Include="LzhamWrapper" Version="0.0.1" />

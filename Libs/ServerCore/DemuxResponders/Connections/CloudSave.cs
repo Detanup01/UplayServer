@@ -7,7 +7,7 @@ namespace Core.DemuxResponders
 {
     public class CloudSave
     {
-        public static readonly string Name = "cloudsave_service";
+        public const string Name = "cloudsave_service";
         public class Up
         {
             public static Downstream Downstream = null;
@@ -37,8 +37,11 @@ namespace Core.DemuxResponders
             public static bool IsIdDone = false;
             public static void Requests(Guid ClientNumb, Req req)
             {
+                File.AppendAllText($"logs/client_{ClientNumb}_cloudsave_req.log", req.ToString() + "\n");
                 ReqId = req.RequestId;
                 if (req?.CloudsaveReq != null) { Cloudsave(ClientNumb, req.CloudsaveReq); }
+                if (req?.CloudsaveReqV2 != null) { CloudsaveV2(ClientNumb, req.CloudsaveReqV2); }
+                if (req?.CloudsaveUrlReq != null) { CloudsaveURL(ClientNumb, req.CloudsaveUrlReq); }
                 IsIdDone = true;
             }
 
@@ -170,6 +173,21 @@ namespace Core.DemuxResponders
                             {
                                 httpreq
                             }
+                        }
+                    }
+                };
+            }
+
+            public static void CloudsaveURL(Guid ClientNumb, CloudsaveUrlReq req)
+            {
+                Downstream = new()
+                {
+                    Response = new()
+                    { 
+                        RequestId = ReqId,
+                        CloudsaveUrlRsp = new()
+                        { 
+                            Status = CloudsaveUrlRsp.Types.Status.InternalError
                         }
                     }
                 };

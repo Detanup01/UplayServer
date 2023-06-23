@@ -7,6 +7,7 @@ namespace Core.DemuxResponders
 {
     public class Download
     {
+        public const string Name = "download_service";
         public class Up
         {
             public static Downstream Downstream = null;

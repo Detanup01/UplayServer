@@ -5,6 +5,7 @@ namespace Core.DemuxResponders
 {
     public class Party
     {
+        public const string Name = "party_service";
         public class Up
         {
             public static Downstream Downstream = null;
@@ -35,6 +36,7 @@ namespace Core.DemuxResponders
             public static bool IsIdDone = false;
             public static void Requests(Guid ClientNumb, Req req)
             {
+                File.AppendAllText($"logs/client_{ClientNumb}_party_req.log", req.ToString() + "\n");
                 if (req?.StartSessionReq != null) { StartSession(req.StartSessionReq); }
                 IsIdDone = true;
             }
