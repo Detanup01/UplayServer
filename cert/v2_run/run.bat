@@ -10,3 +10,4 @@ openssl x509 -req -in signer.csr -days 365 -CA global.crt -CAkey global.key -ext
 certutil -p "CustomUplay,CustomUplay" -mergepfx global.crt global.pfx
 certutil -p "CustomUplay,CustomUplay" -mergepfx signer.crt signer.pfx
 certutil -p "CustomUplay,CustomUplay" -mergepfx services.crt services.pfx
+pause

@@ -30,7 +30,7 @@ namespace upc_r2.Exports
         public static int UPC_ApplicationIdGet(IntPtr inContext, IntPtr outAppId)
         {
             Basics.Log(nameof(UPC_ApplicationIdGet), new object[] { inContext });
-            var str = Marshal.StringToCoTaskMemAnsi(Main.GlobalContext.Config.ProductId.ToString());
+            var str = Marshal.StringToHGlobalAnsi("3578a7b0-b461-4339-ae0a-a52c7f66205b");  //Todo Replace this ID to work with X games.
             Marshal.WriteIntPtr(outAppId, str);
             return 0;
         }
