@@ -115,6 +115,16 @@ namespace Core
                         contentBytes = DownloadHandler.DownloadHandlerCallback(key, out contentType);
                         handled = true;
                     }
+                    if (key.StartsWith("/test"))
+                    {
+                        ResponseCreator rc = new();
+                        rc.SetHeader("Content-Type", contentType);
+                        rc.SetHeader("yeeet", "waaaaaaaaaa");
+                        rc.SetCookie("balls", "test");
+                        rc.SetBody("yeet");
+                        SendResponseAsync(rc.GetResponse());
+                        return;
+                    }
                     if (key.StartsWith("/patch/"))
                     {
                         contentBytes = PatchHandler.PatchHandlerCallback(key, out contentType);

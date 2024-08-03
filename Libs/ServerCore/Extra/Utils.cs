@@ -57,7 +57,7 @@ namespace Core
 
         public static X509Certificate GetCert(string certname, string password)
         {
-
+            Debug.PWDebug($"[GetCert] {certname} {password}");
             X509Certificate2 cert = new(File.ReadAllBytes($"cert/{certname}.pfx"), password);
             return cert;
         }

@@ -13,9 +13,9 @@ namespace Core
             jwt.CreateRSA();
             PluginHandle.LoadPlugins();
             HTTPServer.Start();
-            Console.WriteLine(ServerConfig.Instance.HTTPS_Url + ServerConfig.Instance.HTTPS_Port);
+            Console.WriteLine(ServerConfig.Instance.HTTPS_Url);
             DemuxServer.Start();
-            Console.WriteLine(ServerConfig.Instance.DemuxUrl + ServerConfig.Instance.DemuxPort);
+            Console.WriteLine(ServerConfig.Instance.DemuxUrl);
         }
 
         public static void Stop()

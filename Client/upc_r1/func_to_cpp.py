@@ -4,9 +4,16 @@ uint = "unsigned"
 IntPtr = "intptr_t"
 
 
-normal = """EXPORT """
+normal = """UPLAY_EXPORT """
 
 body = """
+{
+	PRINT_DEBUG("%s\\n", __FUNCTION__, __FUNC_);
+	return 0;
+}
+"""
+
+old_body = """
 {
     GET_PROXY_FUNC(__REPLACEME__);
     return proxyFunc(__FUNC_);
