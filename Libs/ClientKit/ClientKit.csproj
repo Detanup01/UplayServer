@@ -1,21 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	<Description>Custom Implementation for Uplay Demux Backend</Description>
-	<Version>0.0.1.1</Version>
+	<Version>0.0.2.0</Version>
 	<Company>Detanup01</Company>
 	<Authors>Detanup01</Authors>
   </PropertyGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="NetCoreServer" Version="6.7.0" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="RestSharp" Version="109.0.1" />
-		<PackageReference Include="SharpZipLib" Version="1.4.2" />
-		<PackageReference Include="ZstdNet" Version="1.4.5" />
+		<PackageReference Include="NetCoreServer" Version="8.0.7" />
+		<PackageReference Include="RestSharp" Version="111.4.1" />
 	</ItemGroup>
 	
 	<ItemGroup>

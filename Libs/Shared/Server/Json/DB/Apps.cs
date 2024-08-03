@@ -31,7 +31,7 @@
         public List<Enums.AppFlags> global_appflags { get; set; } = new();
         public Uplay.Ownership.GetUplayPCTicketReq.Types.Platform platform { get; set; } = Uplay.Ownership.GetUplayPCTicketReq.Types.Platform.Normal;
         public Uplay.Ownership.OwnedGame.Types.ProductType product_type { get; set; } = Uplay.Ownership.OwnedGame.Types.ProductType.Game;
-        public Uplay.Ownership.OwnedGame.Types.State state { get; set; } = Uplay.Ownership.OwnedGame.Types.State.Released;
+        public Uplay.Ownership.OwnedGame.Types.State state { get; set; } = Uplay.Ownership.OwnedGame.Types.State.Playable;
 
         //  Custom Non Ownership related
         public uint session_max_size { get; set; } = 4;

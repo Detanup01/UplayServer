@@ -9,7 +9,7 @@ namespace upc_r1
     {
         public static string GetCuPath()
         {
-            return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            return AppContext.BaseDirectory;
         }
 
         public static void Log(string actionName, object[] parameters)
@@ -65,7 +65,7 @@ namespace upc_r1
             int indx = 0;
             foreach (var item in values)
             {
-                IntPtr iptr = Marshal.AllocHGlobal(sizeof(T));
+                IntPtr iptr = Marshal.AllocHGlobal(Marshal.SizeOf<T>());
                 Marshal.StructureToPtr(item, iptr, false);
                 Marshal.WriteIntPtr(main_ptr, indx * sizeof(IntPtr), iptr);
                 indx++;

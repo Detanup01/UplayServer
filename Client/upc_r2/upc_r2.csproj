@@ -1,37 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Platforms>AnyCPU;x86;x64</Platforms>
-	<OutDir>bin\$(Configuration)\All\</OutDir>
+	<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+	<IsAotCompatible>True</IsAotCompatible>
+	<PublishAot>true</PublishAot>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DNNE" Version="2.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 	
 	<Choose>
 		<When Condition=" '$(Platform)'=='x64' ">
 			<PropertyGroup>
-				<DnneAddGeneratedBinaryToProject>true</DnneAddGeneratedBinaryToProject>
-				<EnableDynamicLoading>true</EnableDynamicLoading>
-				<DnneNativeBinaryName>upc_r264</DnneNativeBinaryName>
-				<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-				<AssemblyName>$(MSBuildProjectName)_cs64</AssemblyName>
-				<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+				<AssemblyName>upc_r264</AssemblyName>
 			</PropertyGroup>
 		</When>
 		<When Condition=" '$(Platform)'=='x86' ">
 			<PropertyGroup>
-				<DnneAddGeneratedBinaryToProject>true</DnneAddGeneratedBinaryToProject>
-				<EnableDynamicLoading>true</EnableDynamicLoading>
-				<DnneNativeBinaryName>upc_r2</DnneNativeBinaryName>
-				<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-				<AssemblyName>$(MSBuildProjectName)_cs86</AssemblyName>
-				<RuntimeIdentifier>win-x86</RuntimeIdentifier>
+				<AssemblyName>upc_r2</AssemblyName>
 			</PropertyGroup>
 		</When>
 	</Choose>

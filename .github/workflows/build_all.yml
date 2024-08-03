@@ -1,0 +1,49 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: All X64
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+# allow manual trigger
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet publish -r win-x64 -c:Release -p:Platform=x64 -o:Out_64
+
+    - name: Build
+      run: dotnet publish -r win-x86 -c:Release -p:Platform=x86 -o:Out_86
+
+    - name : Upload artifacts 54
+      uses: actions/upload-artifact@v4.3.5
+      with:
+        # Artifact name
+        name: UplayAll # optional, default is artifact
+        # A file, directory or wildcard pattern that describes what to upload
+        path: Out_64/*
+
+    - name : Upload artifacts 86
+      uses: actions/upload-artifact@v4.3.5
+      with:
+        name: UplayAll_86 
+        # A file, directory or wildcard pattern that describes what to upload
+        path: Out_86/*

@@ -33,7 +33,7 @@ namespace SharedLib.Server.DB
                 app_id = "",
                 space_id = "",
                 staging = false,
-                state = Uplay.Ownership.OwnedGame.Types.State.Released,
+                state = Uplay.Ownership.OwnedGame.Types.State.Playable,
                 storereference = "0",
                 associations = { },
                 config_version = 1,

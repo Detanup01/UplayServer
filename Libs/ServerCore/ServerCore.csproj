@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Version>0.0.0.1</Version>
@@ -18,15 +18,9 @@
     <None Remove="serverfiles\web\store\0.html" />
     <None Remove="ServerFiles\Web\Store\BaseStore.html" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="Google.Protobuf" Version="3.23.3" />
-    <PackageReference Include="JWT" Version="10.0.2" />
-    <PackageReference Include="NetCoreServer" Version="6.7.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="SharpZipLib" Version="1.4.2" />
-    <PackageReference Include="Uplay-Protobufs" Version="142.0.10872" />
-    <PackageReference Include="ZstdNet" Version="1.4.5" />
+    <PackageReference Include="JWT" Version="10.1.1" />
+    <PackageReference Include="NetCoreServer" Version="8.0.7" />
   </ItemGroup>
 
   <ItemGroup>
