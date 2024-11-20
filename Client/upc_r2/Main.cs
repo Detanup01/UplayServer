@@ -1,34 +1,38 @@
-﻿using Newtonsoft.Json;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using static upc_r2.Enums;
-using static upc_r2.Structures;
+using System.Text.Json;
+using Uplay.Uplaydll;
+using static Uplay.Party.PartyInviteResponseReq.Types;
 
-namespace upc_r2
+namespace upc_r2;
+
+public class Main
 {
-    public class Main
+    public static Stopwatch Stopwatch = new Stopwatch();
+    public static Context GlobalContext = new Context();
+    public static IntPtr FakeContextPTR = IntPtr.Zero;
+    public static long TimeBetweenUpdate = 20000000;
+    private static Lock lockObject = new Lock();
+
+    [UnmanagedCallersOnly(EntryPoint = "UPC_ContextCreate", CallConvs = [typeof(CallConvCdecl)])]
+    public static IntPtr UPC_ContextCreate(uint inVersion, IntPtr inOptSetting)
     {
-        public static Stopwatch Stopwatch = new Stopwatch();
-        public static Context GlobalContext = new Context();
-        public static IntPtr GlobalContextPTR = IntPtr.Zero;
-        public static long TimeBetweenUpdate = 20000000;
+        Basics.Log(nameof(UPC_ContextCreate), [inVersion, inOptSetting]);
 
-        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-        public static IntPtr UPC_ContextCreate(uint inVersion, IntPtr inOptSetting)
+        UPC_ContextSettings contextSettings = new()
         {
-            Basics.Log(nameof(UPC_ContextCreate), new object[] { inVersion, inOptSetting });
-
-            UPC_ContextSettings contextSettings = new()
-            {
-                subsystems = UPC_ContextSubsystem.UPC_ContextSubsystem_None
-            };
-            if (inOptSetting != IntPtr.Zero) 
-            {
-                contextSettings = Basics.IntPtrToStruct<UPC_ContextSettings>(inOptSetting);
-            }
-            Basics.Log(nameof(UPC_ContextCreate), new object[] { "Subsystems: ", contextSettings.subsystems });
-            Basics.SendReq(new Uplay.Uplaydll.Req()
+            subsystems = UPC_ContextSubsystem.UPC_ContextSubsystem_None
+        };
+        if (inOptSetting != IntPtr.Zero) 
+        {
+            contextSettings = Basics.IntPtrToStruct<UPC_ContextSettings>(inOptSetting);
+        }
+        Basics.Log(nameof(UPC_ContextCreate), ["Subsystems: ", contextSettings.subsystems]);
+        Rsp Response = new();
+        if (UPC_Json.GetRoot().BasicLog.UseNamePipeClient)
+        {
+            Basics.SendReq(new Req()
             {
                 InitReq = new()
                 {
@@ -44,41 +48,69 @@ namespace upc_r2
                     SubSystemStore = contextSettings.subsystems.HasFlag(UPC_ContextSubsystem.UPC_ContextSubsystem_Store),
                     SubSystemStreaming = contextSettings.subsystems.HasFlag(UPC_ContextSubsystem.UPC_ContextSubsystem_Streaming)
                 }
-            }, out var rsp);
-            Basics.Log(nameof(UPC_ContextCreate), new object[] { rsp });
-
-            var initRsp = rsp.InitRsp;
-            GlobalContext.Config.Saved.account = initRsp.Account;
-            //GlobalContext.Config.Saved.savePath = initRsp.Storage.SavegameStoragePath;
-            if (initRsp.HasUpcTicket)
-                GlobalContext.Config.Saved.ubiTicket = initRsp.UpcTicket;
-            try
-            {
-                GlobalContextPTR = Marshal.AllocHGlobal(Marshal.SizeOf(GlobalContext));
-                Marshal.StructureToPtr(GlobalContext, GlobalContextPTR, false);
-                return GlobalContextPTR;
-            }
-            catch (Exception ex)
-            {
-                Basics.Log(nameof(UPC_ContextCreate), new object[] { ex });
-                throw;
-            }
-
+            }, out Response);
         }
-
-        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-        public static int UPC_ContextFree(IntPtr inContext)
+        else
         {
-            Basics.Log(nameof(UPC_ContextFree), new object[] { inContext });
-            Marshal.DestroyStructure<Context>(inContext);
-            Marshal.FreeHGlobal(inContext);
-            GlobalContext = new();
-            GlobalContextPTR = IntPtr.Zero;
-            return 0;
+            Response.InitRsp = new()
+            { 
+                Account = new()
+                { 
+                    AccountId = UPC_Json.GetRoot().Account.AccountId,
+                    Country = UPC_Json.GetRoot().Account.Country,
+                    Email = UPC_Json.GetRoot().Account.Email,
+                    NameOnPlatform = UPC_Json.GetRoot().Account.Name,
+                    Username = UPC_Json.GetRoot().Account.Name,
+                    Password = UPC_Json.GetRoot().Account.Password
+                },
+                UpcTicket = UPC_Json.GetRoot().Account.Ticket,
+                Storage = new()
+                { 
+                    SavegameStoragePath = UPC_Json.GetRoot().Save.Path
+                },
+                UbiServices = new()
+                {
+                    AppId = UPC_Json.GetRoot().Others.ApplicationId,
+                }
+            };
+        }
+        Basics.Log(nameof(UPC_ContextCreate), [Response]);
+        var initRsp = Response.InitRsp;
+        GlobalContext.Config.Saved.account = initRsp.Account;
+        //GlobalContext.Config.Saved.savePath = initRsp.Storage.SavegameStoragePath;
+        if (initRsp.HasUpcTicket)
+            GlobalContext.Config.Saved.ubiTicket = initRsp.UpcTicket;
+        GlobalContext.Config.Saved.ApplicationId = initRsp.UbiServices.AppId;
+        FakeContext fc = new();
+        try
+        {
+            FakeContextPTR = Marshal.AllocHGlobal(Marshal.SizeOf(fc));
+            Marshal.StructureToPtr(fc, FakeContextPTR, false);
+            return FakeContextPTR;
+        }
+        catch (Exception ex)
+        {
+            Basics.Log(nameof(UPC_ContextCreate), [ex]);
+            throw;
         }
 
-        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-        public static unsafe int UPC_Update(IntPtr inContext)
+    }
+
+    [UnmanagedCallersOnly(EntryPoint = "UPC_ContextFree", CallConvs = [typeof(CallConvCdecl)])]
+    public static int UPC_ContextFree(IntPtr inContext)
+    {
+        Basics.Log(nameof(UPC_ContextFree), [inContext]);
+        Marshal.DestroyStructure<FakeContext>(inContext);
+        Marshal.FreeHGlobal(inContext);
+        GlobalContext = new();
+        FakeContextPTR = IntPtr.Zero;
+        return (int)UPC_Result.UPC_Result_Ok;
+    }
+
+    [UnmanagedCallersOnly(EntryPoint = "UPC_Update", CallConvs = [typeof(CallConvCdecl)])]
+    public static unsafe int UPC_Update(IntPtr inContext)
+    {
+        lock (lockObject)
         {
             //Internal waiting update for reason
             Stopwatch.Stop();
@@ -90,7 +122,13 @@ namespace upc_r2
             //Basics.Log(nameof(UPC_Update), new object[] { Stopwatch.ElapsedTicks });
             Stopwatch.Restart();
             //Basics.Log(nameof(UPC_Update), new object[] { inContext });
-            Basics.SendReq(new Uplay.Uplaydll.Req(), out var rsp);
+            Rsp Response = new();
+            if (UPC_Json.GetRoot().BasicLog.UseNamePipeClient)
+                Basics.SendReq(new Req(), out Response);
+            else
+            {
+                Response = new();
+            }
             var cblist = GlobalContext.Callbacks.ToList();
             //Basics.Log(nameof(UPC_Update), new object[] { cblist.Count, cblist.Count() });
             for (int i = 0; i < cblist.Count; i++)
@@ -98,8 +136,8 @@ namespace upc_r2
                 var cb = cblist[i];
                 if (cb.fun != IntPtr.Zero)
                 {
-                    Basics.Log(nameof(UPC_Update), new object[] { JsonConvert.SerializeObject(cb) });
-                    Basics.Log(nameof(UPC_Update), new object[] { "Delegate run with: ", cb.fun, cb.arg, cb.context_data });
+                    Basics.Log(nameof(UPC_Update), [JsonSerializer.Serialize(cb, JsonSourceGen.Default.Callback)]);
+                    Basics.Log(nameof(UPC_Update), ["Delegate run with: ", cb.fun, cb.arg, cb.context_data]);
                     delegate* unmanaged<int, IntPtr, void> @delegate;
                     @delegate = (delegate* unmanaged<int, IntPtr, void>)cb.fun;
                     @delegate(cb.arg, cb.context_data);
@@ -114,109 +152,150 @@ namespace upc_r2
                 {
                     delegate* unmanaged<IntPtr, IntPtr, void> @delegate;
                     @delegate = (delegate* unmanaged<IntPtr, IntPtr, void>)ev.Handler;
-                    if (rsp.OverlayRsp != null && rsp.OverlayRsp.OverlayStateChangedPush != null)
+                    if (Response.OverlayRsp != null && Response.OverlayRsp.OverlayStateChangedPush != null)
                     {
-                        if (rsp.OverlayRsp.OverlayStateChangedPush.State == Uplay.Uplaydll.OverlayState.Showing && ev.EventType == UPC_EventType.UPC_Event_OverlayShown)
+                        if (Response.OverlayRsp.OverlayStateChangedPush.State == OverlayState.Showing && ev.EventType == UPC_EventType.UPC_Event_OverlayShown)
                         {
                             var ptr = Marshal.AllocHGlobal(sizeof(IntPtr));
-                            Marshal.StructureToPtr(UPC_EventType.UPC_Event_OverlayShown,ptr,false);
+                            Marshal.StructureToPtr(UPC_EventType.UPC_Event_OverlayShown, ptr, false);
                             @delegate(ptr, ev.OptData);
                         }
-                        if (rsp.OverlayRsp.OverlayStateChangedPush.State == Uplay.Uplaydll.OverlayState.Hidden && ev.EventType == UPC_EventType.UPC_Event_OverlayHidden)
+                        if (Response.OverlayRsp.OverlayStateChangedPush.State == OverlayState.Hidden && ev.EventType == UPC_EventType.UPC_Event_OverlayHidden)
                         {
                             var ptr = Marshal.AllocHGlobal(sizeof(IntPtr));
                             Marshal.StructureToPtr(UPC_EventType.UPC_Event_OverlayHidden, ptr, false);
                             @delegate(ptr, ev.OptData);
                         }
                     }
-                }               
-            }
-            return 0;
-        }
-
-        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-        public static int UPC_Cancel(IntPtr inContext, IntPtr inHandler)
-        {
-            Basics.Log(nameof(UPC_Cancel), new object[] { inContext, inHandler });
-            return 0;
-        }
-
-        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-        public static int UPC_EventNextPeek(IntPtr inContext, IntPtr outEvent)
-        {
-            //Basics.Log(nameof(UPC_EventNextPeek), new object[] { inContext, outEvent });
-            return 0;
-        }
-
-        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-        public static int UPC_EventNextPoll(IntPtr inContext, IntPtr outEvent)
-        {
-            //Basics.Log(nameof(UPC_EventNextPoll), new object[] { inContext, outEvent });
-            return -6;
-        }
-
-        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-        public static int UPC_EventRegisterHandler(IntPtr inContext, uint inType, IntPtr inHandler, IntPtr inOptData)
-        {
-            Basics.Log(nameof(UPC_EventRegisterHandler), new object[] { inContext, inType, inHandler, inOptData });
-            var eventType = (UPC_EventType)inType;
-            Basics.Log(nameof(UPC_EventRegisterHandler), new object[] { "EventType: ", eventType });
-            GlobalContext.Events.Append(new Event(eventType, inHandler, inOptData));
-            return 0;
-        }
-
-        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-        public static int UPC_EventUnregisterHandler(IntPtr inContext, uint inType)
-        {
-            Basics.Log(nameof(UPC_EventUnregisterHandler), new object[] { inContext, inType });
-            var eventRemove = GlobalContext.Events.Where(x=>x.EventType == (UPC_EventType)inType);
-            if (eventRemove.Any())
-            {
-                var evList = GlobalContext.Events.ToList();
-                evList.Remove(eventRemove.First());
-                GlobalContext.Events = evList.ToArray();
-            }
-            return 0;
-        }
-
-        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-        public static int UPC_Init(uint inVersion, int productId)
-        {
-            GlobalContext = new Context();
-            GlobalContext.Config = new();
-            GlobalContext.Config.Saved = new();
-            GlobalContext.Callbacks = new Callback[1];
-            GlobalContext.Events = new Event[1];
-            GlobalContext.Config.ProductId = (uint)productId;
-            GlobalContext.Config.Saved.savePath = Path.Combine(Environment.CurrentDirectory, "SAVE_GAMES", GlobalContext.Config.ProductId.ToString());
-            Basics.Log(nameof(UPC_Init), new object[] { inVersion, productId });
-            Basics.SendReq(new Uplay.Uplaydll.Req()
-            { 
-                InitProcessReq = new()
-                { 
-                    ApiVersion = inVersion,
-                    UplayEnvIsSet = false,
-                    UplayId = (uint)productId,
-                    ProcessId = (uint)Process.GetCurrentProcess().Id
                 }
-            }, out var rsp);
-            return 0;
-        }
+            }
+        }       
+        return (int)UPC_Result.UPC_Result_Ok;
+    }
 
-        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-        public static void UPC_Uninit()
+    [UnmanagedCallersOnly(EntryPoint = "UPC_Cancel", CallConvs = [typeof(CallConvCdecl)])]
+    public static int UPC_Cancel(IntPtr inContext, IntPtr inHandler)
+    {
+        Basics.Log(nameof(UPC_Cancel), [inContext, inHandler]);
+        return (int)UPC_Result.UPC_Result_Ok;
+    }
+
+    [UnmanagedCallersOnly(EntryPoint = "UPC_EventNextPeek", CallConvs = [typeof(CallConvCdecl)])]
+    public static int UPC_EventNextPeek(IntPtr inContext, IntPtr outEvent)
+    {
+        //Basics.Log(nameof(UPC_EventNextPeek), new object[] { inContext, outEvent });
+        return (int)UPC_Result.UPC_Result_Ok;
+    }
+
+    [UnmanagedCallersOnly(EntryPoint = "UPC_EventNextPoll", CallConvs = [typeof(CallConvCdecl)])]
+    public static int UPC_EventNextPoll(IntPtr inContext, IntPtr outEvent)
+    {
+        //Basics.Log(nameof(UPC_EventNextPoll), new object[] { inContext, outEvent });
+        return (int)UPC_Result.UPC_Result_NotFound;
+    }
+
+    [UnmanagedCallersOnly(EntryPoint = "UPC_EventRegisterHandler", CallConvs = [typeof(CallConvCdecl)])]
+    public static int UPC_EventRegisterHandler(IntPtr inContext, uint inType, IntPtr inHandler, IntPtr inOptData)
+    {
+        Basics.Log(nameof(UPC_EventRegisterHandler), [inContext, inType, inHandler, inOptData]);
+        var eventType = (UPC_EventType)inType;
+        Basics.Log(nameof(UPC_EventRegisterHandler), ["EventType: ", eventType]);
+        GlobalContext.Events.Append(new Event(eventType, inHandler, inOptData));
+        return (int)UPC_Result.UPC_Result_Ok;
+    }
+
+    [UnmanagedCallersOnly(EntryPoint = "UPC_EventUnregisterHandler", CallConvs = [typeof(CallConvCdecl)])]
+    public static int UPC_EventUnregisterHandler(IntPtr inContext, uint inType)
+    {
+        Basics.Log(nameof(UPC_EventUnregisterHandler), [inContext, inType]);
+        var eventRemove = GlobalContext.Events.Where(x=>x.EventType == (UPC_EventType)inType);
+        if (eventRemove.Any())
         {
-            Basics.Log(nameof(UPC_Uninit), new object[] { });
+            var evList = GlobalContext.Events.ToList();
+            evList.Remove(eventRemove.First());
+            GlobalContext.Events = evList.ToArray();
+        }
+        return (int)UPC_Result.UPC_Result_Ok;
+    }
 
-            //  We dont need to send any req or wait for response, this just to make sure we dont update our stuff!
-            Basics.SendReq(new Uplay.Uplaydll.Req()
+    [UnmanagedCallersOnly(EntryPoint = "UPC_Init", CallConvs = [typeof(CallConvCdecl)])]
+    public static int UPC_Init(uint inVersion, int productId)
+    {
+        GlobalContext = new Context();
+        GlobalContext.Config = new();
+        GlobalContext.Config.Saved = new();
+        GlobalContext.Callbacks = new Callback[1];
+        GlobalContext.Events = new Event[1];
+        GlobalContext.Config.ProductId = (uint)productId;
+        Basics.Log(nameof(UPC_Init), [inVersion, productId]);
+        try
+        {
+            Rsp Response = new();
+            if (UPC_Json.GetRoot().BasicLog.UseNamePipeClient)
+                Basics.SendReq(new Req()
+                {
+                    InitProcessReq = new()
+                    {
+                        ApiVersion = inVersion,
+                        UplayEnvIsSet = false,
+                        UplayId = (uint)productId,
+                        ProcessId = (uint)Process.GetCurrentProcess().Id
+                    }
+                }, out Response);
+            else
+            {
+                Response = new()
+                {
+                    InitProcessRsp = new()
+                    {
+                        OverlayEnabled = false,
+                        Devmode = true,
+                        UplayPID = (uint)Process.GetCurrentProcess().Id,
+                        OverlayInjectionMethod = OverlayInjectionMethod.None,
+                        Result = InitResult.Success,
+                        SdkMonitoringConfig = new()
+                        {
+                            SdkMonitoringEnabled = false
+                        }
+                    }
+                };
+            }
+            Basics.Log(nameof(UPC_Init), [Response.InitProcessRsp.Result]);
+            switch (Response.InitProcessRsp.Result)
+            {
+                case InitResult.Success:
+                    return (int)UPC_InitResult.UPC_InitResult_Ok;
+                case InitResult.Failure:
+                    return (int)UPC_InitResult.UPC_InitResult_Failed;
+                case InitResult.ReconnectRequired:
+                    return (int)UPC_InitResult.UPC_InitResult_DesktopInteractionRequired;
+                case InitResult.RestartWithGameLauncherRequired:
+                    return (int)UPC_InitResult.UPC_InitResult_ExitProcessRequired;
+                default:
+                    return (int)UPC_InitResult.UPC_InitResult_Failed;
+            }
+        }
+        catch (Exception ex)
+        {
+            Basics.Log(nameof(UPC_Init), [ex.ToString()]);
+        }
+        return 1;
+    }
+
+    [UnmanagedCallersOnly(EntryPoint = "UPC_Uninit", CallConvs = [typeof(CallConvCdecl)])]
+    public static void UPC_Uninit()
+    {
+        Basics.Log(nameof(UPC_Uninit));
+
+        //  We dont need to send any req or wait for response, this just to make sure we dont update our stuff!
+        if (UPC_Json.GetRoot().BasicLog.UseNamePipeClient)
+            Basics.SendReq(new Req()
             {
                 InitProcessReq = new()
                 {
                     ApiVersion = uint.MaxValue,
                     ProcessId = (uint)Process.GetCurrentProcess().Id
                 }
-            }, out var rsp);
-        }
+            }, out _);
     }
 }

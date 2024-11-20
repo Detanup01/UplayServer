@@ -1,28 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Platforms>AnyCPU;x86;x64</Platforms>
 	<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	<IsAotCompatible>True</IsAotCompatible>
 	<PublishAot>true</PublishAot>
+	<AssemblyVersion>158.0.11194.0</AssemblyVersion>
+	<FileVersion>158.0.11194</FileVersion>
+	<Description>Ubisoft Connect API r2</Description>
+	<Product>Ubisoft Connect</Product>
+	<Copyright>(c) Ubisoft</Copyright>
+	<NeutralLanguage>en-US</NeutralLanguage>
+	<Version>158.0.11194</Version>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-  </ItemGroup>
 	
 	<Choose>
 		<When Condition=" '$(Platform)'=='x64' ">
 			<PropertyGroup>
-				<AssemblyName>upc_r264</AssemblyName>
+				<AssemblyName>upc_r2_loader64</AssemblyName>
 			</PropertyGroup>
 		</When>
 		<When Condition=" '$(Platform)'=='x86' ">
 			<PropertyGroup>
-				<AssemblyName>upc_r2</AssemblyName>
+				<AssemblyName>upc_r2_loader</AssemblyName>
 			</PropertyGroup>
 		</When>
 	</Choose>

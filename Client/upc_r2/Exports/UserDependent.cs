@@ -1,103 +1,82 @@
-﻿using System;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace upc_r2.Exports
+namespace upc_r2.Exports;
+
+public class UserDependent
 {
-    internal class UserDependent
+    [UnmanagedCallersOnly(EntryPoint = "UPC_EmailGet", CallConvs = [typeof(CallConvCdecl)])]
+    public static IntPtr UPC_EmailGet(IntPtr inContext)
     {
-        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-        public static IntPtr UPC_EmailGet(IntPtr inContext)
-        {
-            Basics.Log(nameof(UPC_EmailGet), new object[] { inContext });
-            /*
-            if (Main.GlobalContext.Config.Saved.account == null)
-            {
-                Basics.SendReq(new Uplay.Uplaydll.Req()
-                {
-                    UserReq = new()
-                    {
-                        GetCredentialsReq = new()
-                        {
-                            RequestId = 0
-                        }
+        Basics.Log(nameof(UPC_EmailGet), [inContext]);
+        return Marshal.StringToHGlobalAnsi(Main.GlobalContext.Config.Saved.account.Email);
+    }
 
-                    }
-                }, out var rsp);
-            }
-            */
-            var ret = Marshal.StringToHGlobalAnsi("uplay@user");
-            return ret;
-        }
+    [UnmanagedCallersOnly(EntryPoint = "UPC_IdGet", CallConvs = [typeof(CallConvCdecl)])]
+    public static IntPtr UPC_IdGet(IntPtr inContext)
+    {
+        Basics.Log(nameof(UPC_IdGet), [inContext]);
+        return Marshal.StringToHGlobalAnsi(Main.GlobalContext.Config.Saved.account.AccountId);
+    }
 
-        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-        public static IntPtr UPC_IdGet(IntPtr inContext)
-        {
-            Basics.Log(nameof(UPC_IdGet), new object[] { inContext });
-            var ret = Marshal.StringToHGlobalAnsi("c0d3c0d3-c0d3-c0d3-c0d3-c0d3c0d3c0d3");
-            return ret;
-        }
+    [UnmanagedCallersOnly(EntryPoint = "UPC_IdGet_Extended", CallConvs = [typeof(CallConvCdecl)])]
+    public static int UPC_IdGet_Extended(IntPtr inContext, IntPtr idptr)
+    {
+        Basics.Log(nameof(UPC_IdGet_Extended), [inContext]);
+        Marshal.WriteIntPtr(idptr, 0, Marshal.StringToHGlobalAnsi(Main.GlobalContext.Config.Saved.account.AccountId));
+        return (int)UPC_Result.UPC_Result_Ok;
+    }
 
-        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-        public static int UPC_IdGet_Extended(IntPtr inContext, IntPtr idptr)
-        {
-            Basics.Log(nameof(UPC_IdGet_Extended), new object[] { inContext });
-            var ret = Marshal.StringToHGlobalAnsi("c0d3c0d3-c0d3-c0d3-c0d3-c0d3c0d3c0d3");
-            Marshal.WriteIntPtr(idptr, 0, ret);
-            return 0;
-        }
+    [UnmanagedCallersOnly(EntryPoint = "UPC_InstallLanguageGet", CallConvs = [typeof(CallConvCdecl)])]
+    public static IntPtr UPC_InstallLanguageGet(IntPtr inContext)
+    {
+        Basics.Log(nameof(UPC_InstallLanguageGet), [inContext]);
+        return Marshal.StringToHGlobalAnsi(Main.GlobalContext.Config.Saved.account.Country);
+    }
 
-        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-        public static IntPtr UPC_InstallLanguageGet(IntPtr inContext)
-        {
-            Basics.Log(nameof(UPC_InstallLanguageGet), new object[] { inContext });
-            var ret = Marshal.StringToHGlobalAnsi("en-US");
-            return ret;
-        }
+    [UnmanagedCallersOnly(EntryPoint = "UPC_InstallLanguageGet_Extended", CallConvs = [typeof(CallConvCdecl)])]
+    public static int UPC_InstallLanguageGet_Extended(IntPtr inContext, IntPtr langPtr)
+    {
+        Basics.Log(nameof(UPC_InstallLanguageGet_Extended), [inContext]);
+        Marshal.WriteIntPtr(langPtr, 0, Marshal.StringToHGlobalAnsi(Main.GlobalContext.Config.Saved.account.Country));
+        return (int)UPC_Result.UPC_Result_Ok;
+    }
 
-        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-        public static int UPC_InstallLanguageGet_Extended(IntPtr inContext, IntPtr langPtr)
-        {
-            Basics.Log(nameof(UPC_InstallLanguageGet_Extended), new object[] { inContext });
-            var ret = Marshal.StringToHGlobalAnsi("en-US");
-            Marshal.WriteIntPtr(langPtr, 0, ret);
-            return 0;
-        }
+    [UnmanagedCallersOnly(EntryPoint = "UPC_NameGet", CallConvs = [typeof(CallConvCdecl)])]
+    public static IntPtr UPC_NameGet(IntPtr inContext)
+    {
+        Basics.Log(nameof(UPC_NameGet), [inContext]);
+        return Marshal.StringToHGlobalAnsi(Main.GlobalContext.Config.Saved.account.NameOnPlatform);
+    }
 
-        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-        public static IntPtr UPC_NameGet(IntPtr inContext)
-        {
-            Basics.Log(nameof(UPC_NameGet), new object[] { inContext });
-            var ret = Marshal.StringToHGlobalAnsi("user");
-            return ret;
-        }
+    [UnmanagedCallersOnly(EntryPoint = "UPC_NameGet_Extended", CallConvs = [typeof(CallConvCdecl)])]
+    public static int UPC_NameGet_Extended(IntPtr inContext, IntPtr nameptr)
+    {
+        Basics.Log(nameof(UPC_NameGet_Extended), [inContext]);
+        Marshal.WriteIntPtr(nameptr, 0, Marshal.StringToHGlobalAnsi(Main.GlobalContext.Config.Saved.account.NameOnPlatform));
+        return (int)UPC_Result.UPC_Result_Ok;
+    }
 
+    [UnmanagedCallersOnly(EntryPoint = "UPC_TicketGet", CallConvs = [typeof(CallConvCdecl)])]
+    public static IntPtr UPC_TicketGet(IntPtr inContext)
+    {
+        Basics.Log(nameof(UPC_TicketGet), [inContext]);
+        return Marshal.StringToHGlobalAnsi(Main.GlobalContext.Config.Saved.ubiTicket);
+    }
 
-        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-        public static int UPC_NameGet_Extended(IntPtr inContext, IntPtr nameptr)
-        {
-            Basics.Log(nameof(UPC_NameGet_Extended), new object[] { inContext });
-            var ret = Marshal.StringToHGlobalAnsi("user");
-            Marshal.WriteIntPtr(nameptr, 0, ret);
-            return 0;
-        }
+    [UnmanagedCallersOnly(EntryPoint = "UPC_TicketGet_Extended", CallConvs = [typeof(CallConvCdecl)])]
+    public static int UPC_TicketGet_Extended(IntPtr inContext, IntPtr ticketPtr)
+    {
+        Basics.Log(nameof(UPC_TicketGet_Extended), [inContext]);
+        Marshal.WriteIntPtr(ticketPtr, 0 , Marshal.StringToHGlobalAnsi(Main.GlobalContext.Config.Saved.ubiTicket));
+        return (int)UPC_Result.UPC_Result_Ok;
+    }
 
-        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-        public static IntPtr UPC_TicketGet(IntPtr inContext)
-        {
-            Basics.Log(nameof(UPC_TicketGet), new object[] { inContext });
-            var ret = Marshal.StringToHGlobalAnsi("");
-            return ret;
-        }
-
-        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-        public static int UPC_TicketGet_Extended(IntPtr inContext, IntPtr ticketPtr)
-        {
-            Basics.Log(nameof(UPC_TicketGet_Extended), new object[] { inContext });
-            var ret = Marshal.StringToHGlobalAnsi("");
-            Marshal.WriteIntPtr(ticketPtr, 0 , ret);
-            return 0;
-        }
+    [UnmanagedCallersOnly(EntryPoint = "UPC_UserAccountCountryGet", CallConvs = [typeof(CallConvCdecl)])]
+    public static int UPC_UserAccountCountryGet(IntPtr inContext, IntPtr outCountryCode)
+    {
+        Basics.Log(nameof(UPC_UserAccountCountryGet), [inContext]);
+        Marshal.WriteIntPtr(outCountryCode, 0, Marshal.StringToHGlobalAnsi(Main.GlobalContext.Config.Saved.account.Country));
+        return (int)UPC_Result.UPC_Result_Ok;
     }
 }

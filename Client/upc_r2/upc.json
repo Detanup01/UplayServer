@@ -1,8 +1,22 @@
 {
-  "Base": {
-    "ReqLog": true,
-    "RspLog": true,
-    "PID": 0
+  "BasicLog": {
+    "ReqLog": false,
+    "RspLog": false,
+    "UseNamePipeClient": false
+  },
+  "Account": {
+    "AccountId": "ea66fece-ccce-4fe4-ad60-45298a0ac92a",
+    "Email": "user@uplayemu.com",
+    "Name": "user",
+    "Password": "user",
+    "Country": "en-US",
+    "Ticket": ""
+  },
+  "Save": {
+    "Path": "G:\\VS\\UplayDB\\UplayWrapper\\WrapperForm\\bin\\Debug\\net9.0-windows",
+    "UseAppIdInName": false
+  },
+  "Others": {
+    "ApplicationId": "ea66fece-ccce-4fe4-ad60-45298a0ac92a"
   }
-
 }

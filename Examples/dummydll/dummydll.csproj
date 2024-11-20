@@ -1,19 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AssemblyName>dummydll</AssemblyName>
   	<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	<IsAotCompatible>True</IsAotCompatible>
 	<PublishAot>true</PublishAot>
-	<Version>3.7.5.3</Version>
+	<Version>0.0.0.1</Version>
   </PropertyGroup>
 	
-<ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Uplay-Protobufs" Version="155.0.11098" />
-  </ItemGroup>
-
 </Project>
