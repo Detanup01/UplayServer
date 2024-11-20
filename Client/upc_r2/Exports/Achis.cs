@@ -16,9 +16,7 @@ internal class Achis
     public static int UPC_AchievementImageGet(IntPtr inContext, uint inId, IntPtr outImageRGBA, IntPtr inCallback, IntPtr inCallbackData)
     {
         Basics.Log(nameof(UPC_AchievementImageGet), [inContext, inId, outImageRGBA, inCallback, inCallbackData]);
-        var cbList = Main.GlobalContext.Callbacks.ToList();
-        cbList.Add(new(inCallback, inCallbackData, (int)UPC_Result.UPC_Result_CommunicationError));
-        Main.GlobalContext.Callbacks = cbList.ToArray();
+        Main.GlobalContext.Callbacks.Add(new(inCallback, inCallbackData, (int)UPC_Result.UPC_Result_CommunicationError));
         return (int)UPC_Result.UPC_Result_CommunicationError;
     }
 
@@ -33,9 +31,7 @@ internal class Achis
     public static int UPC_AchievementListGet(IntPtr inContext, IntPtr inOptUserIdUtf8, uint inFilter, IntPtr outAchievementList, IntPtr inCallback, IntPtr inCallbackData)
     {
         Basics.Log(nameof(UPC_AchievementListGet), [inContext, inOptUserIdUtf8, outAchievementList, inCallback, inCallbackData]);
-        var cbList = Main.GlobalContext.Callbacks.ToList();
-        cbList.Add(new(inCallback, inCallbackData, (int)UPC_Result.UPC_Result_CommunicationError));
-        Main.GlobalContext.Callbacks = cbList.ToArray();
+        Main.GlobalContext.Callbacks.Add(new(inCallback, inCallbackData, (int)UPC_Result.UPC_Result_CommunicationError));
         return (int)UPC_Result.UPC_Result_CommunicationError;
     }
 
@@ -43,9 +39,7 @@ internal class Achis
     public static int UPC_AchievementUnlock(IntPtr inContext, uint inId, IntPtr inOptCallback, IntPtr inOptCallbackData)
     {
         Basics.Log(nameof(UPC_AchievementUnlock), [inContext, inId, inOptCallback, inOptCallbackData]);
-        var cbList = Main.GlobalContext.Callbacks.ToList();
-        cbList.Add(new(inOptCallback, inOptCallbackData, (int)UPC_Result.UPC_Result_CommunicationError));
-        Main.GlobalContext.Callbacks = cbList.ToArray();
+        Main.GlobalContext.Callbacks.Add(new(inOptCallback, inOptCallbackData, (int)UPC_Result.UPC_Result_CommunicationError));
         return (int)UPC_Result.UPC_Result_CommunicationError;
     }
 }

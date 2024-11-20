@@ -8,7 +8,7 @@ internal class Avatar
     [UnmanagedCallersOnly(EntryPoint = "UPC_AvatarFree", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_AvatarFree(IntPtr inContext, IntPtr inImageRGBA)
     {
-        Basics.Log(nameof(UPC_AvatarFree), new object[] { inContext, inImageRGBA });
+        Basics.Log(nameof(UPC_AvatarFree), [inContext, inImageRGBA]);
         return 0;
     }
 
@@ -76,7 +76,7 @@ internal class Avatar
         }
         catch (Exception ex)
         {
-            Basics.Log(nameof(UPC_AvatarGet), new object[] { "Exception: ",  ex });
+            Basics.Log(nameof(UPC_AvatarGet), ["Exception: ",  ex]);
         }
         return 0;
     }
@@ -85,7 +85,7 @@ internal class Avatar
     [UnmanagedCallersOnly(EntryPoint = "UPC_BlacklistAdd", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_BlacklistAdd(IntPtr inContext, IntPtr inUserIdUtf8, IntPtr inOptCallback, IntPtr inOptCallbackData)
     {
-        Basics.Log(nameof(UPC_BlacklistAdd), new object[] { inContext, inUserIdUtf8, inOptCallback, inOptCallbackData });
+        Basics.Log(nameof(UPC_BlacklistAdd), [inContext, inUserIdUtf8, inOptCallback, inOptCallbackData]);
         return 0;
     }
 

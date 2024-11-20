@@ -1,14 +1,14 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text.Json;
 using Uplay.Uplaydll;
-using static Uplay.Party.PartyInviteResponseReq.Types;
 
 namespace upc_r2;
 
 public class Main
 {
+    public delegate void UPC_CallbackImpl(int inResult, IntPtr inData);
+
     public static Stopwatch Stopwatch = new Stopwatch();
     public static Context GlobalContext = new Context();
     public static IntPtr FakeContextPTR = IntPtr.Zero;
@@ -19,6 +19,9 @@ public class Main
     public static IntPtr UPC_ContextCreate(uint inVersion, IntPtr inOptSetting)
     {
         Basics.Log(nameof(UPC_ContextCreate), [inVersion, inOptSetting]);
+
+        if (FakeContextPTR != IntPtr.Zero)
+            return FakeContextPTR;
 
         UPC_ContextSettings contextSettings = new()
         {
@@ -82,17 +85,9 @@ public class Main
             GlobalContext.Config.Saved.ubiTicket = initRsp.UpcTicket;
         GlobalContext.Config.Saved.ApplicationId = initRsp.UbiServices.AppId;
         FakeContext fc = new();
-        try
-        {
-            FakeContextPTR = Marshal.AllocHGlobal(Marshal.SizeOf(fc));
-            Marshal.StructureToPtr(fc, FakeContextPTR, false);
-            return FakeContextPTR;
-        }
-        catch (Exception ex)
-        {
-            Basics.Log(nameof(UPC_ContextCreate), [ex]);
-            throw;
-        }
+        FakeContextPTR = Marshal.AllocHGlobal(Marshal.SizeOf(fc));
+        Marshal.StructureToPtr(fc, FakeContextPTR, false);
+        return FakeContextPTR;
 
     }
 
@@ -129,24 +124,43 @@ public class Main
             {
                 Response = new();
             }
-            var cblist = GlobalContext.Callbacks.ToList();
-            //Basics.Log(nameof(UPC_Update), new object[] { cblist.Count, cblist.Count() });
-            for (int i = 0; i < cblist.Count; i++)
+            Basics.Log(nameof(UPC_Update), [GlobalContext.Callbacks.Count]);
+            foreach (var cb in GlobalContext.Callbacks)
             {
-                var cb = cblist[i];
                 if (cb.fun != IntPtr.Zero)
                 {
-                    Basics.Log(nameof(UPC_Update), [JsonSerializer.Serialize(cb, JsonSourceGen.Default.Callback)]);
-                    Basics.Log(nameof(UPC_Update), ["Delegate run with: ", cb.fun, cb.arg, cb.context_data]);
-                    delegate* unmanaged<int, IntPtr, void> @delegate;
-                    @delegate = (delegate* unmanaged<int, IntPtr, void>)cb.fun;
-                    @delegate(cb.arg, cb.context_data);
-                    cblist.Remove(cb);
+                    try
+                    {
+                        Basics.Log(nameof(UPC_Update), ["Delegate run with: ", cb.fun, cb.arg, cb.context_data]);
+                        /*
+                        delegate* unmanaged<int, IntPtr, void> @delegate;
+                        Basics.Log(nameof(UPC_Update), [cb.fun, "is now @delegate!"]);
+                        @delegate = (delegate* unmanaged<int, IntPtr, void>)cb.fun;
+                        Basics.Log(nameof(UPC_Update), [cb.fun, "aaaaaaa!"]);
+                        @delegate(cb.arg, cb.context_data);         // CRASHING HERE!   !!!!!!!!! [ SHOULD NOT CRASH BRO]
+                        Basics.Log(nameof(UPC_Update), ["@delegate is delegated!"]);
+                        */
+                        /*
+                         *  c# way, also crashes if not c# app?
+                        var callback = Marshal.GetDelegateForFunctionPointer<UPC_CallbackImpl>(cb.fun);
+                        Basics.Log(nameof(UPC_Update), [cb.fun, "is now callback!"]);
+                        callback.Invoke(cb.arg, cb.context_data);
+                        Basics.Log(nameof(UPC_Update), ["callback is called!"]);*/
+                        
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Basics.Log(nameof(UPC_Update), [ex.ToString()]);
+                    }
+
                 }
+
             }
-            GlobalContext.Callbacks = cblist.ToArray();
-            var events = GlobalContext.Events.ToList();
-            foreach (var ev in events)
+            Basics.Log(nameof(UPC_Update), ["aaaaaaaaaaaaaaaaaaaaaaa"]);
+            GlobalContext.Callbacks.Clear();
+            /*
+            foreach (var ev in GlobalContext.Events)
             {
                 if (ev.Handler != IntPtr.Zero)
                 {
@@ -168,7 +182,7 @@ public class Main
                         }
                     }
                 }
-            }
+            }*/
         }       
         return (int)UPC_Result.UPC_Result_Ok;
     }
@@ -211,9 +225,7 @@ public class Main
         var eventRemove = GlobalContext.Events.Where(x=>x.EventType == (UPC_EventType)inType);
         if (eventRemove.Any())
         {
-            var evList = GlobalContext.Events.ToList();
-            evList.Remove(eventRemove.First());
-            GlobalContext.Events = evList.ToArray();
+            GlobalContext.Events.Remove(eventRemove.First());
         }
         return (int)UPC_Result.UPC_Result_Ok;
     }
@@ -224,8 +236,8 @@ public class Main
         GlobalContext = new Context();
         GlobalContext.Config = new();
         GlobalContext.Config.Saved = new();
-        GlobalContext.Callbacks = new Callback[1];
-        GlobalContext.Events = new Event[1];
+        GlobalContext.Callbacks = new();
+        GlobalContext.Events = new();
         GlobalContext.Config.ProductId = (uint)productId;
         Basics.Log(nameof(UPC_Init), [inVersion, productId]);
         try

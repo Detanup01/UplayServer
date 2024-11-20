@@ -10,13 +10,11 @@ public struct FakeContext
 
 
 [StructLayout(LayoutKind.Sequential)]
-public struct Context
+public class Context
 {
-    [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.LPStruct, SizeConst = 1)]
-    public Callback[] Callbacks;
+    public List<Callback> Callbacks = [];
     public Config Config;
-    [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.LPStruct, SizeConst = 1)]
-    public Event[] Events;
+    public List<Event> Events = [];
 }
 
 [StructLayout(LayoutKind.Sequential)]

@@ -113,9 +113,7 @@ internal class Storage
             Marshal.WriteInt32(outBytesRead, readed);
             Marshal.Copy(buff, 0, outData, buff.Length);
         }
-        var cbList = Main.GlobalContext.Callbacks.ToList();
-        cbList.Add(new(inCallback, inCallbackData, 0));
-        Main.GlobalContext.Callbacks = cbList.ToArray();
+        Main.GlobalContext.Callbacks.Add(new(inCallback, inCallbackData, (int)UPC_Result.UPC_Result_Ok));
         return 0x10000;
     }
 
@@ -128,10 +126,8 @@ internal class Storage
         var buff = new byte[inSize];
         Marshal.Copy(inData, buff, 0, inSize);
         stream.Write(buff);
-        stream.Flush(true); 
-        var cbList = Main.GlobalContext.Callbacks.ToList();
-        cbList.Add(new(inCallback, inCallbackData, 0));
-        Main.GlobalContext.Callbacks = cbList.ToArray();
+        stream.Flush(true);
+        Main.GlobalContext.Callbacks.Add(new(inCallback, inCallbackData, (int)UPC_Result.UPC_Result_Ok));
         return 0x10000;
     }
 

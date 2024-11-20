@@ -16,9 +16,7 @@ internal class Products
         if (userId == null)
             return -1;
         Log(nameof(UPC_ProductListGet), [userId]);
-        var cbList = Main.GlobalContext.Callbacks.ToList();
-        cbList.Add(new(inCallback, inOptCallbackData, 0));
-        Main.GlobalContext.Callbacks = cbList.ToArray();
+        Main.GlobalContext.Callbacks.Add(new(inCallback, inOptCallbackData, (int)UPC_Result.UPC_Result_Ok));
 
         List<UPC_Product> products = new()
             {
