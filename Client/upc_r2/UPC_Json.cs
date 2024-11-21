@@ -23,6 +23,7 @@ public class UPC_Json
         public bool ReqLog { get; set; }
         public bool RspLog { get; set; }
         public bool UseNamePipeClient { get; set; }
+        public uint WaitBetweebUpdate { get; set; } = 20_000;
     }
 
 

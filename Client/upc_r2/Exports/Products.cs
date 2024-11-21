@@ -32,14 +32,14 @@ internal class Products
         IntPtr iptr = Marshal.AllocHGlobal(Marshal.SizeOf<BasicList>());
         Marshal.StructureToPtr(productList, iptr, false);
         Marshal.WriteIntPtr(outProductList, 0, iptr);
-        return 0;
+        return 10000;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPC_ProductListFree", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_ProductListFree(IntPtr inContext, IntPtr inProductList)
     {
         Log(nameof(UPC_ProductListFree), [inContext, inProductList]);
-        BasicList upc_ProductList = IntPtrToStruct<BasicList>(inProductList);
+        BasicList upc_ProductList = Marshal.PtrToStructure<BasicList>(inProductList);
         FreeListPtr(upc_ProductList.count, upc_ProductList.list);
         Marshal.FreeHGlobal(inProductList);
         return 0;

@@ -1,6 +1,5 @@
 ﻿using Google.Protobuf;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
 namespace upc_r2;
@@ -74,17 +73,6 @@ public class Basics
         return main_ptr;
     }
 
-    public static unsafe List<T> GetListFromPtr<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] T>(BasicList list) where T : struct
-    {
-        List<T> returner = new List<T>();
-        for (int i = 0; i < list.count; i++)
-        {
-            var ptr = Marshal.ReadIntPtr(list.list, i * Marshal.SizeOf<IntPtr>());
-            returner.Add(IntPtrToStruct<T>(ptr));
-        }
-        return returner;
-    }
-
     public static unsafe void FreeListPtr(int count, IntPtr listPointer)
     {
         for (int i = 0; i < count; i++)
@@ -93,10 +81,5 @@ public class Basics
             Marshal.FreeHGlobal(ptr);
         }
         Marshal.FreeHGlobal(listPointer);
-    }
-
-    public static T IntPtrToStruct<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] T>(IntPtr ptr) where T : struct
-    {
-        return Marshal.PtrToStructure<T>(ptr);
     }
 }

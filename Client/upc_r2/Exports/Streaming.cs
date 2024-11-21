@@ -82,6 +82,6 @@ internal class Streaming
         var mem = Marshal.AllocHGlobal(1);
         Marshal.WriteByte(mem, (byte)Uplay.Uplaydll.StreamingType.None);
         Marshal.WriteIntPtr(outType, 0, mem);
-        return 0;
+        return 200;
     }
 }

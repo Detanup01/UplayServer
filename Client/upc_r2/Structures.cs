@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.Marshalling;
 
 namespace upc_r2;
 
@@ -105,5 +106,34 @@ public struct UPC_Product
         ownership = Uplay.Uplaydll.ProductOwnership.Owned;
         state = Uplay.Uplaydll.ProductState.Playable;
         activation = Uplay.Uplaydll.ProductActivation.Purchased;
+    }
+}
+
+[StructLayout(LayoutKind.Sequential, Size = 72, Pack = 8)]
+public struct UPC_PresenceImpl
+{
+    public uint onlineStatus;
+    public IntPtr detailsUtf8;
+    public uint titleId;
+    public IntPtr titleNameUtf8;
+    public IntPtr multiplayerId;
+    public int multiplayerJoinable;
+    public uint multiplayerSize;
+    public uint multiplayerMaxSize;
+    public IntPtr multiplayerInternalData;
+    public uint multiplayerInternalDataSize;
+}
+
+[StructLayout(LayoutKind.Sequential, Size = 32, Pack = 8)]
+public struct UPC_UserImpl
+{
+    public IntPtr idUtf8;
+    public IntPtr nameUtf8;
+    public uint relationship;
+    public IntPtr presence;
+
+    public override string ToString()
+    {
+        return $"id: {idUtf8}, name: {nameUtf8}, rel: {relationship}, presence: {presence}";
     }
 }

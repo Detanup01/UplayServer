@@ -7,12 +7,9 @@ namespace upc_r2;
 
 public class Main
 {
-    public delegate void UPC_CallbackImpl(int inResult, IntPtr inData);
-
     public static Stopwatch Stopwatch = new Stopwatch();
     public static Context GlobalContext = new Context();
     public static IntPtr FakeContextPTR = IntPtr.Zero;
-    public static long TimeBetweenUpdate = 20000000;
     private static Lock lockObject = new Lock();
 
     [UnmanagedCallersOnly(EntryPoint = "UPC_ContextCreate", CallConvs = [typeof(CallConvCdecl)])]
@@ -29,7 +26,7 @@ public class Main
         };
         if (inOptSetting != IntPtr.Zero) 
         {
-            contextSettings = Basics.IntPtrToStruct<UPC_ContextSettings>(inOptSetting);
+            contextSettings = Marshal.PtrToStructure<UPC_ContextSettings>(inOptSetting);
         }
         Basics.Log(nameof(UPC_ContextCreate), ["Subsystems: ", contextSettings.subsystems]);
         Rsp Response = new();
@@ -105,85 +102,57 @@ public class Main
     [UnmanagedCallersOnly(EntryPoint = "UPC_Update", CallConvs = [typeof(CallConvCdecl)])]
     public static unsafe int UPC_Update(IntPtr inContext)
     {
-        lock (lockObject)
+        //Internal waiting update for reason
+        Stopwatch.Stop();
+        if (Stopwatch.ElapsedTicks <= UPC_Json.GetRoot().BasicLog.WaitBetweebUpdate)
         {
-            //Internal waiting update for reason
-            Stopwatch.Stop();
-            if (Stopwatch.ElapsedTicks <= TimeBetweenUpdate)
+            Stopwatch.Start();
+            return 0;
+        }
+        Basics.Log(nameof(UPC_Update), [Stopwatch.ElapsedTicks, UPC_Json.GetRoot().BasicLog.WaitBetweebUpdate]);
+        Stopwatch.Restart();
+        Rsp Response = new();
+        if (UPC_Json.GetRoot().BasicLog.UseNamePipeClient)
+            Basics.SendReq(new Req(), out Response);
+        else
+        {
+            Response = new();
+        }
+        Basics.Log(nameof(UPC_Update), [GlobalContext.Callbacks.Count]);
+        foreach (var cb in GlobalContext.Callbacks)
+        {
+            if (cb.fun != IntPtr.Zero)
             {
-                Stopwatch.Start();
-                return 0;
+                Basics.Log(nameof(UPC_Update), ["Callback run with: ", cb.fun, cb.arg, cb.context_data]);
+                delegate* unmanaged<int, void*, void> @Callback = (delegate* unmanaged<int, void*, void>)cb.fun;
+                Basics.Log(nameof(UPC_Update), [cb.fun, "Is Calling!"]);
+                @Callback(cb.arg, (void*)cb.context_data);
             }
-            //Basics.Log(nameof(UPC_Update), new object[] { Stopwatch.ElapsedTicks });
-            Stopwatch.Restart();
-            //Basics.Log(nameof(UPC_Update), new object[] { inContext });
-            Rsp Response = new();
-            if (UPC_Json.GetRoot().BasicLog.UseNamePipeClient)
-                Basics.SendReq(new Req(), out Response);
-            else
+        }
+        Basics.Log(nameof(UPC_Update), ["Cleared Callbacks"]);
+        GlobalContext.Callbacks.Clear();
+        foreach (var ev in GlobalContext.Events)
+        {
+            if (ev.Handler != IntPtr.Zero)
             {
-                Response = new();
-            }
-            Basics.Log(nameof(UPC_Update), [GlobalContext.Callbacks.Count]);
-            foreach (var cb in GlobalContext.Callbacks)
-            {
-                if (cb.fun != IntPtr.Zero)
+                delegate* unmanaged<void*, void*, void> @delegate = (delegate* unmanaged<void*, void*, void>)ev.Handler;
+                if (Response.OverlayRsp != null && Response.OverlayRsp.OverlayStateChangedPush != null)
                 {
-                    try
+                    if (Response.OverlayRsp.OverlayStateChangedPush.State == OverlayState.Showing && ev.EventType == UPC_EventType.UPC_Event_OverlayShown)
                     {
-                        Basics.Log(nameof(UPC_Update), ["Delegate run with: ", cb.fun, cb.arg, cb.context_data]);
-                        /*
-                        delegate* unmanaged<int, IntPtr, void> @delegate;
-                        Basics.Log(nameof(UPC_Update), [cb.fun, "is now @delegate!"]);
-                        @delegate = (delegate* unmanaged<int, IntPtr, void>)cb.fun;
-                        Basics.Log(nameof(UPC_Update), [cb.fun, "aaaaaaa!"]);
-                        @delegate(cb.arg, cb.context_data);         // CRASHING HERE!   !!!!!!!!! [ SHOULD NOT CRASH BRO]
-                        Basics.Log(nameof(UPC_Update), ["@delegate is delegated!"]);
-                        */
-                        /*
-                         *  c# way, also crashes if not c# app?
-                        var callback = Marshal.GetDelegateForFunctionPointer<UPC_CallbackImpl>(cb.fun);
-                        Basics.Log(nameof(UPC_Update), [cb.fun, "is now callback!"]);
-                        callback.Invoke(cb.arg, cb.context_data);
-                        Basics.Log(nameof(UPC_Update), ["callback is called!"]);*/
-                        
+                        var ptr = Marshal.AllocHGlobal(sizeof(IntPtr));
+                        Marshal.StructureToPtr(UPC_EventType.UPC_Event_OverlayShown, ptr, false);
+                        @delegate((void*)ptr, (void*)ev.OptData);
                     }
-                    catch (Exception ex)
+                    if (Response.OverlayRsp.OverlayStateChangedPush.State == OverlayState.Hidden && ev.EventType == UPC_EventType.UPC_Event_OverlayHidden)
                     {
-
-                        Basics.Log(nameof(UPC_Update), [ex.ToString()]);
-                    }
-
-                }
-
-            }
-            Basics.Log(nameof(UPC_Update), ["aaaaaaaaaaaaaaaaaaaaaaa"]);
-            GlobalContext.Callbacks.Clear();
-            /*
-            foreach (var ev in GlobalContext.Events)
-            {
-                if (ev.Handler != IntPtr.Zero)
-                {
-                    delegate* unmanaged<IntPtr, IntPtr, void> @delegate;
-                    @delegate = (delegate* unmanaged<IntPtr, IntPtr, void>)ev.Handler;
-                    if (Response.OverlayRsp != null && Response.OverlayRsp.OverlayStateChangedPush != null)
-                    {
-                        if (Response.OverlayRsp.OverlayStateChangedPush.State == OverlayState.Showing && ev.EventType == UPC_EventType.UPC_Event_OverlayShown)
-                        {
-                            var ptr = Marshal.AllocHGlobal(sizeof(IntPtr));
-                            Marshal.StructureToPtr(UPC_EventType.UPC_Event_OverlayShown, ptr, false);
-                            @delegate(ptr, ev.OptData);
-                        }
-                        if (Response.OverlayRsp.OverlayStateChangedPush.State == OverlayState.Hidden && ev.EventType == UPC_EventType.UPC_Event_OverlayHidden)
-                        {
-                            var ptr = Marshal.AllocHGlobal(sizeof(IntPtr));
-                            Marshal.StructureToPtr(UPC_EventType.UPC_Event_OverlayHidden, ptr, false);
-                            @delegate(ptr, ev.OptData);
-                        }
+                        var ptr = Marshal.AllocHGlobal(sizeof(IntPtr));
+                        Marshal.StructureToPtr(UPC_EventType.UPC_Event_OverlayHidden, ptr, false);
+                        @delegate((void*)ptr, (void*)ev.OptData);
                     }
                 }
-            }*/
-        }       
+            }
+        }
         return (int)UPC_Result.UPC_Result_Ok;
     }
 

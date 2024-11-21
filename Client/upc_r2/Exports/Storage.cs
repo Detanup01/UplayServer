@@ -45,7 +45,7 @@ internal class Storage
         Log(nameof(UPC_StorageFileListGet), ["storageFiles Count: ", storageFiles.Count]);
         if (storageFiles.Count == 0)
             return -6;
-        var listptr = Basics.GetListPtr(storageFiles);
+        var listptr = GetListPtr(storageFiles);
         BasicList list = new()
         {
             count = storageFiles.Count,
@@ -63,7 +63,7 @@ internal class Storage
         Log(nameof(UPC_StorageFileListFree), [inContext, inStorageFileList]);
         if (inStorageFileList == IntPtr.Zero)
             return -0xd;
-        var list = IntPtrToStruct<BasicList>(inStorageFileList);
+        var list = Marshal.PtrToStructure<BasicList>(inStorageFileList);
         if (list.count > 0)
         {
             FreeListPtr(list.count, list.list);
@@ -102,7 +102,7 @@ internal class Storage
     [UnmanagedCallersOnly(EntryPoint = "UPC_StorageFileRead", CallConvs = [typeof(CallConvCdecl)])]
     public static unsafe int UPC_StorageFileRead(IntPtr inContext, IntPtr inHandle, int inBytesToRead, uint inBytesReadOffset, IntPtr outData, IntPtr outBytesRead, IntPtr inCallback, IntPtr inCallbackData)
     {
-        Basics.Log(nameof(UPC_StorageFileRead), [inContext, inHandle, inBytesToRead, inBytesReadOffset, outData, outBytesRead, inCallback, inCallbackData]);
+        Log(nameof(UPC_StorageFileRead), [inContext, inHandle, inBytesToRead, inBytesReadOffset, outData, outBytesRead, inCallback, inCallbackData]);
 
         if (inBytesToRead != 0)
         {
@@ -120,7 +120,7 @@ internal class Storage
     [UnmanagedCallersOnly(EntryPoint = "UPC_StorageFileWrite", CallConvs = [typeof(CallConvCdecl)])]
     public static unsafe int UPC_StorageFileWrite(IntPtr inContext, IntPtr inHandle, IntPtr inData, int inSize, IntPtr inCallback, IntPtr inCallbackData)
     {
-        Basics.Log(nameof(UPC_StorageFileWrite), [inContext, inHandle, inData, inSize, inCallback, inCallbackData]);
+        Log(nameof(UPC_StorageFileWrite), [inContext, inHandle, inData, inSize, inCallback, inCallbackData]);
         SafeFileHandle fileHandle = new(inHandle, false);
         var stream = new FileStream(fileHandle, FileAccess.ReadWrite);
         var buff = new byte[inSize];
@@ -134,7 +134,7 @@ internal class Storage
     [UnmanagedCallersOnly(EntryPoint = "UPC_StorageFileClose", CallConvs = [typeof(CallConvCdecl)])]
     public static unsafe int UPC_StorageFileClose(IntPtr inContext, IntPtr inHandle)
     {
-        Basics.Log(nameof(UPC_StorageFileClose), [inContext, inHandle]);
+        Log(nameof(UPC_StorageFileClose), [inContext, inHandle]);
         SafeFileHandle fileHandle = new(inHandle, false);
         fileHandle.Close();
         return 0;
@@ -143,7 +143,7 @@ internal class Storage
     [UnmanagedCallersOnly(EntryPoint = "UPC_StorageFileDelete", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_StorageFileDelete(IntPtr inContext, IntPtr inFileNameUtf8)
     {
-        Basics.Log(nameof(UPC_StorageFileDelete), [inContext, inFileNameUtf8]);
+        Log(nameof(UPC_StorageFileDelete), [inContext, inFileNameUtf8]);
         return 0;
     }
 }

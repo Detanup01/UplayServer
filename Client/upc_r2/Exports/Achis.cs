@@ -17,7 +17,7 @@ internal class Achis
     {
         Basics.Log(nameof(UPC_AchievementImageGet), [inContext, inId, outImageRGBA, inCallback, inCallbackData]);
         Main.GlobalContext.Callbacks.Add(new(inCallback, inCallbackData, (int)UPC_Result.UPC_Result_CommunicationError));
-        return (int)UPC_Result.UPC_Result_CommunicationError;
+        return 0;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPC_AchievementListFree", CallConvs = [typeof(CallConvCdecl)])]
@@ -32,7 +32,7 @@ internal class Achis
     {
         Basics.Log(nameof(UPC_AchievementListGet), [inContext, inOptUserIdUtf8, outAchievementList, inCallback, inCallbackData]);
         Main.GlobalContext.Callbacks.Add(new(inCallback, inCallbackData, (int)UPC_Result.UPC_Result_CommunicationError));
-        return (int)UPC_Result.UPC_Result_CommunicationError;
+        return 2000;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPC_AchievementUnlock", CallConvs = [typeof(CallConvCdecl)])]
@@ -40,6 +40,6 @@ internal class Achis
     {
         Basics.Log(nameof(UPC_AchievementUnlock), [inContext, inId, inOptCallback, inOptCallbackData]);
         Main.GlobalContext.Callbacks.Add(new(inOptCallback, inOptCallbackData, (int)UPC_Result.UPC_Result_CommunicationError));
-        return (int)UPC_Result.UPC_Result_CommunicationError;
+        return 0;
     }
 }

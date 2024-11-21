@@ -47,6 +47,6 @@ internal class Friends
     public static int UPC_FriendListGet(IntPtr inContext, uint inOptOnlineStatusFilter, IntPtr outFriendList, IntPtr inCallback, IntPtr inOptCallbackData)
     {
         Basics.Log(nameof(UPC_FriendListGet), [inContext, inOptOnlineStatusFilter, outFriendList, inCallback, inOptCallbackData]);
-        return 0;
+        return (int)UPC_Result.UPC_Result_Unavailable;
     }
 }
