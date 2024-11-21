@@ -87,7 +87,6 @@ internal unsafe class User
         Marshal.WriteIntPtr(outUser, ptr);
         return 1000;
     }
-    }
 
     [UnmanagedCallersOnly(EntryPoint = "UPC_UserFree", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_UserFree(IntPtr inContext, IntPtr inUser)
