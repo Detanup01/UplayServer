@@ -3,7 +3,8 @@
     "ReqLog": false,
     "RspLog": false,
     "UseNamePipeClient": false,
-    "WaitBetweebUpdate": 20000
+    "WaitBetweebUpdate": 20000,
+    "LogUpdate": false
   },
   "Account": {
     "AccountId": "ea66fece-ccce-4fe4-ad60-45298a0ac92a",

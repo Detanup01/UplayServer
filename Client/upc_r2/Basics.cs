@@ -13,6 +13,8 @@ public class Basics
 
     public static void Log(string actionName, object[] parameters)
     {
+        if (actionName == "UPC_Update" && !UPC_Json.GetRoot().BasicLog.LogUpdate)
+            return;
         File.AppendAllText(GetCuPath() + "\\upc_r2.log", $"{Process.GetCurrentProcess().Id} | {actionName} {string.Join(", ", parameters)}\n");
     }
 

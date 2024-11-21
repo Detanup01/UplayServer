@@ -61,14 +61,18 @@ public class UserDependent
     public static IntPtr UPC_TicketGet(IntPtr inContext)
     {
         Basics.Log(nameof(UPC_TicketGet), [inContext]);
-        return Marshal.StringToHGlobalAnsi(Main.GlobalContext.Config.Saved.ubiTicket);
+        string? ticket = !string.IsNullOrEmpty(Main.GlobalContext.Config.Saved.ubiTicket) ? Main.GlobalContext.Config.Saved.ubiTicket : null;
+        Basics.Log(nameof(UPC_TicketGet), [ticket == null]);
+        return Marshal.StringToHGlobalAnsi(ticket);
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPC_TicketGet_Extended", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_TicketGet_Extended(IntPtr inContext, IntPtr ticketPtr)
     {
         Basics.Log(nameof(UPC_TicketGet_Extended), [inContext]);
-        Marshal.WriteIntPtr(ticketPtr, 0 , Marshal.StringToHGlobalAnsi(Main.GlobalContext.Config.Saved.ubiTicket));
+        string? ticket = !string.IsNullOrEmpty(Main.GlobalContext.Config.Saved.ubiTicket) ? Main.GlobalContext.Config.Saved.ubiTicket : null;
+        Basics.Log(nameof(UPC_TicketGet_Extended), [ticket == null]);
+        Marshal.WriteIntPtr(ticketPtr, 0 , Marshal.StringToHGlobalAnsi(ticket));
         return (int)UPC_Result.UPC_Result_Ok;
     }
 
