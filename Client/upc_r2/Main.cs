@@ -77,7 +77,7 @@ public class Main
         Basics.Log(nameof(UPC_ContextCreate), [Response]);
         var initRsp = Response.InitRsp;
         GlobalContext.Config.Saved.account = initRsp.Account;
-        //GlobalContext.Config.Saved.savePath = initRsp.Storage.SavegameStoragePath;
+        GlobalContext.Config.Saved.savePath = initRsp.Storage.SavegameStoragePath;
         if (initRsp.HasUpcTicket)
             GlobalContext.Config.Saved.ubiTicket = initRsp.UpcTicket;
         GlobalContext.Config.Saved.ApplicationId = initRsp.UbiServices.AppId;

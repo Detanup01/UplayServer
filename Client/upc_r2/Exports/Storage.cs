@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32.SafeHandles;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using static ICSharpCode.SharpZipLib.Zip.ExtendedUnixData;
 using static upc_r2.Basics;
 
 namespace upc_r2.Exports;
@@ -84,9 +85,15 @@ internal class Storage
         if (filename == null)
             return (int)UPC_Result.UPC_Result_CommunicationError;
         Log(nameof(UPC_StorageFileOpen), ["Filename: ", filename]);
+        var file = Path.Combine(Main.GlobalContext.Config.Saved.savePath, filename);
+        Log(nameof(UPC_StorageFileOpen), ["file: ", file, " dirname is null? ", Path.GetDirectoryName(file) == null]);
         try 
         {
-            var opened = File.Open(Path.Combine(Main.GlobalContext.Config.Saved.savePath, filename), oflag, FileAccess.ReadWrite, FileShare.ReadWrite);
+            if (!Directory.Exists(Path.GetDirectoryName(file)))
+                Directory.CreateDirectory(Path.GetDirectoryName(file)!);
+            if (!File.Exists(file))
+                File.Create(file).Close();
+            var opened = File.Open(file, oflag, FileAccess.ReadWrite, FileShare.ReadWrite);
             var sfh = opened.SafeFileHandle;
             var handler = sfh.DangerousGetHandle();;
             Marshal.WriteIntPtr(outHandle, 0, handler);
@@ -103,17 +110,25 @@ internal class Storage
     public static unsafe int UPC_StorageFileRead(IntPtr inContext, IntPtr inHandle, int inBytesToRead, uint inBytesReadOffset, IntPtr outData, IntPtr outBytesRead, IntPtr inCallback, IntPtr inCallbackData)
     {
         Log(nameof(UPC_StorageFileRead), [inContext, inHandle, inBytesToRead, inBytesReadOffset, outData, outBytesRead, inCallback, inCallbackData]);
-
-        if (inBytesToRead != 0)
-        {
-            SafeFileHandle fileHandle = new(inHandle, false);
-            var stream = new FileStream(fileHandle, FileAccess.ReadWrite);
-            var buff = new byte[inBytesToRead];
-            var readed = stream.Read(buff, (int)inBytesReadOffset, inBytesToRead);
-            Marshal.WriteInt32(outBytesRead, readed);
-            Marshal.Copy(buff, 0, outData, buff.Length);
-        }
         Main.GlobalContext.Callbacks.Add(new(inCallback, inCallbackData, (int)UPC_Result.UPC_Result_Ok));
+
+        try
+        {
+            if (inBytesToRead != 0)
+            {
+                SafeFileHandle fileHandle = new(inHandle, false);
+                var stream = new FileStream(fileHandle, FileAccess.ReadWrite);
+                var buff = new byte[inBytesToRead];
+                var readed = stream.Read(buff, (int)inBytesReadOffset, inBytesToRead);
+                Marshal.WriteInt32(outBytesRead, readed);
+                Marshal.Copy(buff, 0, outData, buff.Length);
+            }
+        }
+        catch (Exception ex)
+        {
+            Log(nameof(UPC_StorageFileOpen), ["Exception!", ex]);
+        }
+
         return 0x10000;
     }
 
@@ -121,13 +136,13 @@ internal class Storage
     public static unsafe int UPC_StorageFileWrite(IntPtr inContext, IntPtr inHandle, IntPtr inData, int inSize, IntPtr inCallback, IntPtr inCallbackData)
     {
         Log(nameof(UPC_StorageFileWrite), [inContext, inHandle, inData, inSize, inCallback, inCallbackData]);
+        Main.GlobalContext.Callbacks.Add(new(inCallback, inCallbackData, (int)UPC_Result.UPC_Result_Ok));
         SafeFileHandle fileHandle = new(inHandle, false);
         var stream = new FileStream(fileHandle, FileAccess.ReadWrite);
         var buff = new byte[inSize];
         Marshal.Copy(inData, buff, 0, inSize);
         stream.Write(buff);
         stream.Flush(true);
-        Main.GlobalContext.Callbacks.Add(new(inCallback, inCallbackData, (int)UPC_Result.UPC_Result_Ok));
         return 0x10000;
     }
 

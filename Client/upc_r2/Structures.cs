@@ -10,7 +10,6 @@ public struct FakeContext
 }
 
 
-[StructLayout(LayoutKind.Sequential)]
 public class Context
 {
     public List<Callback> Callbacks = [];
@@ -36,14 +35,12 @@ public struct Callback
     public IntPtr context_data;
 }
 
-[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
 public struct Config
 {
     public InitSaved Saved;
     public uint ProductId;
 }
 
-[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
 public struct InitSaved
 {
     public Uplay.Uplaydll.Account account;

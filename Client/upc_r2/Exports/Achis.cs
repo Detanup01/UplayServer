@@ -32,6 +32,12 @@ internal class Achis
     {
         Basics.Log(nameof(UPC_AchievementListGet), [inContext, inOptUserIdUtf8, outAchievementList, inCallback, inCallbackData]);
         Main.GlobalContext.Callbacks.Add(new(inCallback, inCallbackData, (int)UPC_Result.UPC_Result_CommunicationError));
+        var chunkptr = Marshal.AllocHGlobal(Marshal.SizeOf<BasicList>());
+        BasicList list = new();
+        list.count = 0;
+        list.list = IntPtr.Zero;
+        Marshal.StructureToPtr(list, chunkptr, false);
+        Marshal.WriteIntPtr(outAchievementList, chunkptr);
         return 2000;
     }
 
