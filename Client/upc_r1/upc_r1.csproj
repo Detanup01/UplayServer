@@ -10,10 +10,6 @@
 	<PublishAot>true</PublishAot>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-  </ItemGroup>
-	
 	<Choose>
 		<When Condition=" '$(Platform)'=='x64' ">
 			<PropertyGroup>
