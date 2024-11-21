@@ -12,21 +12,21 @@ internal class Avatar
         return true;
     }
 
-    [UnmanagedCallersOnly(EntryPoint = "UPLAY_AVATAR_GetBitmap", CallConvs = [typeof(CallConvCdecl)])]
+    [UnmanagedCallersOnly(EntryPoint = "UPLAY_AVATAR_GetAvatarIdForCurrentUser", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_AVATAR_GetAvatarIdForCurrentUser(IntPtr aOutAvatarId, IntPtr aOverlapped)
     {
         Basics.Log(nameof(UPLAY_AVATAR_GetAvatarIdForCurrentUser), []);
         return true;
     }
 
-    [UnmanagedCallersOnly(EntryPoint = "UPLAY_AVATAR_GetBitmap", CallConvs = [typeof(CallConvCdecl)])]
+    [UnmanagedCallersOnly(EntryPoint = "UPLAY_AVATAR_Get", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_AVATAR_Get(IntPtr aAccountIdUtf8, int aAvatarSize, IntPtr aOutRGBA, IntPtr aOverlapped)
     {
         Basics.Log(nameof(UPLAY_AVATAR_Get), []);
         return true;
     }
 
-    [UnmanagedCallersOnly(EntryPoint = "UPLAY_AVATAR_GetBitmap", CallConvs = [typeof(CallConvCdecl)])]
+    [UnmanagedCallersOnly(EntryPoint = "UPLAY_AVATAR_Release", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_AVATAR_Release(IntPtr aRGBA)
     {
         Basics.Log(nameof(UPLAY_AVATAR_Release), []);
