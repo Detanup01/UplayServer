@@ -18,7 +18,7 @@ namespace ServiceApp
                     {
                         var dir = Path.GetDirectoryName(file.Replace(patchpath + Path.DirectorySeparatorChar, ""));
                         if (dir != string.Empty)
-                            Directory.CreateDirectory(dir);
+                            Directory.CreateDirectory(dir!);
                         File.Copy(file, curDir + file.Replace(patchpath, ""),true);
                     }
                 }
@@ -26,7 +26,7 @@ namespace ServiceApp
 
             if (ParameterLib.HasParameter(args, "namedpipes"))
             {
-                pshelper.Starter();
+                PipeStreamhelper.Starter();
                 
             }
 

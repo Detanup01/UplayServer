@@ -60,7 +60,7 @@ namespace ClientTester
         private static void Socket_NewMessage(object? sender, DMXEventArgs e)
         {
             Console.WriteLine("Socket_NewMessage fired!");
-            Debug.WriteDebug(e.ToString(), "[Socket_NewMessage]");
+            Debug.WriteDebug(e.ToString()!, "[Socket_NewMessage]");
         }
     }
 }

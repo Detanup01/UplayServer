@@ -31,7 +31,9 @@ namespace Creator
         private void button1_Click(object sender, EventArgs e)
         {
             var sp = serverpath.Text;
-            var compression = compressionbox.SelectedItem.ToString();
+            if (compressionbox.SelectedItem == null)
+                return;
+            var compression = compressionbox.SelectedItem.ToString()!;
             var manifest = manifestbox.Text;
             var prod = productbox.Text;
             var slver = sliceverbox.Text;
@@ -56,7 +58,7 @@ namespace Creator
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 var path = openFileDialog1.FileName;
-                var pathy = Path.GetDirectoryName(path);
+                var pathy = Path.GetDirectoryName(path)!;
                 if (CheckIfEmtpyOrNull(path, "File cannot be empty!"))
                     return;
 
@@ -73,7 +75,9 @@ namespace Creator
         private void button2_Click(object sender, EventArgs e)
         {
             var sp = serverpath.Text;
-            var compression = compressionbox.SelectedItem.ToString();
+            if (compressionbox.SelectedItem == null)
+                return;
+            var compression = compressionbox.SelectedItem.ToString()!;
             var manifest = manifestbox.Text;
             var prod = productbox.Text;
             var slver = sliceverbox.Text;
@@ -154,7 +158,7 @@ namespace Creator
             ToManifest.MakeNewManifest(prod);
         }
 
-        private bool CheckIfEmtpyOrNull(string thisstuff, string error)
+        private bool CheckIfEmtpyOrNull(string? thisstuff, string error)
         {
             if (string.IsNullOrEmpty(thisstuff))
             {

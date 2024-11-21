@@ -1,8 +1,4 @@
-﻿using System.Net;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
-
-namespace HTTPSTESTER
+﻿namespace HTTPSTESTER
 {
     internal class Program
     {
@@ -11,55 +7,40 @@ namespace HTTPSTESTER
 
             Console.WriteLine("req URL:");
             var reqURL = Console.ReadLine();
-            var httpRequest = (HttpWebRequest)WebRequest.Create(reqURL);
-            Console.WriteLine("Method");
-            var method = Console.ReadLine();
-            httpRequest.Method = method;
-            httpRequest.Headers["Ubi-AppId"] = "685a3038-2b04-47ee-9c5a-6403381a46aa";
-            httpRequest.Headers["GenomeId"] = "487091d6-a285-471c-9036-d4bce349f212";
-            httpRequest.Headers["Authorization"] = "sasd";
-            Console.WriteLine("header");
-            var header = Console.ReadLine();
-            httpRequest.Headers["TEST"] = header;
-            httpRequest.Headers["Ubi-RequestedPlatformType"] = "uplay";
-            httpRequest.ContentType = "application/json";
-            httpRequest.ServerCertificateValidationCallback = serverCertificateValidationCallback;
 
-            if (method == "POST")
+            HttpClient httpClient = new();
+            HttpRequestMessage httpRequestMessage = new(HttpMethod.Parse(Console.ReadLine()!), reqURL);
+            httpRequestMessage.Headers.Add("Ubi-AppId", "685a3038-2b04-47ee-9c5a-6403381a46aa");
+            httpRequestMessage.Headers.Add("GenomeId", "487091d6-a285-471c-9036-d4bce349f212");
+            httpRequestMessage.Headers.Add("Authorization", "sasd");
+            httpRequestMessage.Headers.Add("TEST", Console.ReadLine());
+            httpRequestMessage.Headers.Add("Ubi-RequestedPlatformType", "uplay");
+            httpRequestMessage.Headers.Add("Content-Type", "application/json");
+            if (httpRequestMessage.Method.Method == "POST")
             {
                 Console.WriteLine("data");
                 var data = Console.ReadLine();
-
-                using (var streamWriter = new StreamWriter(httpRequest.GetRequestStream()))
-                {
-                    streamWriter.Write(data);
-                }
+                httpRequestMessage.Content = new StringContent(data!);
 
             }
+            var rsp = httpClient.Send(httpRequestMessage);
 
-
-            var httpResponse = (HttpWebResponse)httpRequest.GetResponse();
-            var result = "";
-
-            if (httpResponse.ContentType.Contains("stream"))
+            if (rsp.Content.Headers.ContentType != null && rsp.Content.Headers.ContentType.ToString().Contains("stream"))
             {
                 MemoryStream ms = new();
-                httpResponse.GetResponseStream().CopyTo(ms);
+                rsp.Content.ReadAsStream().CopyTo(ms);
                 File.WriteAllBytes("test", ms.ToArray());
             }
             else
             {
-                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                string result = string.Empty;
+                using (var streamReader = new StreamReader(rsp.Content.ReadAsStream()))
                 {
                     result = streamReader.ReadToEnd();
                 }
                 Console.WriteLine(result);
             }
 
-        }
-        private static bool serverCertificateValidationCallback(object sender, X509Certificate? certificate, X509Chain? chain, SslPolicyErrors sslPolicyErrors)
-        {
-            return true;
         }
     }
 }

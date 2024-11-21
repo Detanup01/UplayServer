@@ -37,7 +37,7 @@ namespace ClientApp.PipeConnection
 
                         var length = Formatters.FormatLength(BitConverter.ToUInt32(BufferDone, 0));
                         buffer = new byte[length];
-                        pipeServer.Read(buffer);
+                        pipeServer.ReadExactly(buffer);
                         Readed?.Invoke(this,buffer);
                     }
                 }

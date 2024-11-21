@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ServiceApp.NPHELPER
 {
-    internal class npserver
+    internal class NamedPipeServer
     {
         private byte[] buffer = new byte[65535];
 
@@ -17,7 +17,7 @@ namespace ServiceApp.NPHELPER
         public bool Cancel { get; set; }
         public string Name { get; set; }
 
-        public npserver(string name)
+        public NamedPipeServer(string name)
         {
             this.connectedOrWaiting = false;
             this.Name = name;

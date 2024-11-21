@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ServiceApp.NPHELPER
 {
-    internal class pshelper
+    internal class PipeStreamhelper
     {
         public static void Starter()
         {
@@ -22,7 +22,7 @@ namespace ServiceApp.NPHELPER
             PipeNames.Add("\\terminal_1_game_start_ipc_pipe_");
             foreach (string name in PipeNames)
             {
-                npserver longRunning = new npserver(name);
+                NamedPipeServer longRunning = new NamedPipeServer(name);
                 NameKill.Add(name, longRunning);
                 new Thread(new ThreadStart(longRunning.ExecuteLongRunningTask)).Start();
             }
@@ -37,7 +37,7 @@ namespace ServiceApp.NPHELPER
 
         private static void NamedServerPipeStop(string pipename)
         {
-            npserver pipeServer;
+            NamedPipeServer? pipeServer;
             if (NameKill.TryGetValue(pipename, out pipeServer))
             {
                 pipeServer.Cancel = true;
@@ -56,7 +56,7 @@ namespace ServiceApp.NPHELPER
         public static Dictionary<string, bool> NameClientBool = new Dictionary<string, bool>();
 
         // Token: 0x04000007 RID: 7
-        public static Dictionary<string, npserver> NameKill = new Dictionary<string, npserver>();
+        public static Dictionary<string, NamedPipeServer> NameKill = new Dictionary<string, NamedPipeServer>();
 
         // Token: 0x04000008 RID: 8
         public static List<string> PipeNames = new List<string>();

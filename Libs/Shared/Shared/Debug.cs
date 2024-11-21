@@ -9,8 +9,10 @@ public class Debug
 
     public static bool IsDebug = true;
 
-    public static void PWDebug(object obj, string label = "INFO", [CallerMemberName] string memberName = "Shared")
+    public static void PWDebug(object? obj, string label = "INFO", [CallerMemberName] string memberName = "Shared")
     {
+        if (obj == null)
+            return;
         if (IsDebug == true)
         {
             Console.WriteLine($"[{label}] {obj}");
@@ -27,8 +29,10 @@ public class Debug
         }
     }
 
-    public static void WriteDebug(string strLog, string label = "debug", [CallerMemberName] string memberName = "Shared")
+    public static void WriteDebug(string? strLog, string label = "debug", [CallerMemberName] string memberName = "Shared")
     {
+        if (strLog == null)
+            return;
         logger.Log(label, strLog + " | " + memberName);
     }
 

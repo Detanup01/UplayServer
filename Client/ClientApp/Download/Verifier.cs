@@ -86,7 +86,7 @@ namespace Downloader
                 var fslist = file.SliceList[sinfocount];
                 byte[] fibytes = new byte[sinfo.DecompressedSize];
 
-                fileread.Read(fibytes, takenSize, sinfo.DecompressedSize);
+                fileread.ReadExactly(fibytes, takenSize, sinfo.DecompressedSize);
                 /*
                 var compBytes = LzhamWrapper.Compress(fibytes,(ulong)sinfo.DownloadedSize);
                 var compsha1 = GetSHA1Hash(compBytes);

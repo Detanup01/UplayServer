@@ -19,21 +19,21 @@ internal class Chat
         return true;
     }
 
-    [UnmanagedCallersOnly(EntryPoint = "UPLAY_CHAT_GetHistory", CallConvs = [typeof(CallConvCdecl)])]
+    [UnmanagedCallersOnly(EntryPoint = "UPLAY_CHAT_ReleaseHistoryList", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_CHAT_ReleaseHistoryList(IntPtr aHistoryList)
     {
         Basics.Log(nameof(UPLAY_CHAT_ReleaseHistoryList), []);
         return true;
     }
 
-    [UnmanagedCallersOnly(EntryPoint = "UPLAY_CHAT_GetHistory", CallConvs = [typeof(CallConvCdecl)])]
+    [UnmanagedCallersOnly(EntryPoint = "UPLAY_CHAT_SendMessage", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_CHAT_SendMessage(IntPtr aAccountIdUtf8, IntPtr aMessageUtf8, IntPtr aData)
     {
         Basics.Log(nameof(UPLAY_CHAT_SendMessage), []);
         return true;
     }
 
-    [UnmanagedCallersOnly(EntryPoint = "UPLAY_CHAT_GetHistory", CallConvs = [typeof(CallConvCdecl)])]
+    [UnmanagedCallersOnly(EntryPoint = "UPLAY_CHAT_SetMessagesRead", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_CHAT_SetMessagesRead(IntPtr aAccountIdUtf8)
     {
         Basics.Log(nameof(UPLAY_CHAT_SetMessagesRead), []);
