@@ -36,6 +36,7 @@ public class UPC_Json
         public string Password { get; set; } = "user";
         public string Country { get; set; } = "en-US";
         public string Ticket { get; set; } = string.Empty;
+        public bool UseTicket { get; set; } = true;
     }
 
     public class Save
