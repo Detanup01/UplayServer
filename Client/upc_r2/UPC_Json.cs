@@ -42,12 +42,24 @@ public class UPC_Json
     public class Save
     {
         public string Path { get; set; } = string.Empty;
-        public bool UseAppIdInName { get; set; }
+        public bool UseProductIdInName { get; set; }
+        public bool EnableFileDelete { get; set; }
     }
 
     public class Others
     {
         public string ApplicationId { get; set; } = string.Empty;
+        public bool EnableCrossBoot { get; set; }
+    }
+
+    public class Product
+    {
+        public uint ProductId { get; set; }
+
+        // Check Uplay.Uplaydll.ProductType for this.
+        // DLC = 2
+        // Item = 4
+        public uint Type { get; set; }
     }
 
     public class Root
@@ -56,6 +68,7 @@ public class UPC_Json
         public Account Account { get; set; } = new();
         public Save Save { get; set; } = new();
         public Others Others { get; set; } = new();
+        public List<Product> Products { get; set; } = new() { new() { ProductId = 0, Type = 4 } };
     }
 
 }

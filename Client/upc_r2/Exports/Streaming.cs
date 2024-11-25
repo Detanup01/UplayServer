@@ -79,9 +79,7 @@ internal class Streaming
     public static int UPC_StreamingTypeGet(IntPtr inContext, IntPtr outType)
     {
         Basics.Log(nameof(UPC_StreamingTypeGet), [inContext, outType]);
-        var mem = Marshal.AllocHGlobal(1);
-        Marshal.WriteByte(mem, (byte)Uplay.Uplaydll.StreamingType.None);
-        Marshal.WriteIntPtr(outType, 0, mem);
+        Marshal.WriteIntPtr(outType, 0, (byte)Uplay.Uplaydll.StreamingType.None);
         return 200;
     }
 }

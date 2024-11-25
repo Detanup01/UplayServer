@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using upc_r2.Exports;
 
 namespace upc_r2;
 
@@ -61,21 +62,28 @@ public class Basics
         //Log("SendReq", new object[] { "Done!" });
     }
 
-    public static unsafe IntPtr GetListPtr<T>(List<T> values) where T : struct
+    public static IntPtr GetListPtr<T>(List<T> values) where T : struct
     {
-        IntPtr main_ptr = Marshal.AllocHGlobal(sizeof(IntPtr) * values.Count);
+        IntPtr main_ptr = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>() * values.Count);
         int indx = 0;
         foreach (var item in values)
         {
             IntPtr iptr = Marshal.AllocHGlobal(Marshal.SizeOf<T>());
             Marshal.StructureToPtr(item, iptr, false);
-            Marshal.WriteIntPtr(main_ptr, indx * sizeof(IntPtr), iptr);
+            Marshal.WriteIntPtr(main_ptr, indx * Marshal.SizeOf<IntPtr>(), iptr);
             indx++;
         }
         return main_ptr;
     }
 
-    public static unsafe void FreeListPtr(int count, IntPtr listPointer)
+    public static void FreeList(IntPtr listPointer)
+    {
+        BasicList upcList = Marshal.PtrToStructure<BasicList>(listPointer);
+        FreeListPtr(upcList.count, upcList.list);
+        Marshal.FreeHGlobal(listPointer);
+    }
+
+    public static void FreeListPtr(int count, IntPtr listPointer)
     {
         for (int i = 0; i < count; i++)
         {
@@ -84,4 +92,21 @@ public class Basics
         }
         Marshal.FreeHGlobal(listPointer);
     }
+
+    public static void WriteOutList(IntPtr outList, int Count, IntPtr ptrToList)
+    {
+        BasicList list = new(Count, ptrToList);
+        IntPtr iptr = Marshal.AllocHGlobal(Marshal.SizeOf<BasicList>());
+        Marshal.StructureToPtr(list, iptr, false);
+        Marshal.WriteIntPtr(outList, 0, iptr);
+    }
+
+    public static void WriteOutList<T>(IntPtr outList, List<T> values) where T : struct
+    {
+        BasicList list = new(values.Count, GetListPtr(values));
+        IntPtr iptr = Marshal.AllocHGlobal(Marshal.SizeOf<BasicList>());
+        Marshal.StructureToPtr(list, iptr, false);
+        Marshal.WriteIntPtr(outList, 0, iptr);
+    }
+
 }

@@ -77,6 +77,17 @@ public struct BasicList
     public int count;
     [MarshalAs(UnmanagedType.SysInt)]
     public IntPtr list;
+
+    public BasicList()
+    { 
+
+    }
+
+    public BasicList(int _count, IntPtr _list)
+    {
+        count = _count;
+        list = _list;
+    }
 }
 
 [StructLayout(LayoutKind.Sequential)]
@@ -132,5 +143,32 @@ public struct UPC_UserImpl
     public override string ToString()
     {
         return $"id: {idUtf8}, name: {nameUtf8}, rel: {relationship}, presence: {presence}";
+    }
+}
+
+[StructLayout(LayoutKind.Sequential)]
+public struct UPC_StorageFile
+{
+    [MarshalAs(UnmanagedType.LPUTF8Str)]
+    public string fileNameUtf8;
+    [MarshalAs(UnmanagedType.LPUTF8Str)]
+    public string legacyNameUtf8;
+    [MarshalAs(UnmanagedType.U4)]
+    public uint size;
+    [MarshalAs(UnmanagedType.U8)]
+    public ulong lastModifiedMs;
+}
+
+[StructLayout(LayoutKind.Sequential)]
+public struct UPC_RichPresenceToken
+{
+    [MarshalAs(UnmanagedType.LPUTF8Str)]
+    public string idUtf8 = string.Empty;
+    [MarshalAs(UnmanagedType.LPUTF8Str)]
+    public string valueIdUtf8 = string.Empty;
+
+    public UPC_RichPresenceToken()
+    {
+
     }
 }

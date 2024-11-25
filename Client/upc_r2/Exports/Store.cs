@@ -23,9 +23,7 @@ internal class Store
     public static int UPC_StoreIsEnabled_Extended(IntPtr inContext, IntPtr outIsEnabled)
     {
         Basics.Log(nameof(UPC_StoreIsEnabled_Extended), [inContext]);
-        var mem = Marshal.AllocHGlobal(1);
-        Marshal.WriteByte(mem, 1);
-        Marshal.WriteIntPtr(outIsEnabled, 0, mem);
+        Marshal.WriteInt32(outIsEnabled, 0, 1);
         return 0;
     }
 
