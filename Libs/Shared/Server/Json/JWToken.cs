@@ -1,35 +1,37 @@
-﻿namespace SharedLib.Server.Json
+﻿#if SERVER
+
+namespace SharedLib.Server.Json; 
+
+public class JWToken
 {
-    public class JWToken
+    public class auth_service
     {
-        public class auth_service
-        {
-            public string sub { get; set; }
-            public string iss { get; set; }
-            public long exp { get; set; }
-            public string session { get; set; }
-            public string app { get; set; }
-            public string env { get; set; }
-        }
+        public string sub { get; set; } = string.Empty;
+        public string iss { get; set; } = string.Empty;
+        public long exp { get; set; }
+        public string session { get; set; } = string.Empty;
+        public string app { get; set; } = string.Empty;
+        public string env { get; set; } = string.Empty;
+    }
 
-        public class ownership_service
-        {
-            public string sub { get; set; }
-            public string iss { get; set; }
-            public long exp { get; set; }
-            public int uplay_id { get; set; }
-            public int product_id { get; set; }
-            public int branch_id { get; set; }
-            public List<string> flags { get; set; } = [];
-        }
+    public class ownership_service
+    {
+        public string sub { get; set; } = string.Empty;
+        public string iss { get; set; } = string.Empty;
+        public long exp { get; set; }
+        public int uplay_id { get; set; }
+        public int product_id { get; set; }
+        public int branch_id { get; set; }
+        public List<string> flags { get; set; } = [];
+    }
 
-        public class uplaypctiket
-        {
-            public string sub { get; set; }
-            public string iss { get; set; }
-            public long exp { get; set; }
-            public int uplay_id { get; set; }
-            public int platform { get; set; }
-        }
+    public class UplayPCTicket
+    {
+        public string sub { get; set; } = string.Empty;
+        public string iss { get; set; } = string.Empty;
+        public long exp { get; set; }
+        public int uplay_id { get; set; }
+        public int platform { get; set; }
     }
 }
+#endif

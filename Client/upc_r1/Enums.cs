@@ -1,5 +1,4 @@
-﻿
-namespace upc_r1;
+﻿namespace upc_r1;
 
 public enum UPLAY_EventType
 {

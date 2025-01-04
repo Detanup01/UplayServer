@@ -1,4 +1,6 @@
-﻿namespace SharedLib.Server;
+﻿#if SERVER
+
+namespace SharedLib.Server;
 
 public class Enums
 {
@@ -20,3 +22,4 @@ public class Enums
         FromExpiredSubscription
     }
 }
+#endif

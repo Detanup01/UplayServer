@@ -7,6 +7,7 @@
     <Version>0.0.2.1</Version>
     <Authors>Detanup01</Authors>
     <Company>Detanup01</Company>
+	<DefineConstants>SERVER;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

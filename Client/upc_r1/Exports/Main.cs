@@ -97,4 +97,11 @@ public class Main
         Basics.Log(nameof(UPLAY_ClearGameSession), []);
         return true;
     }
+
+    [UnmanagedCallersOnly(EntryPoint = "UPLAY_PRESENCE_SetPresence", CallConvs = [typeof(CallConvCdecl)])]
+    public static bool UPLAY_PRESENCE_SetPresence(uint presenceId, IntPtr tokens)
+    {
+        Basics.Log(nameof(UPLAY_PRESENCE_SetPresence), [presenceId, tokens]);
+        return true;
+    }
 }

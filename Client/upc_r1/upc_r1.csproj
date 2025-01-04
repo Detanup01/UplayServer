@@ -8,6 +8,13 @@
 	<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	<IsAotCompatible>True</IsAotCompatible>
 	<PublishAot>true</PublishAot>
+	<AssemblyVersion>158.0.11194.0</AssemblyVersion>
+	<FileVersion>158.0.11194</FileVersion>
+	<Description>Ubisoft Connect API r2</Description>
+	<Product>Ubisoft Connect</Product>
+	<Copyright>(c) Ubisoft</Copyright>
+	<NeutralLanguage>en-US</NeutralLanguage>
+	<Version>158.0.11194</Version>
   </PropertyGroup>
 
 	<Choose>
@@ -24,7 +31,9 @@
 	</Choose>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Libs\Shared\SharedLib.csproj" />
+		<ProjectReference Include="..\..\Libs\Shared\SharedLib.csproj">
+			<Properties>DefineConstants=SharedOnly</Properties>
+		</ProjectReference>
 	</ItemGroup>
 
 	<ItemGroup>
