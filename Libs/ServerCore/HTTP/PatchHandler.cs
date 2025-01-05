@@ -1,4 +1,4 @@
-﻿using SharedLib.Server.Json;
+﻿using ServerCore.Json;
 using SharedLib.Shared;
 
 namespace Core.HTTP

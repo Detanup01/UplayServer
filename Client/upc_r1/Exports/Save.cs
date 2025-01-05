@@ -5,11 +5,13 @@ namespace upc_r1.Exports;
 
 internal class Save
 {
+    static Dictionary<int, string> PtrToFilePath = [];
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_SAVE_Close", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_SAVE_Close(IntPtr aOutSaveHandle)
     {
         Basics.Log(nameof(UPLAY_SAVE_Close), [aOutSaveHandle]);
+        PtrToFilePath.Remove((int)aOutSaveHandle);
         return true;
     }
 
@@ -17,6 +19,29 @@ internal class Save
     public static bool UPLAY_SAVE_GetSavegames(IntPtr aOutGamesList, IntPtr aOverlapped)
     {
         Basics.Log(nameof(UPLAY_SAVE_GetSavegames), [aOutGamesList, aOverlapped]);
+        if (aOutGamesList == IntPtr.Zero)
+            return false;
+        string savepath = UPC_Json.GetRoot().Save.Path;
+        if (!Directory.Exists(savepath))
+            Directory.CreateDirectory(savepath);
+        var files = Directory.GetFiles(savepath);
+        List<UPLAY_SAVE_Game> saves = new();
+        uint i = 1;
+        foreach (var item in files)
+        {
+            if (string.IsNullOrEmpty(item))
+                continue;
+
+            FileInfo info = new(item);
+            UPLAY_SAVE_Game saveGame = new();
+            saveGame.nameUtf8 = info.Name;
+            saveGame.id = i;
+            saveGame.size = (uint)info.Length;
+            saves.Add(saveGame);
+            i++;
+        }
+        Basics.WriteOutList(aOutGamesList, saves);
+        Basics.WriteOverlappedResult(aOverlapped, true, UPLAY_OverlappedResult.UPLAY_OverlappedResult_Ok);
         return true;
     }
 
@@ -24,6 +49,20 @@ internal class Save
     public static bool UPLAY_SAVE_Open(uint aSlotId, uint aMode, IntPtr aOutSaveHandle, IntPtr aOverlapped)
     {
         Basics.Log(nameof(UPLAY_SAVE_Open), [aSlotId, aMode, aOutSaveHandle, aOverlapped]);
+        UPLAY_SAVE_Mode saveMode = (UPLAY_SAVE_Mode)aMode;
+
+        var savePath = UPC_Json.GetRoot().Save.Path;
+        var spath = Path.Combine(savePath, $"{aSlotId}.save");
+        Basics.Log(nameof(UPLAY_SAVE_Open), ["savePath: ", spath]);
+        if (!Directory.Exists(Path.GetDirectoryName(spath)))
+            Directory.CreateDirectory(Path.GetDirectoryName(spath)!);
+        if (!File.Exists(spath))
+            File.Create(spath).Close();
+        int ptr = Random.Shared.Next();
+        Basics.Log(nameof(UPLAY_SAVE_Open), ["Handle open: ", ptr]);
+        PtrToFilePath.Add(ptr, spath);
+        Marshal.WriteInt32(aOutSaveHandle, 0, ptr);
+        Basics.WriteOverlappedResult(aOverlapped, true, UPLAY_OverlappedResult.UPLAY_OverlappedResult_Ok);
         return true;
     }
 
@@ -38,6 +77,7 @@ internal class Save
     public static bool UPLAY_SAVE_ReleaseGameList(IntPtr aGamesList)
     {
         Basics.Log(nameof(UPLAY_SAVE_ReleaseGameList), [aGamesList]);
+        Basics.FreeList(aGamesList);
         return true;
     }
 

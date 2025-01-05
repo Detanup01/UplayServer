@@ -1,8 +1,7 @@
-﻿#if SERVER
-using SharedLib.Server.DB;
-using SharedLib.Server.Json.DB;
+﻿using ServerCore.DB;
+using ServerCore.Json.DB;
 
-namespace SharedLib.Server.Json.Ext;
+namespace ServerCore.Json.Ext;
 
 public class DBUserExt : DBUser
 {
@@ -88,4 +87,3 @@ public class DBUserExt : DBUser
         }
     }
 }
-#endif

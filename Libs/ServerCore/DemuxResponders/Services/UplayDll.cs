@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf;
-using SharedLib.Server.DB;
+using ServerCore;
+using ServerCore.DB;
 using Uplay.Uplaydll;
 
 namespace Core.DemuxResponders
@@ -59,7 +60,7 @@ namespace Core.DemuxResponders
 
                 var user = DBUser.GetUser(UserId);
 
-                var auth = Auth.GetTokenByUserId(UserId, SharedLib.Server.Enums.TokenType.Ticket);
+                var auth = Auth.GetTokenByUserId(UserId, TokenType.Ticket);
                 Rsp.InitRsp.UpcTicket = auth;
                 Rsp.InitRsp.Account = new()
                 { 

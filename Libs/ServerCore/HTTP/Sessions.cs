@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
-using SharedLib.Server.DB;
-using static SharedLib.Server.Enums;
-using SharedLib.Server.Json;
+using ServerCore;
+using ServerCore.DB;
+using ServerCore.Json;
 using SharedLib.Shared;
 
 namespace Core.HTTP

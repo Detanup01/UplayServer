@@ -1,5 +1,5 @@
-﻿using SharedLib.Server.DB;
-using SharedLib.Server.Json;
+﻿using ServerCore.DB;
+using ServerCore.Json;
 
 namespace Core.Commands
 {

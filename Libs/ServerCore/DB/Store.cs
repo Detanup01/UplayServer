@@ -1,8 +1,7 @@
-﻿#if SERVER
-using LiteDB;
-using SharedLib.Server.Json.DB;
+﻿using LiteDB;
+using ServerCore.Json.DB;
 
-namespace SharedLib.Server.DB;
+namespace ServerCore.DB;
 
 public class Store
 {
@@ -105,4 +104,3 @@ public class Store
     }
     #endregion
 }
-#endif

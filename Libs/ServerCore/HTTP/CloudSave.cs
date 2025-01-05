@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
-using SharedLib.Server.DB;
-using SharedLib.Server.Json;
-using SharedLib.Server.Json.DB;
+using ServerCore.DB;
+using ServerCore.Json;
+using ServerCore.Json.DB;
 
 namespace ServerCore.HTTP
 {

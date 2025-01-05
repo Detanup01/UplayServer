@@ -10,21 +10,21 @@ internal class Party
     public static bool UPLAY_PARTY_DisablePartyMemberMenuItem()
     {
         Basics.Log(nameof(UPLAY_PARTY_DisablePartyMemberMenuItem), []);
-        return true;
+        return false;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_PARTY_EnablePartyMemberMenuItem", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_PARTY_EnablePartyMemberMenuItem()
     {
         Basics.Log(nameof(UPLAY_PARTY_EnablePartyMemberMenuItem), []);
-        return true;
+        return false;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_PARTY_GetFullMemberList", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_PARTY_GetFullMemberList(IntPtr aOutMemberList)
     {
         Basics.Log(nameof(UPLAY_PARTY_GetFullMemberList), [aOutMemberList]);
-        return true;
+        return false;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_PARTY_GetId", CallConvs = [typeof(CallConvCdecl)])]
@@ -38,14 +38,14 @@ internal class Party
     public static bool UPLAY_PARTY_GetInGameMemberList(IntPtr aOutMemberList)
     {
         Basics.Log(nameof(UPLAY_PARTY_GetInGameMemberList), [aOutMemberList]);
-        return true;
+        return false;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_PARTY_Init", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_PARTY_Init(uint aFlags)
     {
         Basics.Log(nameof(UPLAY_PARTY_Init), [aFlags]);
-        return true;
+        return false;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_PARTY_InvitePartyToGame", CallConvs = [typeof(CallConvCdecl)])]
@@ -101,7 +101,7 @@ internal class Party
     public static bool UPLAY_PARTY_SetUserData(IntPtr aDataBlob)
     {
         Basics.Log(nameof(UPLAY_PARTY_SetUserData), [aDataBlob]);
-        return false;
+        return true;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_PARTY_ShowGameInviteOverlayUI", CallConvs = [typeof(CallConvCdecl)])]

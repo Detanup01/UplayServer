@@ -1,11 +1,11 @@
 ﻿using Google.Protobuf;
 using Newtonsoft.Json.Linq;
-using SharedLib.Server.DB;
-using SharedLib.Server.Json;
-using SharedLib.Server.Json.Ext;
+using ServerCore.DB;
+using ServerCore.Json;
+using ServerCore.Json.Ext;
 using SharedLib.Shared;
 using Uplay.Demux;
-using static SharedLib.Server.Enums;
+using ServerCore;
 
 namespace Core.DemuxResponders
 {

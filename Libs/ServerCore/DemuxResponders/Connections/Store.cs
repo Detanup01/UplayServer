@@ -67,7 +67,7 @@ namespace Core.DemuxResponders
                 var datatype = (uint)req.StoreDataType;
                 foreach (var item in rpid)
                 {
-                    var storedata = SharedLib.Server.DB.Store.GetStoreByProdId(item);
+                    var storedata = ServerCore.DB.Store.GetStoreByProdId(item);
                     if (storedata != null)
                     {
                         StoreProduct product = new StoreProduct()
@@ -105,7 +105,7 @@ namespace Core.DemuxResponders
 
             public static void GetStore(GetStoreReq req)
             {
-                var stores = SharedLib.Server.DB.Store.GetAllStore();
+                var stores = ServerCore.DB.Store.GetAllStore();
                 List<StoreProduct> storelist = new();
                 if (stores != null)
                 {

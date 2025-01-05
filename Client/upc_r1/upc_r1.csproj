@@ -31,9 +31,7 @@
 	</Choose>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Libs\Shared\SharedLib.csproj">
-			<Properties>DefineConstants=SharedOnly</Properties>
-		</ProjectReference>
+		<ProjectReference Include="..\..\Libs\Shared\SharedLib.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

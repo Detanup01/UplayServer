@@ -9,13 +9,13 @@ internal class Product
     public static bool UPLAY_PRODUCT_GetProductList(IntPtr aOverlapped, IntPtr aOutProductList)
     {
         Basics.Log(nameof(UPLAY_PRODUCT_GetProductList), [aOverlapped, aOutProductList]);
-        return true;
+        return false;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_PRODUCT_ReleaseProductList", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_PRODUCT_ReleaseProductList(IntPtr aProductList)
     {
         Basics.Log(nameof(UPLAY_PRODUCT_ReleaseProductList), [aProductList]);
-        return true;
+        return false;
     }
 }

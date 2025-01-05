@@ -16,7 +16,7 @@ public class Installer
     public static bool UPLAY_INSTALLER_GetChunkIdsFromTag(IntPtr aTagUtf8, IntPtr aOutChunkIdList)
     {
         Basics.Log(nameof(UPLAY_INSTALLER_GetChunkIdsFromTag), [aTagUtf8, aOutChunkIdList]);
-        return true;
+        return false;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_INSTALLER_GetChunks", CallConvs = [typeof(CallConvCdecl)])]
@@ -30,7 +30,7 @@ public class Installer
     public static IntPtr UPLAY_INSTALLER_GetLanguageUtf8()
     {
         Basics.Log(nameof(UPLAY_INSTALLER_GetLanguageUtf8), []);
-        return IntPtr.Zero;
+        return Marshal.StringToHGlobalAnsi(UPC_Json.GetRoot().Account.Country);
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_INSTALLER_Init", CallConvs = [typeof(CallConvCdecl)])]

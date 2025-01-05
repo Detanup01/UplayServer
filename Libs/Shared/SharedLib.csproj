@@ -7,14 +7,12 @@
     <Version>0.0.2.1</Version>
     <Authors>Detanup01</Authors>
     <Company>Detanup01</Company>
-	<DefineConstants>SERVER;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Protobuf" Version="3.28.3" />
+    <PackageReference Include="Google.Protobuf" Version="3.29.2" />
     <PackageReference Include="Ionic.Zlib.Core" Version="1.0.0" />
     <PackageReference Include="L" Version="5.0.0" />
-    <PackageReference Include="LiteDB" Version="5.0.21" />
     <PackageReference Include="LzhamWrapper" Version="0.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="SharpZipLib" Version="1.4.2" />

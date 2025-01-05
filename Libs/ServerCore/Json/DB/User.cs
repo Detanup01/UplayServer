@@ -1,6 +1,4 @@
-﻿#if SERVER
-
-namespace SharedLib.Server.Json.DB;
+﻿namespace ServerCore.Json.DB;
 
 public class JUserBase
 {
@@ -28,7 +26,7 @@ public class JOwnership : JUserBase
     public bool IsLockedSubscription { get; set; }
     public string CD_Key { get; set; } = string.Empty;
     public uint current_branch_id { get; set; } = 0;
-    public List<Enums.AppFlags> appflags { get; set; } = new();
+    public List<AppFlags> appflags { get; set; } = new();
     public List<uint> ActivationIds { get; set; } = new();
     public List<uint> Subscriptions { get; set; } = new();
     public Uplay.Ownership.OwnedGame.Types.PackageOwnershipState PackageState { get; set; }
@@ -80,4 +78,3 @@ public class JCloudSave : JUserBase
     public uint SaveId { get; set; }
     public string SaveName { get; set; } = string.Empty;
 }
-#endif

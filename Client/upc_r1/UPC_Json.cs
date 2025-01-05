@@ -46,6 +46,13 @@ public class UPC_Json
     public class Others
     {
         public string ApplicationId { get; set; } = string.Empty;
+        public bool OfflineMode { get; set; } = true;
+    }
+
+    public class CDKey
+    {
+        public uint ProductId { get; set; }
+        public string Key { get; set; } = string.Empty;
     }
 
     public class Root
@@ -54,6 +61,7 @@ public class UPC_Json
         public Account Account { get; set; } = new();
         public Save Save { get; set; } = new();
         public Others Others { get; set; } = new();
+        public List<CDKey> CDKey { get; set;} = [];
     }
 
 }

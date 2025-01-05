@@ -1,13 +1,11 @@
-﻿#if SERVER
-
-namespace SharedLib.Server.Json.DB;
+﻿namespace ServerCore.Json.DB;
 
 public class JCurrent
 {
     public int Id { get; set; }
     public string userId { get; set; } = string.Empty;
     public string token { get; set; } = string.Empty;
-    public Enums.TokenType type { get; set; }
+    public TokenType type { get; set; }
 }
 
 public class JUA
@@ -31,4 +29,3 @@ public class JDMX
     public uint conId { get; set; }
     public string conName { get; set; } = string.Empty;
 }
-#endif

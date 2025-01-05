@@ -3,9 +3,9 @@ using Newtonsoft.Json;
 using System.Text;
 using Uplay.Ownership;
 using SharedLib.Shared;
-using SharedLib.Server.DB;
-using SharedLib.Server.Json;
-using SharedLib.Server;
+using ServerCore.DB;
+using ServerCore.Json;
+using ServerCore;
 
 namespace Core.DemuxResponders
 {

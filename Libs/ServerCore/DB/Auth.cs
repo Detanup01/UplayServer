@@ -1,8 +1,7 @@
-﻿#if SERVER
-using LiteDB;
-using SharedLib.Server.Json.DB;
+﻿using LiteDB;
+using ServerCore.Json.DB;
 
-namespace SharedLib.Server.DB;
+namespace ServerCore.DB;
 
 public class Auth
 {
@@ -310,7 +309,7 @@ public class Auth
     #endregion
 
     #region Current
-    public static void AddCurrent(string userId, string token, Enums.TokenType tokentype)
+    public static void AddCurrent(string userId, string token, TokenType tokentype)
     {
         using (var db = new LiteDatabase(DBName))
         {
@@ -327,7 +326,7 @@ public class Auth
         }
     }
 
-    public static void EditCurrent(string userId, string token, Enums.TokenType tokentype)
+    public static void EditCurrent(string userId, string token, TokenType tokentype)
     {
         using (var db = new LiteDatabase(DBName))
         {
@@ -342,7 +341,7 @@ public class Auth
         }
     }
 
-    public static string GetUserIdByToken(string token, Enums.TokenType tokentype)
+    public static string GetUserIdByToken(string token, TokenType tokentype)
     {
         using (var db = new LiteDatabase(DBName))
         {
@@ -359,7 +358,7 @@ public class Auth
         }
     }
 
-    public static string GetTokenByUserId(string userId, Enums.TokenType tokentype)
+    public static string GetTokenByUserId(string userId, TokenType tokentype)
     {
         using (var db = new LiteDatabase(DBName))
         {
@@ -410,4 +409,3 @@ public class Auth
     }
     #endregion
 }
-#endif

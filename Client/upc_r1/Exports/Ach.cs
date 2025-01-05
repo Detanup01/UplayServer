@@ -8,42 +8,42 @@ internal class Ach
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_ACH_EarnAchievement", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_ACH_EarnAchievement(uint aAchivementId, IntPtr aOverlapped)
     {
-        Basics.Log(nameof(UPLAY_ACH_EarnAchievement), []);
-        return true;
+        Basics.Log(nameof(UPLAY_ACH_EarnAchievement), [aAchivementId, aOverlapped]);
+        return false;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_ACH_GetAchievementImage", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_ACH_GetAchievementImage(uint aId, IntPtr aOutImage, IntPtr aOverlapped)
     {
-        Basics.Log(nameof(UPLAY_ACH_GetAchievementImage), []);
-        return true;
+        Basics.Log(nameof(UPLAY_ACH_GetAchievementImage), [aId, aOutImage, aOverlapped]);
+        return false;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_ACH_GetAchievements", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_ACH_GetAchievements(uint aFilter, IntPtr aAccountIdUtf8OrNULLIfCurrentUser, IntPtr aOutAchievementList, IntPtr aOverlapped)
     {
-        Basics.Log(nameof(UPLAY_ACH_GetAchievements), []);
-        return true;
+        Basics.Log(nameof(UPLAY_ACH_GetAchievements), [aFilter, aAccountIdUtf8OrNULLIfCurrentUser, aOutAchievementList, aOverlapped]);
+        return false;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_ACH_ReleaseAchievementImage", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_ACH_ReleaseAchievementImage(IntPtr aImage)
     {
-        Basics.Log(nameof(UPLAY_ACH_ReleaseAchievementImage), []);
-        return true;
+        Basics.Log(nameof(UPLAY_ACH_ReleaseAchievementImage), [aImage]);
+        return false;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_ACH_ReleaseAchievementList", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_ACH_ReleaseAchievementList(IntPtr aList)
     {
-        Basics.Log(nameof(UPLAY_ACH_ReleaseAchievementList), []);
-        return true;
+        Basics.Log(nameof(UPLAY_ACH_ReleaseAchievementList), [aList]);
+        return false;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_ACH_Write", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_ACH_Write(IntPtr aAchievement)
     {
-        Basics.Log(nameof(UPLAY_ACH_Write), []);
-        return true;
+        Basics.Log(nameof(UPLAY_ACH_Write), [aAchievement]);
+        return false;
     }
 }

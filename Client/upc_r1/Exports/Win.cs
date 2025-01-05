@@ -9,21 +9,21 @@ internal class Win
     public static bool UPLAY_WIN_GetActions(IntPtr aOutActionList, IntPtr aOverlapped)
     {
         Basics.Log(nameof(UPLAY_WIN_GetActions), [aOutActionList, aOverlapped]);
-        return true;
+        return false;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_WIN_GetRewards", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_WIN_GetRewards(IntPtr aOutRewardList, IntPtr aOverlapped)
     {
         Basics.Log(nameof(UPLAY_WIN_GetRewards), [aOutRewardList, aOverlapped]);
-        return true;
+        return false;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_WIN_GetUnitBalance", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_WIN_GetUnitBalance(int aOutBalance, IntPtr aOverlapped)
     {
         Basics.Log(nameof(UPLAY_WIN_GetUnitBalance), [aOutBalance, aOverlapped]);
-        return true;
+        return false;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_WIN_RefreshActions", CallConvs = [typeof(CallConvCdecl)])]

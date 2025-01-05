@@ -1,9 +1,7 @@
-﻿#if SERVER
-
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using SharedLib.Shared;
 
-namespace SharedLib.Server.Json;
+namespace ServerCore.Json;
 
 public class CDKey
 {
@@ -101,4 +99,3 @@ public class CDKey
 
     }
 }
-#endif

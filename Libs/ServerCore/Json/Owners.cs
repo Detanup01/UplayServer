@@ -1,9 +1,7 @@
-﻿#if SERVER
+﻿using Uplay.Ownership;
+using ServerCore.DB;
 
-using Uplay.Ownership;
-using SharedLib.Server.DB;
-
-namespace SharedLib.Server.Json;
+namespace ServerCore.Json;
 
 public class Owners
 {
@@ -183,7 +181,7 @@ public class Owners
                 staging = false,
                 state = (OwnedGame.Types.State)games.State,
                 space_id = games.UbiservicesSpaceId,
-                global_appflags = new() { Enums.AppFlags.Downloadable, Enums.AppFlags.Playable },
+                global_appflags = new() { AppFlags.Downloadable, AppFlags.Playable },
                 app_id = games.UbiservicesSpaceId,
                 associations = games.ProductAssociations.ToList(),
                 configuration = $"{games.ProductId}.yml",
@@ -197,4 +195,3 @@ public class Owners
         }       
     }
 }
-#endif

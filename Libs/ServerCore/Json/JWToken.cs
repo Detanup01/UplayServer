@@ -1,6 +1,4 @@
-﻿#if SERVER
-
-namespace SharedLib.Server.Json; 
+﻿namespace ServerCore.Json; 
 
 public class JWToken
 {
@@ -34,4 +32,3 @@ public class JWToken
         public int platform { get; set; }
     }
 }
-#endif

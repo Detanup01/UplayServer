@@ -1,6 +1,6 @@
 ﻿using Google.Protobuf;
-using SharedLib.Server.DB;
-using SharedLib.Server.Json;
+using ServerCore.DB;
+using ServerCore.Json;
 using Uplay.Uplay;
 
 namespace Core.DemuxResponders

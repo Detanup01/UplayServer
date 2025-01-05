@@ -1,7 +1,7 @@
 ﻿using Core.HTTP;
 using NetCoreServer;
 using ServerCore.HTTP;
-using SharedLib.Server.Json;
+using ServerCore.Json;
 using System.Net;
 using System.Net.Mime;
 using System.Net.Sockets;

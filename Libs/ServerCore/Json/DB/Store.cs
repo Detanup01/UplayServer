@@ -1,5 +1,4 @@
-﻿#if SERVER
-namespace SharedLib.Server.Json.DB;
+﻿namespace ServerCore.Json.DB;
 
 public class JStore
 {
@@ -13,4 +12,3 @@ public class JStore
     public List<uint> associations { get; set; } = [];
     public int Type { get; set; }
 }
-#endif

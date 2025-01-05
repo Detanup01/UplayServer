@@ -16,14 +16,18 @@ public class Main
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_HasOverlappedOperationCompleted", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_HasOverlappedOperationCompleted(IntPtr aOverlapped)
     {
-        Basics.Log(nameof(UPLAY_HasOverlappedOperationCompleted), [aOverlapped]);
-        return true;
+        //Basics.Log(nameof(UPLAY_HasOverlappedOperationCompleted), [aOverlapped]);
+        var lapped = Marshal.PtrToStructure<UPLAY_Overlapped>(aOverlapped);
+        //Basics.Log(nameof(UPLAY_HasOverlappedOperationCompleted), [lapped.Completed, lapped.Result]);
+        return lapped.Completed;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_GetOverlappedOperationResult", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_GetOverlappedOperationResult(IntPtr aOverlapped, IntPtr aOutResult)
     {
-        Basics.Log(nameof(UPLAY_GetOverlappedOperationResult), [aOverlapped, aOutResult]);
+        //Basics.Log(nameof(UPLAY_GetOverlappedOperationResult), [aOverlapped, aOutResult]);
+        var lapped = Marshal.PtrToStructure<UPLAY_Overlapped>(aOverlapped);
+        //Basics.Log(nameof(UPLAY_HasOverlappedOperationCompleted), [lapped.Completed, lapped.Result]);
         Marshal.WriteInt32(aOutResult, (int)UPLAY_OverlappedResult.UPLAY_OverlappedResult_Ok);
         return true;
     }
@@ -31,15 +35,15 @@ public class Main
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_PeekNextEvent", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_PeekNextEvent()
     {
-        Basics.Log(nameof(UPLAY_PeekNextEvent), []);
+        //Basics.Log(nameof(UPLAY_PeekNextEvent), []);
         return true;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_GetNextEvent", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_GetNextEvent(IntPtr aEvent)
     {
-        Basics.Log(nameof(UPLAY_GetNextEvent), [aEvent]);
-        return true;
+        //Basics.Log(nameof(UPLAY_GetNextEvent), [aEvent]);
+        return false;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_Init", CallConvs = [typeof(CallConvCdecl)])]
@@ -53,20 +57,20 @@ public class Main
     public static bool UPLAY_Start(uint aUplayId, uint aFlags)
     {
         Basics.Log(nameof(UPLAY_Start), [aUplayId, aFlags]);
-        return true;
+        return false;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_Startup", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_Startup(uint aUplayId, uint aGameVersion, IntPtr aLanguageCountryCodeUtf8)
     {
         Basics.Log(nameof(UPLAY_Startup), [aUplayId, aGameVersion, aLanguageCountryCodeUtf8]);
-        return true;
+        return false;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_Update", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_Update()
     {
-        Basics.Log(nameof(UPLAY_Update), []);
+        //Basics.Log(nameof(UPLAY_Update), []);
         return true;
     }
 
@@ -81,6 +85,10 @@ public class Main
     public static bool UPLAY_SetLanguage(IntPtr aLanguageCountryCode)
     {
         Basics.Log(nameof(UPLAY_SetLanguage), [aLanguageCountryCode]);
+        string? langCode = Marshal.PtrToStringUTF8(aLanguageCountryCode);
+        Basics.Log(nameof(UPLAY_SetLanguage), [langCode == null]);
+        if (!string.IsNullOrEmpty(langCode))
+            UPC_Json.GetRoot().Account.Country = langCode;
         return true;
     }
 

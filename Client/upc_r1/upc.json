@@ -1,8 +1,31 @@
 {
-  "Base": {
-    "ReqLog": true,
-    "RspLog": true,
-    "PID": 0
-  }
-
+  "BasicLog": {
+    "ReqLog": false,
+    "RspLog": false,
+    "UseNamePipeClient": false,
+    "WaitBetweebUpdate": 20000,
+    "LogUpdate": false
+  },
+  "Account": {
+    "AccountId": "ea66fece-ccce-4fe4-ad60-45298a0ac92a",
+    "Email": "user@uplayemu.com",
+    "Name": "user",
+    "Password": "user",
+    "Country": "en-US",
+    "Ticket": "test"
+  },
+  "Save": {
+    "Path": "G:\\UplayServer\\R1",
+    "UseAppIdInName": false
+  },
+  "Others": {
+    "ApplicationId": "ea66fece-ccce-4fe4-ad60-45298a0ac92a",
+    "OfflineMode": true
+  },
+  "CDKey": [
+    {
+      "ProductId": 0,
+      "Key": "1111-2222 -3333-4444"
+    }
+  ]
 }

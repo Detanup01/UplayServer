@@ -1,6 +1,6 @@
 ﻿using Google.Protobuf;
-using SharedLib.Server.DB;
-using SharedLib.Server.Json.Ext;
+using ServerCore.DB;
+using ServerCore.Json.Ext;
 using Uplay.Friends;
 
 namespace Core.DemuxResponders
@@ -274,7 +274,7 @@ namespace Core.DemuxResponders
                     var activity = DBUser.GetActivity(userID);
                     if (activity == null)
                     {
-                        DBUser.Add(new SharedLib.Server.Json.DB.JActivity()
+                        DBUser.Add(new ServerCore.Json.DB.JActivity()
                         {
                             Status = (int)initialize.ActivityStatus,
                             UserId = userID
@@ -649,13 +649,13 @@ namespace Core.DemuxResponders
                         var friend = DBUser.GetFriend(userID, fuser.AccountId);
                         if (friend == null)
                         {
-                            DBUser.Add(new SharedLib.Server.Json.DB.JFriend()
+                            DBUser.Add(new ServerCore.Json.DB.JFriend()
                             { 
                                 IdOfFriend = userID,
                                 Relation = 1,
                                 UserId = fuser.AccountId
                             });
-                            DBUser.Add(new SharedLib.Server.Json.DB.JFriend()
+                            DBUser.Add(new ServerCore.Json.DB.JFriend()
                             {
                                 IdOfFriend = fuser.AccountId,
                                 Relation = 2,

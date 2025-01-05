@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
-using SharedLib.Server.DB;
-using SharedLib.Server.Json;
-using SharedLib.Server.Json.DB;
-using SharedLib.Server.Json.Ext;
+using ServerCore.DB;
+using ServerCore.Json;
+using ServerCore.Json.DB;
+using ServerCore.Json.Ext;
 
 namespace Core.HTTP
 {

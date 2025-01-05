@@ -1,9 +1,7 @@
-﻿#if SERVER
-using LiteDB;
-using SharedLib.Server.Json.DB;
-using static SharedLib.Server.Enums;
+﻿using LiteDB;
+using ServerCore.Json.DB;
 
-namespace SharedLib.Server.DB;
+namespace ServerCore.DB;
 
 public class App
 {
@@ -183,4 +181,3 @@ public class App
 
     #endregion
 }
-#endif

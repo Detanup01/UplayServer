@@ -1,8 +1,6 @@
-﻿#if SERVER
+﻿using Newtonsoft.Json;
 
-using Newtonsoft.Json;
-
-namespace SharedLib.Server.Json;
+namespace ServerCore.Json;
 
 public class ServerConfig
 {
@@ -74,5 +72,3 @@ public class ServerConfig
     }
 
 }
-
-#endif

@@ -1,7 +1,7 @@
 ﻿using Core.Extra;
 using Google.Protobuf;
 using NetCoreServer;
-using SharedLib.Server.Json;
+using ServerCore.Json;
 using SharedLib.Shared;
 using System.Collections.Concurrent;
 using System.Net;

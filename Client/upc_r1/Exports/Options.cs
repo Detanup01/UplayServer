@@ -23,41 +23,41 @@ internal class Options
     public static bool UPLAY_OPTIONS_Enumerate(IntPtr aFileHandle, IntPtr aOutKeyValueList, IntPtr aOverlapped)
     {
         Basics.Log(nameof(UPLAY_OPTIONS_Enumerate), [aFileHandle, aOutKeyValueList, aOverlapped]);
-        return true;
+        return false;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_OPTIONS_Get", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_OPTIONS_Get(IntPtr aKeyValueList, IntPtr aKey)
     {
         Basics.Log(nameof(UPLAY_OPTIONS_Get), [aKeyValueList, aKey]);
-        return true;
+        return false;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_OPTIONS_Open", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_OPTIONS_Open(IntPtr aName)
     {
         Basics.Log(nameof(UPLAY_OPTIONS_Open), [aName]);
-        return true;
+        return false;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_OPTIONS_ReleaseKeyValueList", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_OPTIONS_ReleaseKeyValueList(IntPtr aKeyValueList)
     {
         Basics.Log(nameof(UPLAY_OPTIONS_ReleaseKeyValueList), [aKeyValueList]);
-        return true;
+        return false;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_OPTIONS_Set", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_OPTIONS_Set(IntPtr aKeyValueList, IntPtr aKey, IntPtr aValue)
     {
         Basics.Log(nameof(UPLAY_OPTIONS_Set), [aKeyValueList, aKey, aValue]);
-        return true;
+        return false;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_OPTIONS_SetInGameState", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_OPTIONS_SetInGameState(uint aFlags)
     {
         Basics.Log(nameof(UPLAY_OPTIONS_SetInGameState), [aFlags]);
-        return true;
+        return false;
     }
 }
