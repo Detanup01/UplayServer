@@ -1,19 +1,21 @@
-﻿using Uplay.Ownership;
-using ServerCore.DB;
+﻿using ServerCore.DB;
+using ServerCore.Models.App;
+using ServerCore.Models.User;
+using Uplay.Ownership;
 
-namespace ServerCore.Json;
+namespace ServerCore.Controllers;
 
-public class Owners
+public class OwnershipController
 {
-    public static OwnedGames GetOwnershipGames(string UserId, Dictionary<uint, uint>? branches)
+    public static OwnedGames GetOwnershipGames(Guid UserId, Dictionary<uint, uint>? branches)
     {
         var ownedGames = new OwnedGames()
-        { 
+        {
             OwnedGames_ = { }
         };
 
-        var owlist = DBUser.GetOwnershipList(UserId);
-        if (owlist != null) 
+        var owlist = DBUser.GetList<UserOwnership>(UserId);
+        if (owlist != null)
         {
             foreach (var ow in owlist)
             {
@@ -28,7 +30,7 @@ public class Owners
                 if (branches != null)
                     branches.TryGetValue(ow.ProductId, out branch);
 
-                var appbranch = branchList.Find(x=>x.branch_id == branch);
+                var appbranch = branchList.Find(x => x.BranchId == branch);
 
                 if (appbranch == null)
                     continue;
@@ -43,13 +45,13 @@ public class Owners
         return ownedGames;
     }
 
-    public static OwnedGame? GetOwnershipGame(string UserId, uint productId, uint branchId)
+    public static OwnedGame? GetOwnershipGame(Guid UserId, uint productId, uint branchId)
     {
-        var owbasic = DBUser.GetOwnershipBasic(UserId);
+        var owbasic = DBUser.Get<UserOwnershipBasic>(UserId);
         if (owbasic == null)
             return null;
 
-        var ow = DBUser.GetOwnership(UserId, productId);
+        var ow = DBUser.Get<UserOwnership>(UserId, x=>x.ProductId == productId);
         if (ow == null)
             return null;
 
@@ -72,17 +74,17 @@ public class Owners
                 if (branch_app != null)
                 {
                     productBranches.Add(new OwnedGame.Types.ProductBranch()
-                    { 
+                    {
                         BranchId = branch_id,
-                        BranchName = branch_app.branch_name
+                        BranchName = branch_app.BranchName
 
                     });
                 }
             }
         }
 
-        if (File.Exists("ServerFiles/ProductConfigs/" + app.configuration))
-            app.configuration = File.ReadAllText("ServerFiles/ProductConfigs/" + app.configuration);
+        if (File.Exists("ServerFiles/ProductConfigs/" + app.Configuration))
+            app.Configuration = File.ReadAllText("ServerFiles/ProductConfigs/" + app.Configuration);
 
         var og = new OwnedGame()
         {
@@ -100,50 +102,50 @@ public class Owners
             SuspensionType = ow.Suspension,
             ActivationType = ow.Activation,
             TargetPartner = ow.TargetPartner,
-            State = (uint)app.state,
+            State = (uint)app.ProductState,
             StoreData = new()
             {
-                StoreRef = app.storereference,
+                StoreRef = app.StoreReference,
                 PromotionScore = 0,
-                Associations = { app.associations },
-                Configuration = app.store_configuration
+                Associations = { app.Associations },
+                Configuration = app.StoreConfiguration
             },
             IngameStoreData = new()
             {
-                StoreRef = app.storereference,
+                StoreRef = app.StoreReference,
                 PromotionScore = 0,
-                Associations = { app.associations },
-                Configuration = app.store_configuration
+                Associations = { app.Associations },
+                Configuration = app.StoreConfiguration
             },
             ActiveBranchId = branch,
-            ProductAssociations = { app.associations },
+            ProductAssociations = { app.Associations },
             Balance = 0,
             BrandId = 0,
-            Configuration = app.configuration,
-            ConfigVersion = app.config_version,
+            Configuration = app.Configuration,
+            ConfigVersion = app.ConfigVersion,
             DeprecatedTestConfig = false,
-            DownloadId = app.productId,
-            DownloadVersion = app.download_version,
-            GameCode = app.gamecode,
-            OrbitGameVersion = app.productId,
+            DownloadId = app.DownloadVersion,
+            DownloadVersion = app.DownloadVersion,
+            GameCode = app.GameCode,
+            OrbitGameVersion = app.ProductId,
             OrbitGameVersionUrl = "",
-            Platform = (uint)app.platform,
-            ProductType = (uint)app.product_type,
+            Platform = (uint)app.Platform,
+            ProductType = (uint)app.ProductType,
             TitleId = 0,
             AvailableBranches = { productBranches }
         };
 
-        if (!string.IsNullOrEmpty(app.space_id))
-            og.UbiservicesSpaceId = app.space_id;
+        if (app.SpaceId != Guid.Empty)
+            og.UbiservicesSpaceId = app.SpaceId.ToString();
 
-        if (!string.IsNullOrEmpty(app.app_id))
-            og.UbiservicesAppId = app.app_id;
+        if (app.AppId != Guid.Empty)
+            og.UbiservicesAppId = app.AppId.ToString();
 
-        if (!string.IsNullOrEmpty(appbranch.latest_manifest))
-            og.LatestManifest = appbranch.latest_manifest;
+        if (!string.IsNullOrEmpty(appbranch.LatestManifest))
+            og.LatestManifest = appbranch.LatestManifest;
 
-        if (!string.IsNullOrEmpty(appbranch.encryption_key))
-            og.EncryptionKey = appbranch.encryption_key;
+        if (!string.IsNullOrEmpty(appbranch.EncryptionKey))
+            og.EncryptionKey = appbranch.EncryptionKey;
 
         return og;
     }
@@ -166,32 +168,32 @@ public class Owners
             File.WriteAllText($"ServerFiles/ProductConfigs/{games.ProductId}.yml", games.Configuration, System.Text.Encoding.UTF8);
 
 
-            App.AddAppBranches(new DB.JAppBranches()
-            { 
-                latest_manifest = games.LatestManifest,
-                branch_id = games.ActiveBranchId,
-                encryption_key = games.EncryptionKey,
-                productId = games.ProductId,
-                branch_name = branchname
+            App.AddAppBranches(new AppBranches()
+            {
+                LatestManifest = games.LatestManifest,
+                BranchId = games.ActiveBranchId,
+                EncryptionKey = games.EncryptionKey,
+                ProductId = games.ProductId,
+                BranchName = branchname
             });
 
-            App.AddAppConfig(new DB.JAppConfig()
-            { 
-                productId = games.ProductId,
-                staging = false,
-                state = (OwnedGame.Types.State)games.State,
-                space_id = games.UbiservicesSpaceId,
-                global_appflags = new() { AppFlags.Downloadable, AppFlags.Playable },
-                app_id = games.UbiservicesSpaceId,
-                associations = games.ProductAssociations.ToList(),
-                configuration = $"{games.ProductId}.yml",
-                download_version = games.DownloadVersion,
-                gamecode = games.GameCode,
-                config_version = games.ConfigVersion,
-                product_type = (OwnedGame.Types.ProductType)games.ProductType,
-                platform = (GetUplayPCTicketReq.Types.Platform)games.Platform,
-                product_name = $"Product {games.ProductId}",
+            App.AddAppConfig(new AppConfig()
+            {
+                ProductId = games.ProductId,
+                Staging = false,
+                ProductState = (OwnedGame.Types.State)games.State,
+                SpaceId = Guid.Parse(games.UbiservicesSpaceId),
+                AppFlags = [AppFlags.Downloadable, AppFlags.Playable],
+                AppId = Guid.Parse(games.UbiservicesSpaceId),
+                Associations = games.ProductAssociations.ToList(),
+                Configuration = $"{games.ProductId}.yml",
+                DownloadVersion = games.DownloadVersion,
+                GameCode = games.GameCode,
+                ConfigVersion = games.ConfigVersion,
+                ProductType = (OwnedGame.Types.ProductType)games.ProductType,
+                Platform = (GetUplayPCTicketReq.Types.Platform)games.Platform,
+                ProductName = $"Product {games.ProductId}",
             });
-        }       
+        }
     }
 }

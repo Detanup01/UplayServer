@@ -1,8 +1,7 @@
 ﻿using Newtonsoft.Json;
+using ServerCore.Controller;
 using ServerCore.DB;
-using ServerCore.Json;
-using ServerCore.Json.DB;
-using ServerCore.Json.Ext;
+using ServerCore.Models.User;
 
 namespace Core.HTTP
 {
@@ -16,7 +15,7 @@ namespace Core.HTTP
 
             var userIdFromAuth = Auth.GetUserIdByAuth(toauth);
 
-            if (userIdFromAuth != "")
+            if (userIdFromAuth != Guid.Empty)
             {
                 return JsonConvert.SerializeObject(new RegisterResponse()
                 {
@@ -24,32 +23,17 @@ namespace Core.HTTP
                 });
             }
 
-            var name = JsonConvert.DeserializeObject<RegisterBody>(body).Name;
-            var userId = "";
-
-            // method to be check if there is a userId that are not used
-            // hopefully you arent gonna broke that
-            while (true)
-            {
-                var id = Utils.MakeNewID();
-
-                if (DBUser.GetUser(id) == null)
-                {
-                    userId = id;
-                    break;
-                }
-                Thread.Sleep(10);
-            }
-
+            var name = JsonConvert.DeserializeObject<RegisterBody>(body)!.Name;
+            Guid userId = Guid.NewGuid();
             Auth.AddUA(userId, toauth);
 
-            DBUser.Add(new JUser()
+            DBUser.Add(new UserCommon()
             { 
                 UserId = userId,
                 Name = name,
                 Friends = new()
             });
-            DBUser.Add(new JOwnershipBasic()
+            DBUser.Add(new UserOwnershipBasic()
             {
                 UserId = userId,
                 OwnedGamesIds = { 0 },
@@ -64,21 +48,21 @@ namespace Core.HTTP
                 },
                 UbiPlus = 0
             });
-            var cdkey = CDKey.GenerateKey(0);
-            DBUserExt.AddOwnership(0,0,userId,cdkey,new(),new());
+            var cdkey = CDKeyController.GenerateKey(0);
+            DBUserExt.AddOwnership(0, 0, userId,cdkey,new(),new());
             //Owners.MakeOwnership(userId, 0, new() { 0 }, new() { 0 });
             return JsonConvert.SerializeObject(new RegisterResponse()
             {
-                UserId = userId
+                UserId = userId,
             });
         }
         private class RegisterBody
         {
-            public string Name;
+            public string Name { get; set; } = string.Empty;
         }
         private class RegisterResponse
         {
-            public string UserId;
+            public Guid UserId;
         }
     }
 }

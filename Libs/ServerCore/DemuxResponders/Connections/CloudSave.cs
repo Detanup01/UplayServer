@@ -1,6 +1,6 @@
 ﻿using Google.Protobuf;
 using ServerCore.DB;
-using ServerCore.Json;
+using ServerCore.Models;
 using Uplay.CloudsaveService;
 
 namespace Core.DemuxResponders

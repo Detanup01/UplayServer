@@ -1,5 +1,6 @@
 ﻿using LiteDB;
-using ServerCore.Json.DB;
+using ServerCore.Models.User;
+using System.Linq.Expressions;
 
 namespace ServerCore.DB;
 
@@ -16,464 +17,93 @@ public class DBUser
     readonly static string CloudSave = "CloudSave";
 
     #region JUser
-    public static void Add(JUser user)
+    public static void Add<T>(T user) where T : UserBase
     {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JUser>(USER);
+        string collectionName = GetCollectionName<T>();
+        if (string.IsNullOrEmpty(collectionName))
+            return;
+        using var db = new LiteDatabase(DBName);
+        var col = db.GetCollection<T>(collectionName);
 
-            if (!col.Exists(X => X.Id == user.Id && X.UserId == user.UserId))
-            {
-                col.Insert(user);
-            }
-        }
+        if (!col.Exists(X => X.UserId == user.UserId))
+            col.Insert(user);
     }
 
-    public static void Edit(JUser user)
+    public static void Edit<T>(T user) where T : UserBase
     {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JUser>(USER);
+        string collectionName = GetCollectionName<T>();
+        if (string.IsNullOrEmpty(collectionName))
+            return;
+        using var db = new LiteDatabase(DBName);
+        var col = db.GetCollection<T>(collectionName);
 
-            var fId = col.FindOne(X=> X.Id == user.Id);
-            if (fId != null)
-            {
-                user.Id = fId.Id;
-                col.Update(user);
-            }
-
-        }
+        var fId = col.FindOne(X => X.UserId == user.UserId);
+        if (fId == null)
+            return;
+        user.UserId = fId.UserId;
+        col.Update(user);
     }
 
-    public static JUser? GetUser(string UserId)
+    public static T? Get<T>(Guid UserId) where T : UserBase
     {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JUser>(USER);
+        string collectionName = GetCollectionName<T>();
+        if (string.IsNullOrEmpty(collectionName))
+            return default;
+        using var db = new LiteDatabase(DBName);
+        var col = db.GetCollection<T>(collectionName);
 
-            var fId = col.FindOne(X => X.UserId == UserId);
-            if (fId != null)
-            {
-                return fId;
-            }
-        }
-        return null;
-    }
-    public static List<JUser>? GetUsers()
-    {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JUser>(USER);
-
-            var fId = col.FindAll();
-            if (fId != null)
-            {
-                return fId.ToList();
-            }
-        }
-        return null;
-    }
-    #endregion
-    #region JOwnershipBasic
-    public static void Add(JOwnershipBasic ownershipBasic)
-    {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JOwnershipBasic>(OwnershipBasic);
-
-            if (!col.Exists(X => X.Id == ownershipBasic.Id && X.UserId == ownershipBasic.UserId))
-            {
-                col.Insert(ownershipBasic);
-            }
-        }
+        return col.FindOne(X => X.UserId == UserId);
     }
 
-    public static void Edit(JOwnershipBasic ownershipBasic)
+    public static T? Get<T>(Guid UserId, Func<T, bool> expression) where T : UserBase
     {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JOwnershipBasic>(OwnershipBasic);
+        string collectionName = GetCollectionName<T>();
+        if (string.IsNullOrEmpty(collectionName))
+            return default;
+        using var db = new LiteDatabase(DBName);
+        var col = db.GetCollection<T>(collectionName);
 
-            var fId = col.FindOne(X => X.Id == ownershipBasic.Id);
-            if (fId != null)
-            {
-                ownershipBasic.Id = fId.Id;
-                col.Update(ownershipBasic);
-            }
-
-        }
+        return col.FindOne(X => X.UserId == UserId && expression.Invoke(X));
     }
 
-    public static JOwnershipBasic? GetOwnershipBasic(string UserId)
+    public static T? Get<T>(string UserId) where T : UserBase
     {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JOwnershipBasic>(OwnershipBasic);
-
-            var fId = col.FindOne(X => X.UserId == UserId);
-            if (fId != null)
-            {
-                return fId;
-            }
-        }
-        return null;
-    }
-    #endregion
-    #region JOwnership
-    public static void Add(JOwnership ownership)
-    {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JOwnership>(Ownership);
-
-            if (!col.Exists(X => X.Id == ownership.Id && X.UserId == ownership.UserId))
-            {
-                col.Insert(ownership);
-            }
-        }
+        return Get<T>(Guid.Parse(UserId));
     }
 
-    public static void Edit(JOwnership ownership)
+    public static List<T> GetList<T>(Guid UserId) where T : UserBase
     {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JOwnership>(Ownership);
+        string collectionName = GetCollectionName<T>();
+        if (string.IsNullOrEmpty(collectionName))
+            return [];
+        using var db = new LiteDatabase(DBName);
+        var col = db.GetCollection<T>(collectionName);
 
-            var fId = col.FindOne(X => X.Id == ownership.Id);
-            if (fId != null)
-            {
-                ownership.Id = fId.Id;
-                col.Update(ownership);
-            }
-
-        }
+        return col.Find(x=>x.UserId == UserId).ToList();
     }
 
-    public static JOwnership? GetOwnership(string UserId, uint productId)
+    public static string GetCollectionName<T>() where T : UserBase
     {
-        using (var db = new LiteDatabase(DBName))
+        switch (typeof(T).Name)
         {
-            var col = db.GetCollection<JOwnership>(Ownership);
-
-            var fId = col.FindOne(X => X.UserId == UserId && X.ProductId == productId);
-            if (fId != null)
-            {
-                return fId;
-            }
-        }
-        return null;
-    }
-
-    public static List<JOwnership>? GetOwnershipList(string UserId)
-    {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JOwnership>(Ownership);
-
-            var fId = col.Find(X => X.UserId == UserId);
-            if (fId != null)
-            {
-                return fId.ToList();
-            }
-        }
-        return null;
-    }
-    #endregion
-    #region JActivity
-    public static void Add(JActivity activity)
-    {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JActivity>(Activity);
-
-            if (!col.Exists(X => X.Id == activity.Id && X.UserId == activity.UserId))
-            {
-                col.Insert(activity);
-            }
-        }
-    }
-
-    public static void Edit(JActivity activity)
-    {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JActivity>(Activity);
-
-            var fId = col.FindOne(X => X.Id == activity.Id);
-            if (fId != null)
-            {
-                activity.Id = fId.Id;
-                col.Update(activity);
-            }
-
-        }
-    }
-
-    public static JActivity? GetActivity(string UserId)
-    {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JActivity>(Activity);
-
-            var fId = col.FindOne(X => X.UserId == UserId);
-            if (fId != null)
-            {
-                return fId;
-            }
-        }
-        return null;
-    }
-    #endregion
-    #region JFriend
-    public static void Add(JFriend friend)
-    {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JFriend>(Friend);
-
-            if (!col.Exists(X => X.Id == friend.Id && X.UserId == friend.UserId))
-            {
-                col.Insert(friend);
-            }
-        }
-    }
-
-    public static void Edit(JFriend friend)
-    {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JFriend>(Friend);
-
-            var fId = col.FindOne(X => X.Id == friend.Id);
-            if (fId != null)
-            {
-                friend.Id = fId.Id;
-                col.Update(friend);
-            }
-
-        }
-    }
-
-    public static JFriend? GetFriend(string UserId, string FriendUserId)
-    {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JFriend>(Friend);
-
-            var fId = col.FindOne(X => X.UserId == FriendUserId && X.IdOfFriend == UserId);
-            if (fId != null)
-            {
-                return fId;
-            }
-        }
-        return null;
-    }
-
-    public static List<JFriend>? GetFriends(string UserId)
-    {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JFriend>(Friend);
-
-            var fId = col.Find(X => X.IdOfFriend == UserId);
-            if (fId != null)
-            {
-                return fId.ToList();
-            }
-        }
-        return null;
-    }
-    #endregion
-    #region JPlaytime
-    public static void Add(JPlaytime playtime)
-    {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JPlaytime>(Playtime);
-
-            if (!col.Exists(X => X.Id == playtime.Id && X.UserId == playtime.UserId))
-            {
-                col.Insert(playtime);
-            }
-        }
-    }
-
-    public static void Edit(JPlaytime playtime)
-    {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JPlaytime>(Playtime);
-
-            var fId = col.FindOne(X => X.Id == playtime.Id);
-            if (fId != null)
-            {
-                playtime.Id = fId.Id;
-                col.Update(playtime);
-            }
-
-        }
-    }
-
-    public static JPlaytime? GetPlaytime(string UserId, uint ProdId)
-    {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JPlaytime>(Playtime);
-
-            var fId = col.FindOne(X => X.UserId == UserId && X.uplayId == ProdId);
-            if (fId != null)
-            {
-                return fId;
-            }
-        }
-        return null;
-    }
-    public static List<JPlaytime>? GetPlaytimes(string UserId)
-    {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JPlaytime>(Playtime);
-
-            var fId = col.Find(X => X.UserId == UserId);
-            if (fId != null)
-            {
-                return fId.ToList();
-            }
-        }
-        return null;
-    }
-    #endregion
-    #region JGameSession
-    public static void Add(JGameSession session)
-    {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JGameSession>(GameSession);
-
-            if (!col.Exists(X => X.Id == session.Id && X.UserId == session.UserId))
-            {
-                col.Insert(session);
-            }
-        }
-    }
-
-    public static void Edit(JGameSession session)
-    {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JGameSession>(Playtime);
-
-            var fId = col.FindOne(X => X.Id == session.Id);
-            if (fId != null)
-            {
-                session.Id = fId.Id;
-                col.Update(session);
-            }
-
-        }
-    }
-
-    public static JGameSession? GetGameSession(string UserId)
-    {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JGameSession>(Playtime);
-
-            var fId = col.FindOne(X => X.UserId == UserId);
-            if (fId != null)
-            {
-                return fId;
-            }
-        }
-        return null;
-    }
-    #endregion
-    #region JGameSession
-    public static void Add(JCloudSave session)
-    {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JCloudSave>(CloudSave);
-
-            if (!col.Exists(X => X.Id == session.Id && X.UserId == session.UserId))
-            {
-                col.Insert(session);
-            }
-        }
-    }
-
-    public static void Edit(JCloudSave session)
-    {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JCloudSave>(CloudSave);
-
-            var fId = col.FindOne(X => X.Id == session.Id);
-            if (fId != null)
-            {
-                session.Id = fId.Id;
-                col.Update(session);
-            }
-
-        }
-    }
-
-    public static List<JCloudSave>? GetCloudSaves(string UserId, uint ProductId)
-    {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JCloudSave>(CloudSave);
-
-            var fId = col.Find(X => X.UserId == UserId && X.uplayId == ProductId);
-            if (fId != null)
-            {
-                return fId.ToList();
-            }
-        }
-        return null;
-    }
-
-    public static JCloudSave? GetCloudSave(string UserId, uint ProductId, uint SaveId)
-    {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JCloudSave>(CloudSave);
-
-            var fId = col.FindOne(X => X.UserId == UserId && X.uplayId == ProductId && X.SaveId == SaveId);
-            if (fId != null)
-            {
-                return fId;
-            }
-        }
-        return null;
-    }
-
-    public static JCloudSave? GetCloudSave(string UserId, uint ProductId, string saveName)
-    {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JCloudSave>(CloudSave);
-
-            var fId = col.FindOne(X => X.UserId == UserId && X.uplayId == ProductId && X.SaveName == saveName);
-            if (fId != null)
-            {
-                return fId;
-            }
-        }
-        return null;
-    }
-
-    public static void DeleteCloudSave(string UserId, uint ProductId, uint SaveId)
-    {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<JCloudSave>(CloudSave);
-
-            var fId = col.FindOne(X => X.UserId == UserId && X.uplayId == ProductId && X.SaveId == SaveId);
-            if (fId != null)
-            {
-                col.Delete(fId.Id);
-            }
+            case "UserCommon":
+                return USER;
+            case "UserActivity":
+                return Activity;
+            case "UserOwnershipBasic":
+                return OwnershipBasic;
+            case "UserOwnership":
+                return Ownership;
+            case "UserFriend":
+                return Friend;
+            case "UserPlaytime":
+                return Playtime;
+            case "UserGameSession":
+                return GameSession;
+            case "UserCloudSave":
+                return CloudSave;
+            default:
+                return string.Empty;
         }
     }
     #endregion

@@ -1,9 +1,10 @@
 ﻿using Newtonsoft.Json;
+using ServerCore.Models;
 using SharedLib.Shared;
 
-namespace ServerCore.Json;
+namespace ServerCore.Controller;
 
-public class CDKey
+public class CDKeyController
 {
     public static string GenerateKey(uint productId, bool isUsed = true)
     {
@@ -29,8 +30,8 @@ public class CDKey
 
             i++;
         }
-       
-        JCDKEY key = new()
+
+        CDKey key = new()
         {
             IsUsed = isUsed,
             Key = gen,
@@ -42,10 +43,10 @@ public class CDKey
 
     public static bool IfCDKeyUsed(string Key)
     {
-        List<JCDKEY> list = new();
+        List<CDKey> list = new();
         if (File.Exists("ServerFiles/CacheFiles/cdkeys.json"))
-            list = JsonConvert.DeserializeObject<List<JCDKEY>>(File.ReadAllText("ServerFiles/CacheFiles/cdkeys.json"))!;
-        if (list.Where(x=>x.Key == Key && !x.IsUsed).Any())
+            list = JsonConvert.DeserializeObject<List<CDKey>>(File.ReadAllText("ServerFiles/CacheFiles/cdkeys.json"))!;
+        if (list.Where(x => x.Key == Key && !x.IsUsed).Any())
             return false;
 
         return true;
@@ -53,49 +54,26 @@ public class CDKey
 
     public static bool IfCDKeyExist(string Key)
     {
-        List<JCDKEY> list = new();
+        List<CDKey> list = new();
         if (File.Exists("ServerFiles/CacheFiles/cdkeys.json"))
-            list = JsonConvert.DeserializeObject<List<JCDKEY>>(File.ReadAllText("ServerFiles/CacheFiles/cdkeys.json"))!;
+            list = JsonConvert.DeserializeObject<List<CDKey>>(File.ReadAllText("ServerFiles/CacheFiles/cdkeys.json"))!;
         if (list.Where(x => x.Key == Key).Any())
             return true;
 
         return false;
     }
 
-    public static void AddKey(JCDKEY Key)
+    public static void AddKey(CDKey Key)
     {
-        List<JCDKEY> list = new();
+        List<CDKey> list = new();
         if (File.Exists("ServerFiles/CacheFiles/cdkeys.json"))
-            list = JsonConvert.DeserializeObject<List<JCDKEY>>(File.ReadAllText("ServerFiles/CacheFiles/cdkeys.json"))!;
+            list = JsonConvert.DeserializeObject<List<CDKey>>(File.ReadAllText("ServerFiles/CacheFiles/cdkeys.json"))!;
         list.Add(Key);
         File.WriteAllText("ServerFiles/CacheFiles/cdkeys.json", JsonConvert.SerializeObject(list));
     }
 
     public static string Generate()
     {
-        return $"{Randoming(3)}-{Randoming(4)}-{Randoming(4)}-{Randoming(4)}-{Randoming(4)}";
-    }
-
-    static string Randoming(int lenght)
-    {
-        Random random = new Random();
-        string str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        string ran = string.Empty;
-
-        for (int i = 0; i < lenght; i++)
-        {
-            int x = random.Next(str.Length);
-            ran = ran + str[x];
-        }
-
-        return ran;
-    }
-
-    public class JCDKEY
-    {
-        public uint ProductId { get; set; }
-        public string Key { get; set; } = string.Empty;
-        public bool IsUsed { get; set; }
-
+        return $"{RandomController.RandomString(3)}-{RandomController.RandomString(4)}-{RandomController.RandomString(4)}-{RandomController.RandomString(4)}-{RandomController.RandomString(4)}";
     }
 }

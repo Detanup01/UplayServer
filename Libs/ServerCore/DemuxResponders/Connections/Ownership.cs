@@ -4,8 +4,10 @@ using System.Text;
 using Uplay.Ownership;
 using SharedLib.Shared;
 using ServerCore.DB;
-using ServerCore.Json;
 using ServerCore;
+using ServerCore.Models;
+using ServerCore.Models.User;
+using ServerCore.Controllers;
 
 namespace Core.DemuxResponders
 {
@@ -13,7 +15,7 @@ namespace Core.DemuxResponders
     {
         public static ByteString GetOwnerSignature(string UserId)
         {
-            var owbasic = DBUser.GetOwnershipBasic(UserId);
+            var owbasic = DBUser.Get<UserOwnershipBasic>(UserId);
             if (owbasic != null)
             {
                 List<byte> SignList = new();
@@ -49,7 +51,7 @@ namespace Core.DemuxResponders
             var userid64 = tokensp[0];
             var sig64 = tokensp[1];
             var userId = B64.FromB64(CompressB64.GetUnZstdB64(Convert.FromBase64String(userid64)));
-            var owbasic = DBUser.GetOwnershipBasic(userId);
+            var owbasic = DBUser.Get<UserOwnershipBasic>(userId);
             byte[] siglist = { };
             if (owbasic.OwnedGamesIds.Count > 30)
             {
@@ -77,12 +79,12 @@ namespace Core.DemuxResponders
         }
 
 
-        public static ByteString GetSignofOwnership(string UserId, uint ProdId)
+        public static ByteString GetSignofOwnership(Guid UserId, uint ProdId)
         {
-            var ownership = DBUser.GetOwnership(UserId, ProdId);
+            var ownership = DBUser.Get<UserOwnership>(UserId, x=>x.ProductId == ProdId);
             if (ownership != null)
             {
-                var userId64 = CompressB64.GetZstdB64(UserId);
+                var userId64 = CompressB64.GetZstdB64(UserId.ToString());
                 string ownershipb64 = CompressB64.GetZstdB64(JsonConvert.SerializeObject(ownership));
 
                 return ByteString.CopyFrom(Encoding.UTF8.GetBytes(CompressB64.GetZstdB64(CompressB64.GetDeflateB64(userId64 + "_" + ownershipb64))));
@@ -176,7 +178,7 @@ namespace Core.DemuxResponders
             {
                 bool IsSuccess = false;
                 var userID = Globals.IdToUser[ClientNumb];
-                var owbasic = DBUser.GetOwnershipBasic(userID);
+                var owbasic = DBUser.Get<UserOwnershipBasic>(userID);
                 if (owbasic != null)
                 {
                     IsSuccess = true;
@@ -220,17 +222,17 @@ namespace Core.DemuxResponders
                         foreach (var item in Initializer.Branches)
                         {
                             var branch = App.GetAppBranch(item.ProductId, item.ActiveBranchId);
-                            if (branch != null && item.Passwords.Contains(branch.branch_password))
+                            if (branch != null && item.Passwords.Contains(branch.BranchPassword))
                                 branches.Add(item.ProductId,item.ActiveBranchId);
                         }
                     }
                     if (branches.Any())
                     {
-                        Downstream.Response.InitializeRsp.OwnedGames = Owners.GetOwnershipGames(userID, branches);
+                        Downstream.Response.InitializeRsp.OwnedGames = OwnershipController.GetOwnershipGames(userID, branches);
                     }
                     else
                     {
-                        Downstream.Response.InitializeRsp.OwnedGames = Owners.GetOwnershipGames(userID, null);
+                        Downstream.Response.InitializeRsp.OwnedGames = OwnershipController.GetOwnershipGames(userID, null);
                     }
                 }
                 Console.WriteLine("Initialize Done!");

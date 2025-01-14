@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using ServerCore.DB;
-using ServerCore.Json;
-using ServerCore.Json.DB;
+using ServerCore.Models;
+using ServerCore.Models.User;
 
 namespace ServerCore.HTTP
 {
@@ -11,7 +11,7 @@ namespace ServerCore.HTTP
         {
             var nullbytes = new byte[0] { };
             contentType = "application/json; charset=UTF-8";
-            var userId = headers["UserId"];
+            var userId = Guid.Parse(headers["UserId"]);
             if (URL.StartsWith("/"))
                 URL = URL.Replace("/cloudsave/", "");
             else
@@ -25,19 +25,19 @@ namespace ServerCore.HTTP
             {
                 return ("{\"error\":\"Error while parsing UplayID!\"}", nullbytes);
             }
-            if (ServerConfig.Instance.Demux.GlobalOwnerShipCheck || DBUser.GetOwnershipBasic(userId).OwnedGamesIds.Contains(prodId))
+            if (ServerConfig.Instance.Demux.GlobalOwnerShipCheck || DBUser.Get<UserOwnershipBasic>(userId) != null && DBUser.Get<UserOwnershipBasic>(userId)!.OwnedGamesIds.Contains(prodId))
             {
                 if (itemOrAll.Contains("all"))
                 {
-                    var cloudsaves = DBUser.GetCloudSaves(userId, prodId);
+                    var cloudsaves = DBUser.Get<UserCloudSave>(userId, x=>x.UplayId == prodId);
 
                     if (cloudsaves == null)
                     {
                         cloudsaves = new();
 
-                        DBUser.Add(new JCloudSave()
+                        DBUser.Add(new UserCloudSave()
                         {
-                            uplayId = prodId,
+                            UplayId = prodId,
                             UserId = userId
                         });
 
@@ -48,6 +48,7 @@ namespace ServerCore.HTTP
                 {
                     if (itemOrAll.Contains("savegame"))
                     {
+                        var cloudsave = DBUser.Get<UserCloudSave>(userId, x => x.UplayId == prodId && );
                         var cloudsave = DBUser.GetCloudSave(userId, prodId, itemOrAll);
                         if (cloudsave != null)
                         {

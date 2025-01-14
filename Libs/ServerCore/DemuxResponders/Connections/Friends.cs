@@ -1,6 +1,5 @@
 ﻿using Google.Protobuf;
 using ServerCore.DB;
-using ServerCore.Json.Ext;
 using Uplay.Friends;
 
 namespace Core.DemuxResponders

@@ -1,5 +1,5 @@
 ﻿using Google.Protobuf;
-using ServerCore.Json;
+using ServerCore.Models;
 using Uplay.DenuvoService;
 
 namespace Core.DemuxResponders

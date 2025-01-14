@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace ServerCore.Json;
+namespace ServerCore.Models;
 
 public class ServerConfig
 {
@@ -64,7 +64,7 @@ public class ServerConfig
         if (!File.Exists("ServerConfig.json"))
         {
             _Instance = new();
-            File.WriteAllText("ServerConfig.json", JsonConvert.SerializeObject(_Instance,Formatting.Indented));
+            File.WriteAllText("ServerConfig.json", JsonConvert.SerializeObject(_Instance, Formatting.Indented));
             return _Instance;
         }
         _Instance = JsonConvert.DeserializeObject<ServerConfig>(File.ReadAllText("ServerConfig.json"))!;

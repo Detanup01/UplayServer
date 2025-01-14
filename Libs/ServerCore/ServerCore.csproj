@@ -19,8 +19,12 @@
     <None Remove="ServerFiles\Web\Store\BaseStore.html" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Models\User\UserOwnershipBasic.cs" />
+  </ItemGroup>
+  <ItemGroup>
 	<PackageReference Include="LiteDB" Version="5.0.21" />
     <PackageReference Include="JWT" Version="11.0.0" />
+    <PackageReference Include="ModdableWebServer" Version="1.5.0" />
     <PackageReference Include="NetCoreServer" Version="8.0.7" />
     <PackageReference Include="System.Text.Json" Version="9.0.0" />
   </ItemGroup>

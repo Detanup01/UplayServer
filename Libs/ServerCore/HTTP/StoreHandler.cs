@@ -1,8 +1,8 @@
 ﻿using ServerCore.DB;
-using ServerCore.Json;
 using ServerCore.Json.DB;
-using ServerCore.Json.Ext;
 using ServerCore;
+using ServerCore.Controller;
+using ServerCore.Models;
 
 namespace Core.HTTP
 {
@@ -49,7 +49,7 @@ namespace Core.HTTP
                         if (config != null)
                         {
                             ownershipBasic.OwnedGamesIds.Add(pid);
-                            DBUserExt.AddOwnership(pid,uint.MinValue, ownershipBasic.UserId, CDKey.GenerateKey(pid),new(),new());
+                            DBUserExt.AddOwnership(pid,uint.MinValue, ownershipBasic.UserId, CDKeyController.GenerateKey(pid),new(),new());
                             //Owners.MakeOwnershipFromUser(user.UserId, user.Ownership);
                             reason = "SUCCESS";
                         }

@@ -1,13 +1,12 @@
-﻿using ServerCore.DB;
-using ServerCore.Json.DB;
+﻿using ServerCore.Models.User;
 
-namespace ServerCore.Json.Ext;
+namespace ServerCore.DB;
 
 public class DBUserExt : DBUser
 {
-    public static void AddOwnership(uint appid, uint branchid, string userId, string cdkey, List<uint> Subscriptions, List<uint> ActivationIds)
+    public static void AddOwnership(uint appid, uint branchid, Guid userId, string cdkey, List<uint> Subscriptions, List<uint> ActivationIds)
     {
-        Add(new JOwnership()
+        Add(new UserOwnership()
         {
             UserId = userId,
             Subscriptions = Subscriptions,
@@ -19,7 +18,7 @@ public class DBUserExt : DBUser
             ActivationIds = ActivationIds,
             CD_Key = cdkey,
             ProductId = appid,
-            current_branch_id = branchid,
+            CurrentBranchId = branchid,
             IsOwned = true,
             TargetPartner = Uplay.Ownership.OwnedGame.Types.TargetPartner.None
         });
@@ -27,7 +26,7 @@ public class DBUserExt : DBUser
 
     public static bool IsUserBanned(string UserID)
     {
-        var user = GetUser(UserID);
+        var user = Get<UserCommon>(UserID);
         if (user == null)
             return false;
         return user.IsBanned;
@@ -35,18 +34,18 @@ public class DBUserExt : DBUser
 
     public static bool IsUserExist(string UserID)
     {
-        var user = GetUser(UserID);
+        var user = Get<UserCommon>(UserID);
         return user != null;
     }
 
     public static bool RemoveFromFriends(string UserId, string FriendId)
     {
-        JUser? user = GetUser(UserId);
+        UserCommon? user = Get<UserCommon>(UserId);
         if (user != null)
         {
             user.Friends.Remove(FriendId);
             Edit(user);
-            user = GetUser(FriendId);
+            user = Get<UserCommon>(FriendId);
             if (user != null)
             {
                 user.Friends.Remove(UserId);
@@ -57,9 +56,9 @@ public class DBUserExt : DBUser
         return false;
     }
 
-    public static void UplayFriendsGameParseToUser(string UserId, Uplay.Friends.Game game)
+    public static void UplayFriendsGameParseToUser(Guid UserId, Uplay.Friends.Game game)
     {
-        var activity = GetActivity(UserId);
+        var activity = Get<UserActivity>(UserId);
         if (activity == null)
             activity = new()
             {
@@ -69,21 +68,20 @@ public class DBUserExt : DBUser
         activity.ProductName = game.ProductName;
         activity.IsPlaying = true;
         Edit(activity);
-        if (game.GameSession != null)
-        {
-            var session = GetGameSession(UserId);
-            if (session == null)
-                session = new()
-                {
-                    UserId = UserId
-                };
-            session.SessionData = game.GameSession.GameSessionData.ToBase64();
-            session.SessionId = game.GameSession.GameSessionId;
-            session.SessionIdV2 = game.GameSession.GameSessionIdV2;
-            session.Joinable = game.GameSession.Joinable;
-            session.Size = game.GameSession.Size;
-            session.MaxSize = game.GameSession.MaxSize;
-            Edit(session);
-        }
+        if (game.GameSession == null)
+            return;
+        UserGameSession? session = Get<UserGameSession>(UserId);
+        if (session == null)
+            session = new()
+            {
+                UserId = UserId
+            };
+        session.SessionData = game.GameSession.GameSessionData.ToBase64();
+        session.SessionId = game.GameSession.GameSessionId;
+        session.SessionIdV2 = game.GameSession.GameSessionIdV2;
+        session.Joinable = game.GameSession.Joinable;
+        session.Size = game.GameSession.Size;
+        session.MaxSize = game.GameSession.MaxSize;
+        Edit<UserGameSession>(session);
     }
 }

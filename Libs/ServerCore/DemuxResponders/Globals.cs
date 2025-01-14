@@ -23,12 +23,12 @@
             "Downloadable", "Playable", "DenuvoForceTimeTrial" , "Denuvo", "FromSubscription", "FromExpiredSubscription"
         };
 
-        public static Dictionary<Guid, string> IdToUser = new();
-        public static Dictionary<string, Guid> UserToId = new();
+        public static Dictionary<Guid, Guid> IdToUser = new();
+        public static Dictionary<Guid, Guid> UserToId = new();
 
         public static List<uint> AcceptVersions = new()
         {
-            uint.MinValue, 10857
+            uint.MinValue, 11194
         };
     }
 }

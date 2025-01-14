@@ -3,7 +3,7 @@ using JWT.Builder;
 using JWT.Exceptions;
 using Newtonsoft.Json;
 using ServerCore;
-using ServerCore.Json;
+using ServerCore.Models.JWTToken;
 using System.Security.Cryptography;
 
 namespace Core
@@ -189,11 +189,11 @@ namespace Core
             switch (iss)
             {
                 case "auth_service":
-                    returner = JsonConvert.DeserializeObject<JWToken.auth_service>(json).exp;
+                    returner = JsonConvert.DeserializeObject<AuthService>(json).exp;
                     break;
 
                 case "ownership_service":
-                    returner = JsonConvert.DeserializeObject<JWToken.ownership_service>(json).exp;
+                    returner = JsonConvert.DeserializeObject<OwnershipService>(json).exp;
                     break;
                 default:
                     break;
