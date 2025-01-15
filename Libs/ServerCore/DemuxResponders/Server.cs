@@ -1,4 +1,4 @@
-﻿using Core.Extra;
+﻿using ServerCore.Extra;
 using Google.Protobuf;
 using NetCoreServer;
 using ServerCore.Models;
@@ -9,13 +9,13 @@ using System.Net.Sockets;
 using System.Security.Authentication;
 using Uplay.Demux;
 
-namespace Core.DemuxResponders
+namespace ServerCore.DemuxResponders
 {
     public class DemuxServer
     {
         #region DemuxServer
         public static ConcurrentDictionary<Guid, DMXSession> DMXSessions = new ConcurrentDictionary<Guid, DMXSession>();
-        static DMXServer server;
+        static DMXServer? server;
         public static void Start()
         {
             Directory.CreateDirectory("logs");
@@ -27,11 +27,11 @@ namespace Core.DemuxResponders
 
         public static void Stop()
         {
-            server.Stop();
+            server?.Stop();
             Console.WriteLine("[DMX] Server Stopped");
         }
 
-        public static DMXServer GetServer()
+        public static DMXServer? GetServer()
         {
             return server;
         }
@@ -98,7 +98,7 @@ namespace Core.DemuxResponders
         #region Multicast
         public static void SendToAllClient(Downstream down)
         {
-            server.Multicast(Formatters.FormatUpstream(down.ToByteArray()));
+            server?.Multicast(Formatters.FormatUpstream(down.ToByteArray()));
         }
         public static void SendToAllClient(DataMessage message)
         {
@@ -109,7 +109,7 @@ namespace Core.DemuxResponders
                     Data = message
                 }
             };
-            server.Multicast(Formatters.FormatUpstream(down.ToByteArray()));
+            server?.Multicast(Formatters.FormatUpstream(down.ToByteArray()));
         }
         public static void SendToAllClient(ByteString bstr, uint conId)
         {
@@ -124,7 +124,7 @@ namespace Core.DemuxResponders
                     }
                 }
             };
-            server.Multicast(Formatters.FormatUpstream(down.ToByteArray()));
+            server?.Multicast(Formatters.FormatUpstream(down.ToByteArray()));
         }
         #endregion
         #endregion
@@ -145,7 +145,7 @@ namespace Core.DemuxResponders
         #region DMXSession
         public class DMXSession : SslSession
         {
-            public DMXServer Server;
+            public new DMXServer Server;
             public bool IsClosed { get; internal set; } = false;
             public DMXSession(DMXServer server) : base(server)
             {

@@ -1,43 +1,43 @@
-﻿namespace Core
+﻿namespace ServerCore;
+
+public static class EnumExt
 {
-    public static class EnumExt
+    public static T[] CopySlice<T>(this T[] source, int index, int length, bool padToLength = false)
     {
-        public static T[] CopySlice<T>(this T[] source, int index, int length, bool padToLength = false)
+        int n = length;
+        T[] slice = [];
+
+        if (source.Length < index + length)
         {
-            int n = length;
-            T[] slice = null;
-
-            if (source.Length < index + length)
+            n = source.Length - index;
+            if (padToLength)
             {
-                n = source.Length - index;
-                if (padToLength)
-                {
-                    slice = new T[length];
-                }
+                slice = new T[length];
             }
-
-            if (slice == null) slice = new T[n];
-            Array.Copy(source, index, slice, 0, n);
-            return slice;
         }
 
-        public static IEnumerable<T[]> Slices<T>(this T[] source, int count, bool padToLength = false)
+        if (slice.Length == 0) 
+            slice = new T[n];
+        Array.Copy(source, index, slice, 0, n);
+        return slice;
+    }
+
+    public static IEnumerable<T[]> Slices<T>(this T[] source, int count, bool padToLength = false)
+    {
+        for (var i = 0; i < source.Length; i += count)
+            yield return source.CopySlice(i, count, padToLength);
+    }
+
+
+    public static IEnumerable<byte[]> Split(this byte[] value, int bufferLength)
+    {
+        int countOfArray = value.Length / bufferLength;
+        if (value.Length % bufferLength > 0)
+            countOfArray++;
+        for (int i = 0; i < countOfArray; i++)
         {
-            for (var i = 0; i < source.Length; i += count)
-                yield return source.CopySlice(i, count, padToLength);
-        }
+            yield return value.Skip(i * bufferLength).Take(bufferLength).ToArray();
 
-
-        public static IEnumerable<byte[]> Split(this byte[] value, int bufferLength)
-        {
-            int countOfArray = value.Length / bufferLength;
-            if (value.Length % bufferLength > 0)
-                countOfArray++;
-            for (int i = 0; i < countOfArray; i++)
-            {
-                yield return value.Skip(i * bufferLength).Take(bufferLength).ToArray();
-
-            }
         }
     }
 }

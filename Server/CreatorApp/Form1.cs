@@ -1,4 +1,5 @@
 using Google.Protobuf;
+using ServerCore.Extra;
 
 namespace Creator
 {
@@ -24,7 +25,7 @@ namespace Creator
 
             var savepath = $"{sp}/Download/{prod}/manifests";
             Directory.CreateDirectory(savepath);
-            Core.Creators.MakeManifest(ToManifest.Manifest, $"{savepath}/{manifest}.manifest");
+            Creators.MakeManifest(ToManifest.Manifest, $"{savepath}/{manifest}.manifest");
         }
 
         // file

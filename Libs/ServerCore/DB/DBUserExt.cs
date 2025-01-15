@@ -32,13 +32,27 @@ public class DBUserExt : DBUser
         return user.IsBanned;
     }
 
+    public static bool IsUserBanned(Guid UserID)
+    {
+        var user = Get<UserCommon>(UserID);
+        if (user == null)
+            return false;
+        return user.IsBanned;
+    }
+
     public static bool IsUserExist(string UserID)
     {
         var user = Get<UserCommon>(UserID);
         return user != null;
     }
 
-    public static bool RemoveFromFriends(string UserId, string FriendId)
+    public static bool IsUserExist(Guid UserID)
+    {
+        var user = Get<UserCommon>(UserID);
+        return user != null;
+    }
+
+    public static bool RemoveFromFriends(Guid UserId, Guid FriendId)
     {
         UserCommon? user = Get<UserCommon>(UserId);
         if (user != null)
@@ -54,6 +68,11 @@ public class DBUserExt : DBUser
             }
         }
         return false;
+    }
+
+    public static bool RemoveFromFriends(string UserId, string FriendId)
+    {
+        return RemoveFromFriends(Guid.Parse(UserId), Guid.Parse(FriendId));
     }
 
     public static void UplayFriendsGameParseToUser(Guid UserId, Uplay.Friends.Game game)

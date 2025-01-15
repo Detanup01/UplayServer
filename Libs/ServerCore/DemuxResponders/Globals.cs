@@ -1,4 +1,4 @@
-﻿namespace Core.DemuxResponders
+﻿namespace ServerCore.DemuxResponders
 {
     public class Globals
     {

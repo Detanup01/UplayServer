@@ -8,7 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Libs\ClientKit\ClientKit.csproj" />
+    <PackageReference Include="UbiServices" Version="24.9.8" />
+    <PackageReference Include="Uplay-Protobufs" Version="158.0.11194" />
+    <PackageReference Include="UplayKit" Version="0.0.2.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libs\Shared\SharedLib.csproj" />
   </ItemGroup>
 
 </Project>

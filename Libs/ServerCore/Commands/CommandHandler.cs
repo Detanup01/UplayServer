@@ -1,4 +1,4 @@
-﻿namespace Core.Commands;
+﻿namespace ServerCore.Commands;
 
 public class CommandHandler
 {

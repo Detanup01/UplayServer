@@ -1,7 +1,7 @@
-﻿using Core.DemuxResponders;
+﻿using ServerCore.DemuxResponders;
 using ServerCore.Models;
 
-namespace Core.Commands;
+namespace ServerCore.Commands;
 
 public class Reloader
 {

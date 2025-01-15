@@ -2,7 +2,7 @@
 using ServerCore.Models;
 using Uplay.ClientConfiguration;
 
-namespace Core.DemuxResponders;
+namespace ServerCore.DemuxResponders;
 
 public class ClientConfig
 {
@@ -77,16 +77,20 @@ public class ClientConfig
 
         public static void DMX_PatchInfo(Uplay.Demux.GetPatchInfoReq getPatchInfo)
         {
-            Demux.ReqRSP.GetPatchInfo(getPatchInfo);
-
-            var patchinfo = Demux.ReqRSP.Downstream.Response.GetPatchInfoRsp;
-
             Downstream = new()
             {
                 Response = new()
                 {
                     RequestId = ReqId,
-                    GetPatchInfoRsp = patchinfo
+                    GetPatchInfoRsp = new()
+                    {
+                        TrackType = getPatchInfo.TrackType,
+                        TestConfig = getPatchInfo.TestConfig,
+                        Success = true,
+                        LatestVersion = Globals.AcceptVersions.Last(),
+                        PatchTrackId = getPatchInfo.PatchTrackId,
+                        PatchBaseUrl = ServerConfig.Instance.HTTPS_Url + "/patch/"
+                    }
                 }
             };
         }

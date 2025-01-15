@@ -1,161 +1,146 @@
 ﻿using Client.Patch;
 using ClientApp;
 using ClientApp.PipeConnection;
-using ClientKit.Demux;
-using ClientKit.Demux.Connection;
-using ClientKit.UbiServices.Public;
-using ClientKit.UbiServices.Records;
+using UplayKit;
+using UplayKit.Connection;
+using UbiServices.Public;
 using Google.Protobuf;
-using Newtonsoft.Json;
-using RestSharp;
 using SharedLib.Shared;
-using System.IO.Pipes;
-using System.Reflection.Metadata;
+using Newtonsoft.Json;
 
-namespace Client
+namespace Client;
+
+internal class Program
 {
-    internal class Program
+    public static DemuxSocket? Socket;
+    public static PipeServer? pipeServer;
+
+    static void Main(string[] args)
     {
-        public static Socket Socket;
-        public static PipeServer pipeServer;
-
-        static void Main(string[] args)
+        Debug.IsDebug = true;
+        pipeServer = new PipeServer();
+        pipeServer.Readed += PipeServer_Readed;
+        var pipeThread = new Thread(pipeServer.Start);
+        pipeThread.Start();
+        var reg = V3.CreateAccount("testuser", "testuser", "2000-01-01", "testuser", "EU", "US", "-");
+        if (reg != null)
         {
-            Debug.IsDebug = true;
-            /*
-            var client = new RestClient("https://local-ubiservices.ubi.com:7777/store/?p=0");
-            var request = new RestRequest();
+            var UserID = reg;
+            Console.WriteLine(JsonConvert.SerializeObject(UserID));
+        }
+        var login = V3.Login("testuser", "testuser");
+        if (login != null)
+        {
+            var ticket = login.Ticket;
+            Console.WriteLine(ticket);
+            Socket = new();
+            var patch = Socket.GetPatch()!;
 
-            request.AddHeader("authorization", $"ubi_v1 t=VDF6UWlacDJvTDdCOE5IcXR3bHNYRE8yeDlvWjkvYzh6M083R0hER0hGaz0=");
-
-            var rsp = ClientKit.UbiServices.Rest.GetString(client,request);
-
-            File.WriteAllText("resp", rsp);
-            */
-            pipeServer = new PipeServer();
-            pipeServer.Readed += PipeServer_Readed;
-            var pipeThread = new Thread(pipeServer.Start);
-            pipeThread.Start();
-            var reg = V3.Register("testuser", "testuser", "testuser");
-            if (reg != null)
+            if (patch.LatestVersion != Socket.ClientVersion)
             {
-                var UserID = reg.UserId;
-                Console.WriteLine(UserID);
-            }
-            var login = V3.Login("testuser", "testuser");
-            if (login != null)
-            {
-                var ticket = login.Ticket;
-                Console.WriteLine(ticket);
-                Socket = new();
-                var patch = Socket.GetPatch();
+                Console.WriteLine("Your client is outdated!\nDo you wanna update?");
+                Console.WriteLine("\nY/y = Yes | N/n = No (If you dont say it just exit)");
 
-                if (patch.LatestVersion != Socket.ClientVersion)
+                var choice = Console.ReadLine()!;
+                switch (choice.ToLower())
                 {
-                    Console.WriteLine("Your client is outdated!\nDo you wanna update?");
-                    Console.WriteLine("\nY/y = Yes | N/n = No (If you dont say it just exit)");
-
-                    var choice = Console.ReadLine();
-                    switch (choice.ToLower())
-                    {
-                        case "y":
-                            Patcher.Main(patch);
-                            Restarter.Restart("");
-                            break;
-                        default:
-                            break;
-                    }
-
+                    case "y":
+                        Patcher.MainPatch(patch);
+                        Restarter.Restart("");
+                        break;
+                    default:
+                        break;
                 }
-                else
-                {
-                    Console.WriteLine("Your Client is up-to-date!");
-                }
-                Socket.PushVersion();
-                Console.WriteLine(Socket.Authenticate(ticket));
-                Console.WriteLine(Socket.IsAuthed);
-
-
-                if (args.Contains("install") || args.Contains("download"))
-                {
-                    args = args.Append("-ticket").Append(ticket).ToArray();
-                    Downloader.Program.Main(args, Socket);
-                }
-                else
-                {
-                    OwnershipConnection ownershipConnection = new(Socket);
-                    var x = ownershipConnection.Initialize(new List<Uplay.Ownership.InitializeReq.Types.ProductBranchData>() { });
-                    var sig = x.OwnedGamesContainer.Signature.ToBase64();
-                    var tmp = ownershipConnection.RegisterTempOwnershipToken(sig);
-                    Console.WriteLine(tmp.ProductIds.Count);
-                }
-
-                Console.ReadLine();
-                Socket.DisconnectAsync();
-                Socket.Dispose();
-                pipeServer.Readed -= PipeServer_Readed;
-                pipeServer.Stop();
-                pipeThread.Join(TimeSpan.FromSeconds(1));
-                Console.WriteLine("END!");
-                Environment.Exit(0);
-            }
-
-            /*
-            var x = callbacktest.getcontext();
-            Console.WriteLine("yey context! " + x);
-            callbacktest.updatecontext(x);
-            Console.WriteLine("update! " +x);
-            callbacktest.Use(x);
-            Console.WriteLine("use! " + x);
-            callbacktest.updatecontext(x);
-            Console.WriteLine("update! " + x);
-            callbacktest.freecontext(x);
-            Console.WriteLine("free! " + x);*/
-            /*
-            var reg = V3.Register("slejm","slejm","slejm");
-            if (reg != null)
-            {
-                var UserID = reg.UserId;
 
             }
-           
-
-            var login = V3.Login("slejm", "slejm");
-            if (login != null)
+            else
             {
-                var ticket = login.Ticket;
-                Debug.isDebug = true;
-                Socket socket = new();
-                socket.PushVersion();
-                socket.VersionCheck();
-                Console.WriteLine(socket.Authenticate(ticket));
-
-                OwnershipConnection ow = new(socket);
-                var games = ow.GetOwnedGames();
-                if (games != null)
-                {
-                    foreach (var x in games)
-                    {
-                        Console.WriteLine(x.ToString());
-
-                    }
-
-                }
+                Console.WriteLine("Your Client is up-to-date!");
+            }
+            Socket.PushVersion();
+            Console.WriteLine(Socket.Authenticate(ticket));
 
 
+            if (args.Contains("install") || args.Contains("download"))
+            {
+                args = args.Append("-ticket").Append(ticket).ToArray();
+            }
+            else
+            {
+                OwnershipConnection ownershipConnection = new(Socket, login.Ticket, login.SessionId);
+                var x = ownershipConnection.Initialize();
+                var sig = x!.OwnedGamesContainer.Signature.ToBase64();
+#pragma warning disable CS0618 // Type or member is obsolete
+                var tmp = ownershipConnection.RegisterTempOwnershipToken(sig);
+#pragma warning restore CS0618 // Type or member is obsolete
+                Console.WriteLine(tmp!.ProductIds.Count);
+            }
 
-
-                Console.ReadLine();
-
-                socket.Close();
-            }*/
+            Console.ReadLine();
+            Socket.DisconnectAsync();
+            Socket.Dispose();
+            pipeServer.Readed -= PipeServer_Readed;
+            pipeServer.Stop();
+            pipeThread.Join(TimeSpan.FromSeconds(1));
+            Console.WriteLine("END!");
+            Environment.Exit(0);
         }
 
-        private static void PipeServer_Readed(object? sender, byte[] e)
+        /*
+        var x = callbacktest.getcontext();
+        Console.WriteLine("yey context! " + x);
+        callbacktest.updatecontext(x);
+        Console.WriteLine("update! " +x);
+        callbacktest.Use(x);
+        Console.WriteLine("use! " + x);
+        callbacktest.updatecontext(x);
+        Console.WriteLine("update! " + x);
+        callbacktest.freecontext(x);
+        Console.WriteLine("free! " + x);*/
+        /*
+        var reg = V3.Register("slejm","slejm","slejm");
+        if (reg != null)
         {
-            var req = Formatters.FormatDataNoLength<Uplay.Demux.Upstream>(e);
-            var rsp = Socket.SendUpstream(req);
-            pipeServer.Send(Formatters.FormatUpstream(rsp.ToByteArray()));
+            var UserID = reg.UserId;
+
         }
+       
+
+        var login = V3.Login("slejm", "slejm");
+        if (login != null)
+        {
+            var ticket = login.Ticket;
+            Debug.isDebug = true;
+            Socket socket = new();
+            socket.PushVersion();
+            socket.VersionCheck();
+            Console.WriteLine(socket.Authenticate(ticket));
+
+            OwnershipConnection ow = new(socket);
+            var games = ow.GetOwnedGames();
+            if (games != null)
+            {
+                foreach (var x in games)
+                {
+                    Console.WriteLine(x.ToString());
+
+                }
+
+            }
+
+
+
+
+            Console.ReadLine();
+
+            socket.Close();
+        }*/
+    }
+
+    private static void PipeServer_Readed(object? sender, byte[] e)
+    {
+        var req = SharedLib.Shared.Formatters.FormatDataNoLength<Uplay.Demux.Upstream>(e);
+        var rsp = Socket!.SendUpstream(req!);
+        pipeServer!.Send(SharedLib.Shared.Formatters.FormatUpstream(rsp.ToByteArray()));
     }
 }

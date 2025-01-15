@@ -3,5 +3,5 @@
 public class UserPlaytime : UserBase
 {
     public uint UplayId { get; set; }
-    public ulong PlayTime { get; set; }
+    public uint PlayTime { get; set; }
 }

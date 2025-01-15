@@ -1,5 +1,4 @@
-﻿using Core.Extra.Interfaces;
-using NetCoreServer;
+﻿using ServerCore.Extra.Interfaces;
 using System.Composition;
 
 namespace Plugin;
@@ -36,20 +35,8 @@ public class Plugin : IPlugin, IDisposable
         return false;
     }
 
-    public bool HttpRequest(HttpRequest request, HttpsSession session)
-    {
-        if (request.Url.Contains("ok"))
-        {
-            session.SendResponseAsync(session.Response.MakeGetResponse("Success!"));
-            return true;
-        }
-        return false;
-    }
-
     public void ShutDown()
     {
         Console.WriteLine("Goodbye!");
     }
-
-
 }

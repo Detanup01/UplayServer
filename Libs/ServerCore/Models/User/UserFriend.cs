@@ -2,7 +2,7 @@
 
 public class UserFriend : UserBase
 {
-    public string? IdOfFriend { get; set; }
+    public Guid? IdOfFriend { get; set; }
     public string? Name { get; set; }
     public string? Nickname { get; set; }
     public bool IsFavorite { get; set; } = false;

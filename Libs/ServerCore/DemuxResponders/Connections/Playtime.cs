@@ -1,79 +1,79 @@
 ﻿using Google.Protobuf;
 using ServerCore.DB;
+using ServerCore.Models.User;
 using Uplay.Playtime;
 
-namespace Core.DemuxResponders
-{
-    public class Playtime
-    {
-        public class Up
-        {
-            public static Downstream Downstream = null;
-            public static void UpstreamConverter(Guid ClientNumb, ByteString bytes)
-            {
-                var UpstreamBytes = bytes.Skip(4).ToArray();
-                var Upsteam = Upstream.Parser.ParseFrom(UpstreamBytes);
-                if (Upsteam != null)
-                {
-                    if (Upsteam.Request != null)
-                    {
-                        ReqRSP.Requests(ClientNumb, Upsteam.Request);
-                        while (ReqRSP.IsIdDone == false)
-                        {
+namespace ServerCore.DemuxResponders;
 
-                        }
-                        Downstream = ReqRSP.Downstream;
+public class Playtime
+{
+    public class Up
+    {
+        public static Downstream? Downstream = null;
+        public static void UpstreamConverter(Guid ClientNumb, ByteString bytes)
+        {
+            var UpstreamBytes = bytes.Skip(4).ToArray();
+            var Upsteam = Upstream.Parser.ParseFrom(UpstreamBytes);
+            if (Upsteam != null)
+            {
+                if (Upsteam.Request != null)
+                {
+                    ReqRSP.Requests(ClientNumb, Upsteam.Request);
+                    while (ReqRSP.IsIdDone == false)
+                    {
+
                     }
+                    Downstream = ReqRSP.Downstream;
                 }
             }
         }
+    }
 
 
-        public class ReqRSP
+    public class ReqRSP
+    {
+        public static Downstream? Downstream = null;
+        public static uint ReqId = 0;
+        public static bool IsIdDone = false;
+        public static void Requests(Guid ClientNumb, Req req)
         {
-            public static Downstream Downstream = null;
-            public static uint ReqId = 0;
-            public static bool IsIdDone = false;
-            public static void Requests(Guid ClientNumb, Req req)
-            {
-                File.AppendAllText($"logs/client_{ClientNumb}_playtime_req.log", req.ToString() + "\n");
-                if (req?.GetPlaytimeReq != null) { GetPlaytime(ClientNumb, req.GetPlaytimeReq); }
-                if (req?.UpdatePlaytimeReq != null) { UpdatePlaytime(ClientNumb, req.UpdatePlaytimeReq); }
-                IsIdDone = true;
-            }
+            File.AppendAllText($"logs/client_{ClientNumb}_playtime_req.log", req.ToString() + "\n");
+            if (req?.GetPlaytimeReq != null) { GetPlaytime(ClientNumb, req.GetPlaytimeReq); }
+            if (req?.UpdatePlaytimeReq != null) { UpdatePlaytime(ClientNumb, req.UpdatePlaytimeReq); }
+            IsIdDone = true;
+        }
 
-            public static void GetPlaytime(Guid ClientNumb, GetPlaytimeReq req)
+        public static void GetPlaytime(Guid ClientNumb, GetPlaytimeReq req)
+        {
+            Downstream = new()
             {
-                Downstream = new()
+                Response = new()
                 {
-                    Response = new()
+                    GetPlaytimeRsp = new()
                     {
-                        GetPlaytimeRsp = new()
-                        {
-                            Result = Result.ServerError
-                        }
+                        Result = Result.ServerError
                     }
-                };
-            }
+                }
+            };
+        }
 
-            public static void UpdatePlaytime(Guid ClientNumb, UpdatePlaytimeReq req)
+        public static void UpdatePlaytime(Guid ClientNumb, UpdatePlaytimeReq req)
+        {
+            var UserId = Globals.IdToUser[ClientNumb];
+            var playtime = DBUser.Get<UserPlaytime>(UserId, x=>x.UplayId == req.GameId);
+            if (playtime != null)
+                playtime.PlayTime += req.SecondsToAdd;
+
+            Downstream = new()
             {
-                var UserId = Globals.IdToUser[ClientNumb];
-                var playtime = DBUser.GetPlaytime(UserId, req.GameId);
-                if (playtime != null)
-                    playtime.playTime += req.SecondsToAdd;
-
-                Downstream = new()
+                Response = new()
                 {
-                    Response = new()
+                    UpdatePlaytimeRsp = new()
                     {
-                        UpdatePlaytimeRsp = new()
-                        {
-                            Result = Result.Success
-                        }
+                        Result = Result.Success
                     }
-                };
-            }
+                }
+            };
         }
     }
 }

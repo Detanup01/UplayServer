@@ -1,4 +1,6 @@
-﻿namespace Creator;
+﻿using ServerCore.Extra;
+
+namespace Creator;
 
 internal class ToManifest
 {
@@ -94,7 +96,7 @@ internal class ToManifest
         };
         if (Manifest.IsCompressed)
         {
-            Core.Creators.CompressFile(filepath, int.Parse(maxsiz), comp, savetopath, sliceversion, prodid, out var file1);
+            Creators.CompressFile(filepath, int.Parse(maxsiz), comp, savetopath, sliceversion, prodid, out var file1);
             file = file1;
         }
         else
@@ -105,19 +107,19 @@ internal class ToManifest
                 int megabyte = 5242880;
                 byte[] buffer = new byte[megabyte];
                 int bytesRead = sr.Read(buffer, 0, megabyte);
-                Core.Creators.WriteOut((uint)buffer.Length, buffer, savetopath, sliceversion, prodid, file, out var outfile);
+                Creators.WriteOut((uint)buffer.Length, buffer, savetopath, sliceversion, prodid, file, out var outfile);
                 file = outfile;
                 while (bytesRead > 0)
                 {
                     bytesRead = sr.Read(buffer, 0, megabyte);
-                    Core.Creators.WriteOut((uint)buffer.Length, buffer, savetopath, sliceversion, prodid, file, out outfile);
+                    Creators.WriteOut((uint)buffer.Length, buffer, savetopath, sliceversion, prodid, file, out outfile);
                     file = outfile;
                 }
             }
             else
             {;
                 var all = File.ReadAllBytes(filepath);
-                Core.Creators.WriteOut((uint)all.Length, all, savetopath, sliceversion, prodid, file, out var outfile);
+                Creators.WriteOut((uint)all.Length, all, savetopath, sliceversion, prodid, file, out var outfile);
                 file = outfile;
             }
         }

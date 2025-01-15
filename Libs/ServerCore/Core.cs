@@ -1,18 +1,19 @@
-﻿using Core.DemuxResponders;
-using Core.Extra;
+﻿using ServerCore.DemuxResponders;
+using ServerCore.Extra;
 using ServerCore.DB;
 using ServerCore.Models;
+using ServerCore.HTTP;
 
-namespace Core;
+namespace ServerCore;
 
 public class CoreRun
 {
     public static void Start()
     {
         Prepare.MakeAll();
-        jwt.CreateRSA();
+        JWTController.CreateRSA();
         PluginHandle.LoadPlugins();
-        HTTPServer.Start();
+        ServerManager.Start();
         Console.WriteLine(ServerConfig.Instance.HTTPS_Url);
         DemuxServer.Start();
         Console.WriteLine(ServerConfig.Instance.DemuxUrl);
@@ -22,6 +23,6 @@ public class CoreRun
     {
         PluginHandle.UnloadPlugins();
         DemuxServer.Stop();
-        HTTPServer.Stop();
+        ServerManager.Stop();
     }
 }

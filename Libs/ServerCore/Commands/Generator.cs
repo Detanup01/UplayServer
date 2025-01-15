@@ -1,6 +1,6 @@
 ﻿using ServerCore.Controller;
 
-namespace Core.Commands;
+namespace ServerCore.Commands;
 
 public class Generator
 {

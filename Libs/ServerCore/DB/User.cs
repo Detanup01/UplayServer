@@ -43,7 +43,6 @@ public class DBUser
         user.UserId = fId.UserId;
         col.Update(user);
     }
-
     public static T? Get<T>(Guid UserId) where T : UserBase
     {
         string collectionName = GetCollectionName<T>();
@@ -71,6 +70,11 @@ public class DBUser
         return Get<T>(Guid.Parse(UserId));
     }
 
+    public static T? Get<T>(string UserId, Func<T, bool> expression) where T : UserBase
+    {
+        return Get<T>(Guid.Parse(UserId), expression);
+    }
+
     public static List<T> GetList<T>(Guid UserId) where T : UserBase
     {
         string collectionName = GetCollectionName<T>();
@@ -80,6 +84,28 @@ public class DBUser
         var col = db.GetCollection<T>(collectionName);
 
         return col.Find(x=>x.UserId == UserId).ToList();
+    }
+
+    public static List<T> GetList<T>(Guid UserId, Func<T, bool> expression) where T : UserBase
+    {
+        string collectionName = GetCollectionName<T>();
+        if (string.IsNullOrEmpty(collectionName))
+            return [];
+        using var db = new LiteDatabase(DBName);
+        var col = db.GetCollection<T>(collectionName);
+
+        return col.Find(x => x.UserId == UserId && expression.Invoke(x)).ToList();
+    }
+
+    public static void Delete<T>(Guid UserId, Func<T, bool> expression) where T : UserBase
+    {
+        string collectionName = GetCollectionName<T>();
+        if (string.IsNullOrEmpty(collectionName))
+            return;
+        using var db = new LiteDatabase(DBName);
+        var col = db.GetCollection<T>(collectionName);
+
+        col.DeleteMany(X => X.UserId == UserId && expression.Invoke(X));
     }
 
     public static string GetCollectionName<T>() where T : UserBase

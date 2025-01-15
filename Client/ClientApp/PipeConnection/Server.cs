@@ -8,7 +8,7 @@ namespace ClientApp.PipeConnection
         volatile bool Cancel;
         NamedPipeServerStream pipeServer;
         bool connectedOrWaiting;
-        public event EventHandler<byte[]> Readed;
+        public event EventHandler<byte[]>? Readed;
         public PipeServer()
         {
             pipeServer = new NamedPipeServerStream("custom_r2_pipe", PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Byte);

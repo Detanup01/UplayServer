@@ -4,7 +4,7 @@ using ServerCore.DB;
 using ServerCore.Models.User;
 using Uplay.Uplaydll;
 
-namespace Core.DemuxResponders;
+namespace ServerCore.DemuxResponders;
 
 public class UplayDll
 {
@@ -20,10 +20,12 @@ public class UplayDll
             if (Upsteam != null)
             {
                 ReqRSP.Requests(ClientNumb, Upsteam);
-                while (ReqRSP.IsIdDone == false)
+                while (ReqRSP.IsIdDone == false && ReqRSP.Rsp == null)
                 {
 
                 }
+                if (ReqRSP.Rsp == null)
+                    return;
                 Utils.WriteFile(ReqRSP.Rsp.ToString(), $"logs/client_{ClientNumb}_uplaydll_rsp.log");
                 Rsp = ReqRSP.Rsp;
             }
@@ -37,9 +39,12 @@ public class UplayDll
         public static bool IsIdDone = false;
         public static void Requests(Guid ClientNumb, Req req)
         {
-            if (req?.InitReq != null) { Init(ClientNumb, req.InitReq); }
-            if (req?.InitProcessReq != null) { InitProcess(req.InitProcessReq); }
-            if (req.Equals(new Req())) { Rsp = new(); }
+            if (req?.InitReq != null) 
+                Init(ClientNumb, req.InitReq);
+            if (req?.InitProcessReq != null)
+                InitProcess(req.InitProcessReq);
+            if (req == null)
+                Rsp = new();
             IsIdDone = true;
         }
 
@@ -57,7 +62,7 @@ public class UplayDll
             var UserId = Globals.IdToUser[ClientNumb];
 
             var user = DBUser.Get<UserCommon>(UserId);
-
+            ArgumentNullException.ThrowIfNull(user);
             var auth = Auth.GetTokenByUserId(UserId, TokenType.Ticket);
             Rsp.InitRsp.UpcTicket = auth;
             Rsp.InitRsp.Account = new()

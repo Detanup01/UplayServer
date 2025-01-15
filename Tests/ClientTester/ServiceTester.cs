@@ -1,4 +1,4 @@
-﻿using ClientKit.UbiServices.Others;
+﻿using UbiServices.Others;
 using System.Text;
 
 namespace ClientTester
@@ -13,9 +13,13 @@ namespace ClientTester
             Console.WriteLine("ServiceTester Done!");
         }
 
-        public static async Task AssetPath()
+        public static Task AssetPath()
         {
             var readmecontent = Asset.GetAssetPath("readme.txt");
+            if (readmecontent == null)
+            {
+                return Task.CompletedTask;
+            }
             string readme = Encoding.Default.GetString(readmecontent);
 
             if (readme == "")
@@ -24,7 +28,7 @@ namespace ClientTester
 
             }
 
-            return;
+            return Task.CompletedTask;
         }
     }
 }

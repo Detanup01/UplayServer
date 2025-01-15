@@ -8,19 +8,21 @@ namespace Client.Patch
 {
     internal class Patcher
     {
-        public static void Main(Uplay.Demux.GetPatchInfoRsp rsp)
+        public static void MainPatch(Uplay.Demux.GetPatchInfoRsp rsp)
         {
             var url = rsp.PatchBaseUrl;
             var latest = rsp.LatestVersion;
             var baseurl = url + latest;
+            /*
             if (rsp.PatchTrackId == "DEFAULT")
             {
                 var client = new RestClient(baseurl + "/files.txt");
                 var request = new RestRequest();
-                var bytes = ClientKit.UbiServices.Rest.GetBytes(client, request);
+                var bytes = UbiServices.Rest.GetBytes(client, request);
                 var patchdata = Encoding.UTF8.GetString(bytes);
                 DoUpdate(baseurl, patchdata);
             }     
+            */
         }
 
         public static void DoUpdate(string baseurl, string patchdata)
@@ -56,7 +58,7 @@ namespace Client.Patch
             var data = GetData(baseurl + "/" + filename);
             Directory.CreateDirectory("Patch");
             var dfile = Path.GetDirectoryName(filename);
-            if (dfile.Trim() != string.Empty)
+            if (dfile != null && dfile.Trim() != string.Empty)
             {
                 Directory.CreateDirectory(Path.Combine("Patch",dfile));
             }
@@ -80,13 +82,15 @@ namespace Client.Patch
 
         public static byte[] GetData(string url)
         {
+            return [];
+            /*
             var client = new RestClient(url);
             var request = new RestRequest();
-            var bytes = ClientKit.UbiServices.Rest.GetBytes(client, request);
+            var bytes = UbiServices.Rest.GetBytes(client, request);
             if (bytes == null)
-                return new byte[] { };
+                return [];
 
-            return unzstd(bytes);
+            return unzstd(bytes);*/
         }
 
         public static byte[] unzstd(byte[] bytes)

@@ -1,4 +1,5 @@
 ﻿using ServerCore.DB;
+using ServerCore.Models;
 using ServerCore.Models.App;
 using ServerCore.Models.User;
 using Uplay.Ownership;
@@ -7,6 +8,13 @@ namespace ServerCore.Controllers;
 
 public class OwnershipController
 {
+
+    public static bool IsOwned(Guid UserId, uint ProductId)
+    {
+        return ServerConfig.Instance.Demux.GlobalOwnerShipCheck || 
+            (DBUser.Get<UserOwnershipBasic>(UserId) != null && DBUser.Get<UserOwnershipBasic>(UserId)!.OwnedGamesIds.Contains(ProductId));
+    }
+
     public static OwnedGames GetOwnershipGames(Guid UserId, Dictionary<uint, uint>? branches)
     {
         var ownedGames = new OwnedGames()

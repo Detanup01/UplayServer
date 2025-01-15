@@ -1,66 +1,65 @@
-﻿using ClientKit.Demux;
-using ClientKit.UbiServices.Records;
+﻿using UbiServices.Records;
 using ClientTester.DMX_Test;
-using SharedLib.Shared;
+using UplayKit;
+using UbiServices;
 
-namespace ClientTester
+namespace ClientTester;
+
+internal class DemuxTest
 {
-    internal class DemuxTest
+    DemuxSocket socket;
+    LoginJson Login;
+    List<Action> actions = new();
+    public DemuxTest(LoginJson login)
     {
-        static Socket socket;
-        static LoginJson Login;
-        static List<Action> actions = new();
-        public static void Run(LoginJson login)
-        {
-            socket = new();
-            socket.NewMessage += Socket_NewMessage;
-            Login = login;
-            actions.Add(SendVersion);
-            actions.Add(VersionCheck);
-            actions.Add(Auth);
-            actions.Add(DoOwnership);
-            actions.Add(VersionCheck);
-            actions.ForEach(x => x() );
-            socket.NewMessage -= Socket_NewMessage;
-            socket.Disconnect();
-            Console.WriteLine("DemuxTest Done!");
-        }
+        socket = new();
+        socket.NewMessage += Socket_NewMessage;
+        Login = login;
+        actions.Add(SendVersion);
+        actions.Add(VersionCheck);
+        actions.Add(Auth);
+        actions.Add(DoOwnership);
+        actions.Add(VersionCheck);
+        actions.ForEach(x => x() );
+        socket.NewMessage -= Socket_NewMessage;
+        socket.Disconnect();
+        Console.WriteLine("DemuxTest Done!");
+    }
 
-        static void SendVersion()
+    void SendVersion()
+    {
+        socket.PushVersion();
+        if (!socket.IsConnected)
         {
-            socket.PushVersion();
-            if (!socket.IsConnected)
-            {
-                Console.WriteLine("Socket is closed!");
-            }
+            Console.WriteLine("Socket is closed!");
         }
+    }
 
-        static void VersionCheck()
+    void VersionCheck()
+    {
+        bool version = socket.VersionCheck();
+        if (!version)
         {
-            bool version = socket.VersionCheck();
-            if (!version)
-            {
-                Console.WriteLine("Version is Not same!");
-            }
+            Console.WriteLine("Version is Not same!");
         }
+    }
 
-        static void Auth()
+    void Auth()
+    {
+        bool authed = socket.Authenticate(Login.Ticket);
+        if (!authed)
         {
-            bool authed = socket.Authenticate(Login.Ticket);
-            if (!authed)
-            {
-                Console.WriteLine("User is NOT authed!");
-            }
+            Console.WriteLine("User is NOT authed!");
         }
+    }
 
-        static void DoOwnership()
-        {
-            OwnershipTest.Run(socket,new ClientKit.Demux.Connection.OwnershipConnection(socket));
-        }
-        private static void Socket_NewMessage(object? sender, DMXEventArgs e)
-        {
-            Console.WriteLine("Socket_NewMessage fired!");
-            Debug.WriteDebug(e.ToString()!, "[Socket_NewMessage]");
-        }
+    void DoOwnership()
+    {
+        new OwnershipTest(socket, new UplayKit.Connection.OwnershipConnection(socket, Login.Ticket, Login.SessionId));
+    }
+    private void Socket_NewMessage(object? sender, DemuxEventArgs e)
+    {
+        Console.WriteLine("Socket_NewMessage fired!");
+        Debug.WriteDebug(e.ToString()!, "[Socket_NewMessage]");
     }
 }

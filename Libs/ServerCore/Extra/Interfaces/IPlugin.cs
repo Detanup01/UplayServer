@@ -1,6 +1,6 @@
 ﻿using NetCoreServer;
 
-namespace Core.Extra.Interfaces
+namespace ServerCore.Extra.Interfaces
 {
     public interface IPlugin : IDisposable
     {
@@ -35,14 +35,6 @@ namespace Core.Extra.Interfaces
         /// <param name="Protoname">Proto Name</param>
         /// <returns>If data sent to client</returns>
         bool DemuxDataReceivedCustom(Guid ClientNumb, byte[] receivedData, string Protoname);
-
-        /// <summary>
-        /// Receiving the HTTPS Request from Ubiservice
-        /// </summary>
-        /// <param name="request">Request</param>
-        /// <param name="session">Session</param>
-        /// <returns>If data sent to client</returns>
-        bool HttpRequest(HttpRequest request, HttpsSession session);
 
         /// <summary>
         /// Shutdowning the Plugin
