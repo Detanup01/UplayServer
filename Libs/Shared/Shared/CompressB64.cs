@@ -26,15 +26,11 @@ public class CompressB64
     /// <returns>String as Base64</returns>
     public static string GetZstdB64(byte[] bytes)
     {
-        MemoryStream mem = new();
-        Compressor compressorZstd = new();
+        using MemoryStream mem = new();
+        using Compressor compressorZstd = new();
         var zstd = compressorZstd.Wrap(bytes);
-        compressorZstd.Dispose();
         mem.Write(zstd);
-        ByteString bs = ByteString.CopyFrom(mem.ToArray());
-        var bs64 = bs.ToBase64();
-        mem.Close();
-        return bs64;
+        return ByteString.CopyFrom(mem.ToArray()).ToBase64();
     }
 
     /// <summary>
@@ -54,15 +50,11 @@ public class CompressB64
     /// <returns>String as Base64</returns>
     public static string GetUnZstdB64(byte[] bytes)
     {
-        MemoryStream mem = new();
-        Decompressor decompressor = new();
+        using MemoryStream mem = new();
+        using Decompressor decompressor = new();
         var unzstd = decompressor.Unwrap(bytes);
-        decompressor.Dispose();
         mem.Write(unzstd);
-        ByteString bs = ByteString.CopyFrom(mem.ToArray());
-        var bs64 = bs.ToBase64();
-        mem.Close();
-        return bs64;
+        return ByteString.CopyFrom(mem.ToArray()).ToBase64();
     }
     #endregion
     #region Deflate
@@ -83,15 +75,12 @@ public class CompressB64
     /// <returns>String as Base64</returns>
     public static string GetDeflateB64(byte[] bytes)
     {
-        MemoryStream mem = new();
+        using MemoryStream mem = new();
         var defl = new Deflater(Deflater.BEST_COMPRESSION, false);
-        Stream deflate = new DeflaterOutputStream(mem, defl);
+        using Stream deflate = new DeflaterOutputStream(mem, defl);
         deflate.Write(bytes);
         deflate.Close();
-        ByteString bs = ByteString.CopyFrom(mem.ToArray());
-        var bs64 = bs.ToBase64();
-        mem.Close();
-        return bs64;
+        return ByteString.CopyFrom(mem.ToArray()).ToBase64();
     }
 
     /// <summary>
@@ -111,14 +100,10 @@ public class CompressB64
     /// <returns>String as Base64</returns>
     public static string GetUnDeflateB64(byte[] bytes)
     {
-        MemoryStream mem = new();
-        var inf = new InflaterInputStream(mem);
+        using MemoryStream mem = new();
+        using var inf = new InflaterInputStream(mem);
         inf.ReadExactly(bytes);
-        inf.Close();
-        ByteString bs = ByteString.CopyFrom(mem.ToArray());
-        var bs64 = bs.ToBase64();
-        mem.Close();
-        return bs64;
+        return ByteString.CopyFrom(mem.ToArray()).ToBase64();
     }
     #endregion
 }
