@@ -2,13 +2,12 @@
 using ServerCore.Commands;
 using SharedLib.Shared;
 
-namespace Tets;
+namespace ServerApp;
 
 internal class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Ubisoft Testing!");
         if (args.Contains("clean"))
         {
             Console.WriteLine("cleaned!");

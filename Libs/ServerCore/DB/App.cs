@@ -49,6 +49,15 @@ public class App
             BranchName = "Example",
             LatestManifest = "0"
         });
+
+        AddAppPI(new AppAPI()
+        {
+            ApplicationId = Guid.Parse("043a4bd9-9336-4cc3-b51c-1da703f89f87"),
+            Name = "The Crew PC",
+            Platform = "PC",
+            SpaceId = Guid.Parse("ee2ed4a6-4d8c-4d20-8777-c6355c21666f"),
+            DisplayName = "The Crew PC",
+        });
     }
 
     #region AppAPI

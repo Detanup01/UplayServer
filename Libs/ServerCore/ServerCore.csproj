@@ -14,14 +14,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Remove="ServerFiles\Saves\00000000-0000-0000-0000-000000000001\0\readme.txt" />
-    <None Remove="serverfiles\web\store\0.html" />
-    <None Remove="ServerFiles\Web\Store\BaseStore.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Models\User\UserOwnershipBasic.cs" />
-  </ItemGroup>
-  <ItemGroup>
 	<PackageReference Include="LiteDB" Version="5.0.21" />
     <PackageReference Include="JWT" Version="11.0.0" />
     <PackageReference Include="ModdableWebServer" Version="1.5.0" />
@@ -31,11 +23,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shared\SharedLib.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="HTTP\V2\" />
-    <Folder Include="HTTP\V1\" />
   </ItemGroup>
 
 </Project>

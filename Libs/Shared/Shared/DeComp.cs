@@ -1,6 +1,8 @@
 ﻿using ICSharpCode.SharpZipLib.Zip.Compression;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using LzhamWrapper;
+using lzo.net;
+using System.IO.Compression;
 using ZstdNet;
 
 namespace SharedLib.Shared;
@@ -56,6 +58,13 @@ public class DeComp
                     lzhamStream.Dispose();
                     return mem.ToArray();
                 }
+            case "Lzo":
+                {
+                    using var mem = new MemoryStream();
+                    using var decompressed = new LzoStream(new MemoryStream(bytesToDecompress), CompressionMode.Decompress);
+                    decompressed.CopyTo(mem);
+                    return mem.ToArray();
+                }
         }
         return bytesToDecompress;
     }
@@ -101,7 +110,7 @@ public class DeComp
                 else
                 { 
                     //return nothing to indicate we have issues!
-                    return new byte[] { };
+                    return [];
                 }
         }
         return bytesToCompress;

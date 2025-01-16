@@ -14,6 +14,7 @@
     <PackageReference Include="Ionic.Zlib.Core" Version="1.0.0" />
     <PackageReference Include="L" Version="5.0.0" />
     <PackageReference Include="LzhamWrapper" Version="0.0.1" />
+    <PackageReference Include="lzo.net" Version="0.0.6" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="SharpZipLib" Version="1.4.2" />
     <PackageReference Include="Uplay-Protobufs" Version="158.0.11194" />

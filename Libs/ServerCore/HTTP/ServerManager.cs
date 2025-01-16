@@ -18,18 +18,19 @@ public class ServerManager
 
     public static void Start()
     {
+        DebugPrinter.EnableLogs = true;
+        //DebugPrinter.PrintToConsole = true;
         var ServerManagerAssembly = Assembly.GetAssembly(typeof(ServerManager));
         ArgumentNullException.ThrowIfNull(ServerManagerAssembly, nameof(ServerManagerAssembly));
         SslContext? context = null;
 
         context = CertHelper.GetContextNoValidate(System.Security.Authentication.SslProtocols.Tls12, $"cert/services.pfx", ServerConfig.Instance.CERT.ServicesCertPassword);
         WSS_Server = new(context, IPAddress.Parse(ServerConfig.Instance.HTTPS_Ip), ServerConfig.Instance.HTTPS_Port);
-
         Main_HTTP = AttributeMethodHelper.UrlHTTPLoader(ServerManagerAssembly);
         Main_WS = AttributeMethodHelper.UrlWSLoader(ServerManagerAssembly);
+        AddRoutes(ServerManagerAssembly);
         WSS_Server.DoReturn404IfFail = false;
         WSS_Server.ReceivedFailed += Failed;
-        WSS_Server.OverrideAttributes(ServerManagerAssembly);
         WSS_Server.Start();
         Console.WriteLine("Server started on " + WSS_Server.Address);
 
@@ -37,7 +38,7 @@ public class ServerManager
 
     public static void Failed(object? sender, HttpRequest request)
     {
-        File.WriteAllText("REQUESTED.txt", request.Method + " " + request.Url + "\n" + request.Body + "\n" + request.ToString());
+        File.AppendAllText("REQUESTED.txt", request.Method + " " + request.Url + "\n" + request.Body + "\n" + request.ToString());
     }
 
 

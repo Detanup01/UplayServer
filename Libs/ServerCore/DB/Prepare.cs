@@ -1,4 +1,6 @@
-﻿namespace ServerCore.DB;
+﻿using ServerCore.Models.User;
+
+namespace ServerCore.DB;
 
 public class Prepare
 {
@@ -19,8 +21,22 @@ public class Prepare
         Auth.AddCurrent(Guid.Parse("00000000-0000-0000-0000-000000000001"), "eGx6bGF3Y3ZwaXJ3Rjl4aFBuWURZZVZuaVoyU29Tdm9iMlQ5dHAzeElwMD0=", TokenType.Ticket);
 
         //fUser Auth with: fUSER@test:test
-        Auth.AddUA(Guid.Parse("ffffffff-ffff-ffff-ffff-ffff-ffffffffffff"), "VDF6UWlacDJvTDdCOE5IcXR3bHNYRE8yeDlvWjkvYzh6M083R0hER0hGaz0=");
-        Auth.AddCurrent(Guid.Parse("ffffffff-ffff-ffff-ffff-ffff-ffffffffffff"), "VDF6UWlacDJvTDdCOE5IcXR3bHNYRE8yeDlvWjkvYzh6M083R0hER0hGaz0=", TokenType.Ticket);
+        Auth.AddUA(Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff"), "VDF6UWlacDJvTDdCOE5IcXR3bHNYRE8yeDlvWjkvYzh6M083R0hER0hGaz0=");
+        Auth.AddCurrent(Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff"), "VDF6UWlacDJvTDdCOE5IcXR3bHNYRE8yeDlvWjkvYzh6M083R0hER0hGaz0=", TokenType.Ticket);
+
+        //user@uplayemu.com:user | user
+        Auth.AddUA(Guid.Parse("ea66fece-ccce-4fe4-ad60-45298a0ac92a"), "MjA1anpTNmdlbnZveE1ZR0lLby8xT3REcWt3cjhibGcrc2hKRnZkK3JaRT0=");
+        Auth.AddCurrent(Guid.Parse("ea66fece-ccce-4fe4-ad60-45298a0ac92a"), "MjA1anpTNmdlbnZveE1ZR0lLby8xT3REcWt3cjhibGcrc2hKRnZkK3JaRT0=", TokenType.Ticket);
+
+        DBUser.Add(new UserCommon()
+        { 
+            Name = "user",
+            Friends = [],
+            IsBanned = false,
+            UserId = Guid.Parse("ea66fece-ccce-4fe4-ad60-45298a0ac92a")
+        });
+
+        Console.WriteLine(DBUser.Get<UserCommon>("ea66fece-ccce-4fe4-ad60-45298a0ac92a") != null);
 
         Store.Add(new()
         { 

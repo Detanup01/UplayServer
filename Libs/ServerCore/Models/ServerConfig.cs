@@ -4,7 +4,7 @@ namespace ServerCore.Models;
 
 public class ServerConfig
 {
-    private static ServerConfig _Instance = new();
+    private static ServerConfig? _Instance;
     public static ServerConfig Instance
     {
         get
@@ -35,8 +35,8 @@ public class ServerConfig
     public DMX Demux = new();
     public class DMX
     {
-        public string ServerFilesPath = "/ServerFiles/";
-        public string DownloadGamePath = "/ServerFiles/Download/";
+        public string ServerFilesPath = "ServerFiles/";
+        public string DownloadGamePath = "ServerFiles/Download/";
         public string DefaultCountryCode = "HU";
         public string DefaultContinentCode = "EU";
         public bool GlobalOwnerShipCheck = true;

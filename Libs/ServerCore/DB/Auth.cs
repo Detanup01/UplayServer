@@ -303,12 +303,12 @@ public class Auth
             return string.Empty;
     }
 
-    public static void DeleteCurrent(Guid userId)
+    public static void DeleteCurrent(Guid userId, TokenType tokentype)
     {
         using var db = new LiteDatabase(DBName);
         var col = db.GetCollection<Current>(Current);
 
-        var toDel = col.FindOne(x => x.UserId == userId);
+        var toDel = col.FindOne(x => x.UserId == userId && x.type == tokentype);
 
         if (toDel != null)
         {
