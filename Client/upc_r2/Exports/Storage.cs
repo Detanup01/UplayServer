@@ -122,7 +122,8 @@ internal class Storage
         }
         Marshal.WriteInt32(outBytesRead, readed);
         Marshal.Copy(buff, 0, outData, buff.Length);
-        Log(nameof(UPC_StorageFileRead), ["Copied to outData"]);
+        Main.GlobalContext.Callbacks.Add(new(inCallback, inCallbackData, (int)UPC_Result.UPC_Result_Ok));
+        Log(nameof(UPC_StorageFileRead), ["Read Done!"]);
         return 0x10000;
     }
 
@@ -130,7 +131,6 @@ internal class Storage
     public static int UPC_StorageFileWrite(IntPtr inContext, int inHandle, IntPtr inData, int inSize, IntPtr inCallback, IntPtr inCallbackData)
     {
         Log(nameof(UPC_StorageFileWrite), [inContext, inHandle, inData, inSize, inCallback, inCallbackData]);
-        Main.GlobalContext.Callbacks.Add(new(inCallback, inCallbackData, (int)UPC_Result.UPC_Result_Ok));
         if (!PtrToFilePath.TryGetValue(inHandle, out string? path))
         {
             Main.GlobalContext.Callbacks.Add(new(inCallback, inCallbackData, (int)UPC_Result.UPC_Result_FailedPrecondition));
@@ -147,6 +147,8 @@ internal class Storage
         stream.Write(buff);
         stream.Flush(true);
         stream.Close();
+        Main.GlobalContext.Callbacks.Add(new(inCallback, inCallbackData, (int)UPC_Result.UPC_Result_Ok));
+        Log(nameof(UPC_StorageFileWrite), ["Write Done!"]);
         return 0x10000;
     }
 

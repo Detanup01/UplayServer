@@ -37,7 +37,7 @@ internal class Other
         Basics.Log(nameof(UPC_RichPresenceSet), [inContext, inId, inOptTokenList]);
 
         var list = Marshal.PtrToStructure<BasicList>(inOptTokenList);
-        Basics.Log(nameof(UPC_RichPresenceSet), [JsonSerializer.Serialize(list, JsonSourceGen.Default.BasicList)]);
+        Basics.Log(nameof(UPC_RichPresenceSet), [list.ToString()]);
         try
         {
             for (int i = 0; i < list.count; i++)
@@ -45,7 +45,7 @@ internal class Other
                
                 var ptr = Marshal.ReadIntPtr(list.list, i * Marshal.SizeOf<UPC_RichPresenceToken>());
                 var token = Marshal.PtrToStructure<UPC_RichPresenceToken>(ptr);
-                Basics.Log(nameof(UPC_RichPresenceSet), [JsonSerializer.Serialize(token, JsonSourceGen.Default.UPC_RichPresenceToken)]);
+                Basics.Log(nameof(UPC_RichPresenceSet), [token.ToString()]);
             }
         }
         catch (Exception ex)
@@ -61,7 +61,7 @@ internal class Other
         Basics.Log(nameof(UPC_RichPresenceSet_Extended), [inContext, inId, inOptTokenList, unk1, unk2]);
 
         var list = Marshal.PtrToStructure<BasicList>(inOptTokenList);
-        Basics.Log(nameof(UPC_RichPresenceSet_Extended), [JsonSerializer.Serialize(list, JsonSourceGen.Default.BasicList)]);
+        Basics.Log(nameof(UPC_RichPresenceSet_Extended), [list.ToString()]);
         try
         {
             for (int i = 0; i < list.count; i++)
@@ -69,7 +69,7 @@ internal class Other
 
                 var ptr = Marshal.ReadIntPtr(list.list, i * Marshal.SizeOf<UPC_RichPresenceToken>());
                 var token = Marshal.PtrToStructure<UPC_RichPresenceToken>(ptr);
-                Basics.Log(nameof(UPC_RichPresenceSet_Extended), [JsonSerializer.Serialize(token, JsonSourceGen.Default.UPC_RichPresenceToken)]);
+                Basics.Log(nameof(UPC_RichPresenceSet_Extended), [token.ToString()]);
             }
         }
         catch (Exception ex)

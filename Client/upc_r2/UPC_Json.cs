@@ -36,12 +36,12 @@ public class UPC_Json
         public string Password { get; set; } = "user";
         public string Country { get; set; } = "en-US";
         public string Ticket { get; set; } = string.Empty;
-        public bool UseTicket { get; set; } = true;
+        public bool UseTicket { get; set; } = false;
     }
 
     public class Save
     {
-        public string Path { get; set; } = string.Empty;
+        public string Path { get; set; } = "upc_save";
         public bool UseProductIdInName { get; set; }
         public bool EnableFileDelete { get; set; }
     }
@@ -69,6 +69,7 @@ public class UPC_Json
         public Save Save { get; set; } = new();
         public Others Others { get; set; } = new();
         public List<Product> Products { get; set; } = new() { new() { ProductId = 0, Type = 4 } };
+        public List<uint> AutoProductIds { get; set; } = new();
     }
 
 }

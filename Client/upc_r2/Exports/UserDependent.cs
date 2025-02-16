@@ -67,7 +67,7 @@ public class UserDependent
             Basics.Log(nameof(UPC_TicketGet), [ticket == null]);
             return Marshal.StringToHGlobalAnsi(ticket);
         }
-        return Marshal.StringToHGlobalAnsi(null);
+        return Marshal.StringToHGlobalAnsi("");
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPC_TicketGet_Extended", CallConvs = [typeof(CallConvCdecl)])]

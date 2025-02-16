@@ -104,4 +104,86 @@ internal class Profiles
         serverStruct.SendResponse();
         return true;
     }
+
+
+    [HTTP("POST", "/v1/profiles/{userid}/global/ubiconnect/playsession/api/sessions")]
+    public static bool PlaySession(HttpRequest request, ServerStruct serverStruct)
+    {
+        // body is {"productId":568} we currently dont care
+        PlaySessionResponse playSessionResponse = new PlaySessionResponse()
+        { 
+            createdAt = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
+            expiresAt = DateTime.Now.AddHours(1).ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
+        };
+        serverStruct.Response.MakeGetResponse(JsonConvert.SerializeObject(playSessionResponse), "application/json");
+        serverStruct.SendResponse();
+        return true;
+    }
+
+    [HTTP("DELETE", "/v1/profiles/{userid}/global/ubiconnect/playsession/api/sessions?{args}")]
+    public static bool DeletePlaySession(HttpRequest request, ServerStruct serverStruct)
+    {
+        serverStruct.Response.MakeOkResponse();
+        serverStruct.SendResponse();
+        return true;
+    }
+
+    [HTTP("GET", "/v1/profiles/{userid}/global/ubiconnect/economy/api/unit")]
+    public static bool EconomyUnit(HttpRequest request, ServerStruct serverStruct)
+    {
+        // currently faking economy
+        string userId = serverStruct.Parameters["userid"];
+        EconomyUnitResponse economyUnitResponse = new()
+        { 
+            profileId = userId,
+            units = 0
+        }; 
+        serverStruct.Response.MakeGetResponse(JsonConvert.SerializeObject(economyUnitResponse), "application/json");
+        serverStruct.SendResponse();
+        return true;
+    }
+
+    [HTTP("GET", "/v1/profiles/{userid}/global/ubiconnect/economy/api/metaprogression")]
+    public static bool EconomyMetaprogression(HttpRequest request, ServerStruct serverStruct)
+    {
+        // currently faking economy
+        string userId = serverStruct.Parameters["userid"];
+        EconomyMetaprogressionResponse economyUnitResponse = new()
+        {
+            profileId = userId,
+            level = 1,
+            xp = 100
+        };
+        serverStruct.Response.MakeGetResponse(JsonConvert.SerializeObject(economyUnitResponse), "application/json");
+        serverStruct.SendResponse();
+        return true;
+    }
+
+    [HTTP("GET", "/v1/profiles/{userid}/global/ubiconnect/challenges/api?{args}")]
+    public static bool Challenges(HttpRequest request, ServerStruct serverStruct)
+    {
+        string userId = serverStruct.Parameters["userid"];
+        string spaceId = serverStruct.Parameters["spaceId"];
+        ChallengesResponse challenges = new()
+        {
+            challenges = []
+        };
+        serverStruct.Response.MakeGetResponse(JsonConvert.SerializeObject(challenges), "application/json");
+        serverStruct.SendResponse();
+        return true;
+    }
+
+    [HTTP("GET", "/v1/profiles/{userid}/global/ubiconnect/rewards/api?{args}")]
+    public static bool Rewards(HttpRequest request, ServerStruct serverStruct)
+    {
+        string userId = serverStruct.Parameters["userid"];
+        string spaceId = serverStruct.Parameters["spaceId"];
+        RewardsResponse rewardsResponse = new()
+        {
+            rewards = []
+        };
+        serverStruct.Response.MakeGetResponse(JsonConvert.SerializeObject(rewardsResponse), "application/json");
+        serverStruct.SendResponse();
+        return true;
+    }
 }

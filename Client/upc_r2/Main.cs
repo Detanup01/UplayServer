@@ -123,10 +123,10 @@ public class Main
         {
             if (cb.fun != IntPtr.Zero)
             {
-                Basics.Log(nameof(UPC_Update), ["Callback run with: ", cb.fun, cb.arg, cb.context_data]);
+                Basics.Log(nameof(UPC_Update), ["Callback run with: ", cb.fun, cb.Result, cb.context_data]);
                 delegate* unmanaged<int, void*, void> @Callback = (delegate* unmanaged<int, void*, void>)cb.fun;
                 Basics.Log(nameof(UPC_Update), [cb.fun, "Is Calling!"]);
-                @Callback(cb.arg, (void*)cb.context_data);
+                @Callback(cb.Result, (void*)cb.context_data);
             }
         }
         Basics.Log(nameof(UPC_Update), ["Cleared Callbacks"]);
@@ -241,6 +241,7 @@ public class Main
                     }
                 };
             }
+            LoadPlugins.LoadR2Plugins();
             Basics.Log(nameof(UPC_Init), [Response.InitProcessRsp.Result]);
             switch (Response.InitProcessRsp.Result)
             {
@@ -267,7 +268,7 @@ public class Main
     public static void UPC_Uninit()
     {
         Basics.Log(nameof(UPC_Uninit));
-
+        LoadPlugins.FreeR2Plugins();
         //  We dont need to send any req or wait for response, this just to make sure we dont update our stuff!
         if (UPC_Json.GetRoot().BasicLog.UseNamePipeClient)
             Basics.SendReq(new Req()

@@ -9,6 +9,7 @@ using ModdableWebServer.Helper;
 using ServerCore.Controllers;
 using ServerCore.Models;
 using SharedLib.Shared;
+using System.Net.Http.Headers;
 
 namespace ServerCore.HTTP.V2;
 
@@ -80,6 +81,72 @@ internal class Profiles
     {
         Console.WriteLine("PostEvents: " + request.Body);
         serverStruct.Response.MakeGetResponse("{}");
+        serverStruct.SendResponse();
+        return true;
+    }
+
+    //?locale=en&spaceId=6edd234a-abff-4e90-9aab-b9b9c6e49ff
+    [HTTP("GET", "/v2/profiles/{userid}/club/progression/title?{args}")]
+    public static bool Rewards(HttpRequest request, ServerStruct serverStruct)
+    {
+        var userId = Guid.Parse(serverStruct.Parameters["userid"]);
+        var spaceId = Guid.Parse(serverStruct.Parameters["spaceId"]);
+        ClubProgressionTitleResponse clubProgressionTitleResponse = new()
+        { 
+            spaceId = spaceId,
+            profileId = userId,
+            owned = true,
+            actions = new()
+            { 
+                owned = 0,
+                available = 50
+            },
+            badges = new()
+            {
+                owned = 0,
+                available = 50
+            },
+            rewards = new()
+            {
+                owned = 0,
+                available = 50,
+                New = 0,
+            },
+            units = new()
+            {
+                owned = 0,
+                available = 50
+            },
+            challengesCompleted = 0,
+            gameXp = new()
+            {
+                owned = 0,
+                threshold = 6000,
+                breakdown = new()
+                {
+                    challenges = 0,
+                    actions = new()
+                    {
+                        new()
+                        {
+                            groupId = "ACU_GAME_PROGRESSION",
+                            xp = 0
+                        },
+                        new()
+                        {
+                            groupId = "DLC_PROGRESSION",
+                            xp = 0
+                        },
+                        new()
+                        {
+                            groupId = "CLUB",
+                            xp = 0
+                        },
+                    }
+                }
+            }
+        };
+        serverStruct.Response.MakeGetResponse(JsonConvert.SerializeObject(clubProgressionTitleResponse), "application/json");
         serverStruct.SendResponse();
         return true;
     }

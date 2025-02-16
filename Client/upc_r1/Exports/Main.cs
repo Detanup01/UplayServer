@@ -57,6 +57,7 @@ public class Main
     public static bool UPLAY_Start(uint aUplayId, uint aFlags)
     {
         Basics.Log(nameof(UPLAY_Start), [aUplayId, aFlags]);
+        LoadPlugins.LoadR1Plugins();
         return false;
     }
 
@@ -78,6 +79,7 @@ public class Main
     public static bool UPLAY_Quit()
     {
         Basics.Log(nameof(UPLAY_Quit), []);
+        LoadPlugins.FreeR1Plugins();
         return true;
     }
 

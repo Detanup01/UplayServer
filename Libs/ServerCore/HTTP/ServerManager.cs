@@ -4,6 +4,7 @@ using ModdableWebServer.Servers;
 using NetCoreServer;
 using ServerCore.Models;
 using System.Net;
+using System.Net.Sockets;
 using System.Reflection;
 
 namespace ServerCore.HTTP;
@@ -22,18 +23,28 @@ public class ServerManager
         //DebugPrinter.PrintToConsole = true;
         var ServerManagerAssembly = Assembly.GetAssembly(typeof(ServerManager));
         ArgumentNullException.ThrowIfNull(ServerManagerAssembly, nameof(ServerManagerAssembly));
-        SslContext? context = null;
-
-        context = CertHelper.GetContextNoValidate(System.Security.Authentication.SslProtocols.Tls12, $"cert/services.pfx", ServerConfig.Instance.CERT.ServicesCertPassword);
-        WSS_Server = new(context, IPAddress.Parse(ServerConfig.Instance.HTTPS_Ip), ServerConfig.Instance.HTTPS_Port);
+        SslContext? context = CertHelper.GetContextNoValidate(System.Security.Authentication.SslProtocols.Tls12, $"cert/services.pfx", ServerConfig.Instance.CERT.ServicesCertPassword);
+        WSS_Server = new TestServer(context, IPAddress.Parse(ServerConfig.Instance.HTTPS_Ip), ServerConfig.Instance.HTTPS_Port);
         Main_HTTP = AttributeMethodHelper.UrlHTTPLoader(ServerManagerAssembly);
         Main_WS = AttributeMethodHelper.UrlWSLoader(ServerManagerAssembly);
         AddRoutes(ServerManagerAssembly);
         WSS_Server.DoReturn404IfFail = false;
         WSS_Server.ReceivedFailed += Failed;
+        WSS_Server.OnSocketError += OnSocketError;
+        WSS_Server.ReceivedRequestError += RecvReqError;
+        WSS_Server.Context.ClientCertificateRequired = false;
         WSS_Server.Start();
         Console.WriteLine("Server started on " + WSS_Server.Address);
+    }
 
+    private static void RecvReqError(object? sender, (HttpRequest request, string error) e)
+    {
+        Console.WriteLine("RecvReqError " + e.request.Url + " "  + e.error);
+    }
+
+    private static void OnSocketError(object? sender, SocketError e)
+    {
+        Console.WriteLine("OnSocketError " + e);
     }
 
     public static void Failed(object? sender, HttpRequest request)

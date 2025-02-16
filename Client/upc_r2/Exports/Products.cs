@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text.Json;
 using static upc_r2.Basics;
 
 namespace upc_r2.Exports;
@@ -12,12 +11,14 @@ internal class Products
     public static int UPC_ProductListGet(IntPtr inContext, IntPtr inOptUserIdUtf8, uint inFilter, [Out] IntPtr outProductList, IntPtr inCallback, IntPtr inOptCallbackData)
     {
         Log(nameof(UPC_ProductListGet), [inContext, inOptUserIdUtf8, inFilter, outProductList, inCallback, inOptCallbackData]);
-        string? userId = Marshal.PtrToStringAnsi(inOptUserIdUtf8);
-        // Seems like no user requested. Should we use or own?
-        if (userId == null)
-            return -1;
-        Log(nameof(UPC_ProductListGet), [userId]);
-        Main.GlobalContext.Callbacks.Add(new(inCallback, inOptCallbackData, (int)UPC_Result.UPC_Result_Ok));
+        if (inOptUserIdUtf8 != IntPtr.Zero)
+        {
+            string? userId = Marshal.PtrToStringAnsi(inOptUserIdUtf8);
+            // Seems like no user requested. Should we use or own?
+            if (userId == null)
+                return -1;
+            Log(nameof(UPC_ProductListGet), [userId]);
+        }
 
         // We adding or own product (So the productId as App [Required]) then DLC/Items/Others.
         List<UPC_Product> products = new()
@@ -28,9 +29,14 @@ internal class Products
         {
             products.Add(new(item.ProductId, item.Type));
         }
+        foreach (var item in UPC_Json.GetRoot().AutoProductIds)
+        {
+            products.Add(new(item, 2));
+        }
 
-        Log(nameof(UPC_ProductListGet), ["Products: ", JsonSerializer.Serialize(products, JsonSourceGen.Default.ListUPC_Product)]);
+        Log(nameof(UPC_ProductListGet), ["Products: ", string.Join("\n", products)]);
         WriteOutList(outProductList, products);
+        Main.GlobalContext.Callbacks.Add(new(inCallback, inOptCallbackData, (int)UPC_Result.UPC_Result_Ok));
         return 10000;
     }
 
@@ -46,8 +52,8 @@ internal class Products
     public static int UPC_ProductConsume(IntPtr inContext, uint inProductId, uint inQuantity, IntPtr inTransactionIdUtf8, IntPtr inSignatureUtf8, IntPtr outResponseSignatureUtf8, IntPtr inCallback, IntPtr inOptCallbackData)
     {
         Log(nameof(UPC_ProductConsume), [inContext, inProductId, inQuantity, inTransactionIdUtf8, inSignatureUtf8, outResponseSignatureUtf8, inCallback, inOptCallbackData]);
-        Main.GlobalContext.Callbacks.Add(new(inCallback, inOptCallbackData, (int)UPC_Result.UPC_Result_Ok));
         Marshal.WriteIntPtr(outResponseSignatureUtf8, 0, Marshal.StringToHGlobalAnsi($"FunnySignature_{inProductId}_{Random.Shared.Next()}"));
+        Main.GlobalContext.Callbacks.Add(new(inCallback, inOptCallbackData, (int)UPC_Result.UPC_Result_Ok));
         return 0;
     }
 

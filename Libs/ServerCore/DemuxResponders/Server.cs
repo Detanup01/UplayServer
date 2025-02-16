@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Security.Authentication;
 using Uplay.Demux;
+using ModdableWebServer.Helper;
 
 namespace ServerCore.DemuxResponders;
 
@@ -19,7 +20,7 @@ public class DemuxServer
     public static void Start()
     {
         Directory.CreateDirectory("logs");
-        SslContext context = new SslContext(SslProtocols.Tls12, Utils.GetCert("services", ServerConfig.Instance.CERT.ServicesCertPassword));
+        SslContext context = CertHelper.GetContextNoValidate(SslProtocols.Tls12, $"cert/services.pfx", ServerConfig.Instance.CERT.ServicesCertPassword);
         server = new DMXServer(context, IPAddress.Parse(ServerConfig.Instance.DemuxIp), ServerConfig.Instance.DemuxPort);
         Console.WriteLine("[DMX] Server Started");
         server.Start();

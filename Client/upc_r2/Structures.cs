@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.Marshalling;
 
 namespace upc_r2;
 
@@ -20,19 +19,24 @@ public class Context
 [StructLayout(LayoutKind.Sequential)]
 public struct Callback
 {
-    public Callback(IntPtr fn, IntPtr contextdata, int uarg)
+    public Callback(IntPtr fn, IntPtr contextdata, int result)
     {
         context_data = contextdata;
-        arg = uarg;
+        Result = result;
         fun = fn;
     }
 
     [MarshalAs(UnmanagedType.SysInt)]
     public IntPtr fun;
     [MarshalAs(UnmanagedType.I4)]
-    public int arg;
+    public int Result;
     [MarshalAs(UnmanagedType.SysInt)]
     public IntPtr context_data;
+
+    public override string ToString()
+    {
+        return $"FunctionPtr: {fun} Result: {Result} Data: {context_data}";
+    }
 }
 
 public struct Config
@@ -88,6 +92,11 @@ public struct BasicList
         count = _count;
         list = _list;
     }
+
+    public override string ToString()
+    {
+        return $"ListPtr: {list} Count: {count}";
+    }
 }
 
 [StructLayout(LayoutKind.Sequential)]
@@ -114,6 +123,11 @@ public struct UPC_Product
         ownership = Uplay.Uplaydll.ProductOwnership.Owned;
         state = Uplay.Uplaydll.ProductState.Playable;
         activation = Uplay.Uplaydll.ProductActivation.Purchased;
+    }
+
+    public override string ToString()
+    {
+        return $"ProductId: {id} ProductType: {type} ProductOwnership: {ownership} ProductState: {state} Balance: {balance} ProductActivation: {activation}";
     }
 }
 
@@ -170,5 +184,10 @@ public struct UPC_RichPresenceToken
     public UPC_RichPresenceToken()
     {
 
+    }
+
+    public override string ToString()
+    {
+        return $"Id: {idUtf8} Value: {valueIdUtf8}";
     }
 }
