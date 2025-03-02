@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFramework>net9.0</TargetFramework>
+	  <ImplicitUsings>enable</ImplicitUsings>
+	  <Nullable>enable</Nullable>
+	  <Platforms>AnyCPU;x86;x64</Platforms>
+	  <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+	  <IsAotCompatible>True</IsAotCompatible>
+	  <PublishAot>true</PublishAot>
+	  <AssemblyVersion>119.0.10382.0</AssemblyVersion>
+	  <FileVersion>119.0.10382</FileVersion>
+	  <Description>Ubisoft Connect API AUX r1</Description>
+	  <Product>Ubisoft Connect</Product>
+	  <Copyright>(c) Ubisoft</Copyright>
+	  <NeutralLanguage>en-US</NeutralLanguage>
+	  <Version>119.0.10382</Version>
+  </PropertyGroup>
+	
+</Project>
