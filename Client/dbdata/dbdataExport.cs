@@ -72,7 +72,12 @@ public class dbdataExport
         var b64Request = Marshal.PtrToStringAnsi(tokenBuffer);
         Log(nameof(GetCachedOrFreshToken), [b64Request == null ? "" : b64Request]);
         if (b64Request != null)
+        {
             File.WriteAllText(Path.Combine(GetCuPath(), "token_req.txt"), b64Request);
+            File.WriteAllText(Path.Combine(GetCuPath(), $"token_req_{AppId}.txt"), b64Request);
+
+            // Should we return false if we dont have the token?
+        }  
         return true;
     }
 
