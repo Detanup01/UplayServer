@@ -3,12 +3,8 @@ using System.Net.Sockets;
 
 namespace TD1_Server;
 
-public class KeyStoreServer : SslServer
+public class KeyStoreServer(SslContext context, string address) : SslServer(context, address, 27015)
 {
-    public KeyStoreServer(SslContext context, string address) : base(context, address, 27015)
-    {
-    }
-
     protected override SslSession CreateSession()
     {
         return new KeyStoreSession(this);
@@ -20,13 +16,8 @@ public class KeyStoreServer : SslServer
     }
 }
 
-public class KeyStoreSession : SslSession
+public class KeyStoreSession(SslServer server) : SslSession(server)
 {
-    public KeyStoreSession(SslServer server) : base(server)
-    {
-
-    }
-
     protected override void OnConnected()
     {
         Console.WriteLine($"[TD1_Server.KeyStoreSession] {Id} Connected!");

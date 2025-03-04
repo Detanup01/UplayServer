@@ -36,14 +36,14 @@ internal class Multiplayer
     [UnmanagedCallersOnly(EntryPoint = "UPC_MultiplayerSessionFree", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_MultiplayerSessionFree(IntPtr inContext, IntPtr inMultiplayerSession)
     {
-        Basics.Log(nameof(UPC_MultiplayerSessionFree), [inContext]);
+        Basics.Log(nameof(UPC_MultiplayerSessionFree), [inContext, inMultiplayerSession]);
         return 0;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPC_MultiplayerSessionSet", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_MultiplayerSessionSet(IntPtr inContext, IntPtr inMultiplayerSession)
     {
-        Basics.Log(nameof(UPC_MultiplayerSessionSet), [inContext, inContext]);
+        Basics.Log(nameof(UPC_MultiplayerSessionSet), [inContext, inContext, inMultiplayerSession]);
         return 0;
     }
 

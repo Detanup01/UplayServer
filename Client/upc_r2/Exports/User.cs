@@ -30,16 +30,18 @@ internal unsafe class User
 
     public static UPC_PresenceImpl BuildFrom(UPC_Presence presence)
     {
-        UPC_PresenceImpl impl = new();
-        impl.onlineStatus = (uint)presence.onlineStatus;
-        impl.detailsUtf8 = Marshal.StringToHGlobalAnsi(presence.detailsUtf8);
-        impl.titleId = presence.titleId;
-        impl.titleNameUtf8 = Marshal.StringToHGlobalAnsi(presence.titleNameUtf8);
-        impl.multiplayerId = Marshal.StringToHGlobalAnsi(presence.multiplayerId);
-        impl.multiplayerJoinable = presence.multiplayerJoinable;
-        impl.multiplayerSize = presence.multiplayerSize;
-        impl.multiplayerMaxSize = presence.multiplayerMaxSize;
-        impl.multiplayerInternalDataSize = (uint)presence.multiplayerInternalData.Length;
+        UPC_PresenceImpl impl = new()
+        {
+            onlineStatus = (uint)presence.onlineStatus,
+            detailsUtf8 = Marshal.StringToHGlobalAnsi(presence.detailsUtf8),
+            titleId = presence.titleId,
+            titleNameUtf8 = Marshal.StringToHGlobalAnsi(presence.titleNameUtf8),
+            multiplayerId = Marshal.StringToHGlobalAnsi(presence.multiplayerId),
+            multiplayerJoinable = presence.multiplayerJoinable,
+            multiplayerSize = presence.multiplayerSize,
+            multiplayerMaxSize = presence.multiplayerMaxSize,
+            multiplayerInternalDataSize = (uint)presence.multiplayerInternalData.Length
+        };
         var ptr = Marshal.AllocHGlobal(sizeof(byte) * (int)presence.multiplayerInternalData.Length);
         Marshal.Copy(presence.multiplayerInternalData, 0, ptr, presence.multiplayerInternalData.Length);
         impl.multiplayerInternalData = ptr;
@@ -47,10 +49,12 @@ internal unsafe class User
     }
     public static UPC_UserImpl BuildFrom(UPC_User upc_User)
     {
-        UPC_UserImpl impl = new();
-        impl.idUtf8 = Marshal.StringToHGlobalAnsi(upc_User.idUtf8);
-        impl.nameUtf8 = Marshal.StringToHGlobalAnsi(upc_User.nameUtf8);
-        impl.relationship = (uint)upc_User.relationship;
+        UPC_UserImpl impl = new()
+        {
+            idUtf8 = Marshal.StringToHGlobalAnsi(upc_User.idUtf8),
+            nameUtf8 = Marshal.StringToHGlobalAnsi(upc_User.nameUtf8),
+            relationship = (uint)upc_User.relationship
+        };
         var presetimpl = BuildFrom(upc_User.presence);
         IntPtr ptr = Marshal.AllocHGlobal(Marshal.SizeOf(impl));
         Marshal.StructureToPtr(presetimpl, ptr, false);
@@ -65,21 +69,23 @@ internal unsafe class User
         Basics.Log(nameof(UPC_UserGet), [inContext, inOptUserIdUtf8, outUser, inCallback, inCallbackData]);
         Main.GlobalContext.Callbacks.Add(new(inCallback, inCallbackData, 0));
 
-        UPC_User user = new();
-        user.idUtf8 = Main.GlobalContext.Config.Saved.account.AccountId;
-        user.nameUtf8 = Main.GlobalContext.Config.Saved.account.NameOnPlatform;
-        user.relationship = Uplay.Uplaydll.Relationship.Friend;
-        user.presence = new()
+        UPC_User user = new()
         {
-            onlineStatus = Uplay.Uplaydll.OnlineStatusV2.OnlineStatusOnline,
-            multiplayerSize = 0,
-            multiplayerMaxSize = 0,
-            detailsUtf8 = "yeet",
-            multiplayerId = "yeet",
-            multiplayerInternalData = [0x0, 0x1, 0x00, 0xAA],
-            multiplayerJoinable = 1,
-            titleId = 0,
-            titleNameUtf8 = "yeet"
+            idUtf8 = Main.GlobalContext.Config.Saved.account.AccountId,
+            nameUtf8 = Main.GlobalContext.Config.Saved.account.NameOnPlatform,
+            relationship = Uplay.Uplaydll.Relationship.Friend,
+            presence = new()
+            {
+                onlineStatus = Uplay.Uplaydll.OnlineStatusV2.OnlineStatusOnline,
+                multiplayerSize = 0,
+                multiplayerMaxSize = 0,
+                detailsUtf8 = "yeet",
+                multiplayerId = "yeet",
+                multiplayerInternalData = [0x0, 0x1, 0x00, 0xAA],
+                multiplayerJoinable = 1,
+                titleId = 0,
+                titleNameUtf8 = "yeet"
+            }
         };
         var impl = BuildFrom(user);
         IntPtr ptr = Marshal.AllocHGlobal(Marshal.SizeOf<UPC_UserImpl>());

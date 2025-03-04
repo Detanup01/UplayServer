@@ -26,7 +26,7 @@ public class Main
     public static bool UPLAY_GetOverlappedOperationResult(IntPtr aOverlapped, IntPtr aOutResult)
     {
         //Basics.Log(nameof(UPLAY_GetOverlappedOperationResult), [aOverlapped, aOutResult]);
-        var lapped = Marshal.PtrToStructure<UPLAY_Overlapped>(aOverlapped);
+        //var lapped = Marshal.PtrToStructure<UPLAY_Overlapped>(aOverlapped);
         //Basics.Log(nameof(UPLAY_HasOverlappedOperationCompleted), [lapped.Completed, lapped.Result]);
         Marshal.WriteInt32(aOutResult, (int)UPLAY_OverlappedResult.UPLAY_OverlappedResult_Ok);
         return true;

@@ -35,7 +35,6 @@ internal class Profiles
         string time = DateTimeOffset.UtcNow.AddDays(1).ToUnixTimeSeconds().ToString();
         var devicetoken = JWTController.CreateAuthToken(id, SessionId, appId, "prod", DateTimeOffset.UtcNow.AddDays(1).ToUnixTimeSeconds());
         Auth.AddCurrent(id, devicetoken, TokenType.RememberMe_v1);
-        var space = App.GetSpaceId(appId);
         serverStruct.Response.MakeGetResponse(
             JsonConvert.SerializeObject(
         new V2SessionsResponse()
@@ -125,8 +124,8 @@ internal class Profiles
                 breakdown = new()
                 {
                     challenges = 0,
-                    actions = new()
-                    {
+                    actions =
+                    [
                         new()
                         {
                             groupId = "ACU_GAME_PROGRESSION",
@@ -142,7 +141,7 @@ internal class Profiles
                             groupId = "CLUB",
                             xp = 0
                         },
-                    }
+                    ]
                 }
             }
         };

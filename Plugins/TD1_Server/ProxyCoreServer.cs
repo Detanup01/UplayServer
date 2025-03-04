@@ -3,12 +3,8 @@ using System.Net.Sockets;
 
 namespace TD1_Server;
 
-public class ProxyCoreServer : SslServer
+public class ProxyCoreServer(SslContext context, string address) : SslServer(context, address, 51000)
 {
-    public ProxyCoreServer(SslContext context, string address) : base(context, address, 51000)
-    {
-    }
-
     protected override SslSession CreateSession()
     {
         return new ProxyCoreServerSession(this);
@@ -20,13 +16,8 @@ public class ProxyCoreServer : SslServer
     }
 }
 
-public class ProxyCoreServerSession : SslSession
+public class ProxyCoreServerSession(SslServer server) : SslSession(server)
 {
-    public ProxyCoreServerSession(SslServer server) : base(server)
-    {
-
-    }
-
     protected override void OnConnected()
     {
         Console.WriteLine($"[TD1_Server.ProxyCoreServerSession] {Id} Connected!");

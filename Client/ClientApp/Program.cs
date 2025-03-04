@@ -1,5 +1,4 @@
 ﻿using Client.Patch;
-using ClientApp;
 using ClientApp.PipeConnection;
 using UplayKit;
 using UplayKit.Connection;
@@ -8,7 +7,7 @@ using Google.Protobuf;
 using SharedLib.Shared;
 using Newtonsoft.Json;
 
-namespace Client;
+namespace ClientApp;
 
 internal class Program
 {
@@ -36,7 +35,7 @@ internal class Program
             Socket = new();
             var patch = Socket.GetPatch()!;
 
-            if (patch.LatestVersion != Socket.ClientVersion)
+            if (patch.LatestVersion != DemuxSocket.ClientVersion)
             {
                 Console.WriteLine("Your client is outdated!\nDo you wanna update?");
                 Console.WriteLine("\nY/y = Yes | N/n = No (If you dont say it just exit)");
@@ -63,7 +62,7 @@ internal class Program
 
             if (args.Contains("install") || args.Contains("download"))
             {
-                args = args.Append("-ticket").Append(ticket).ToArray();
+                args = [.. args, "-ticket", ticket];
             }
             else
             {

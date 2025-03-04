@@ -13,8 +13,7 @@ public class UPC_Json
             return root;
         }
         Root? data = JsonSerializer.Deserialize(File.ReadAllText(Basics.GetCuPath() + "\\upc.json"), JsonSourceGen.Default.Root);
-        if (data == null)
-            data = new();
+        data ??= new();
         return data;
     }
 
@@ -68,8 +67,8 @@ public class UPC_Json
         public Account Account { get; set; } = new();
         public Save Save { get; set; } = new();
         public Others Others { get; set; } = new();
-        public List<Product> Products { get; set; } = new() { new() { ProductId = 0, Type = 4 } };
-        public List<uint> AutoProductIds { get; set; } = new();
+        public List<Product> Products { get; set; } = [new() { ProductId = 0, Type = 4 }];
+        public List<uint> AutoProductIds { get; set; } = [];
     }
 
 }

@@ -115,14 +115,16 @@ internal class OwnershipTest
     {
         if (!OwnershipConnection.IsConnectionClosed)
         {
-            var rsp = OwnershipConnection.SendRequest(new Uplay.Ownership.Req()
+            var rsp = OwnershipConnection.SendPostRequest<Uplay.Ownership.Upstream, Uplay.Ownership.Downstream>(new Uplay.Ownership.Upstream()
             { 
-                RequestId = Socket.RequestId,
-                SignOwnershipReq = new()
-                { 
-                    ProductId = 0
+                Request = new()
+                {
+                    RequestId = Socket.RequestId,
+                    SignOwnershipReq = new()
+                    {
+                        ProductId = 0
+                    }
                 }
-            
             });
             if (rsp != null)
             {

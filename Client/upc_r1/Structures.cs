@@ -28,28 +28,16 @@ public struct UPLAY_Overlapped
     [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
     public ulong[] Internal = new ulong[2];
 
-    public bool Completed
-    { 
-        get
-        {
-            return Internal[0] == 1;
-        }
-        set
-        {
-            Internal[0] = Convert.ToUInt64(value);
-        }
+    public readonly bool Completed
+    {
+        get => Internal[0] == 1;
+        set => Internal[0] = Convert.ToUInt64(value);
     }
 
-    public UPLAY_OverlappedResult Result
+    public readonly UPLAY_OverlappedResult Result
     {
-        get
-        {
-            return (UPLAY_OverlappedResult)Convert.ToInt32(Internal[1]);
-        }
-        set
-        {
-            Internal[1] = Convert.ToUInt64(value);
-        }
+        get => (UPLAY_OverlappedResult)Convert.ToInt32(Internal[1]);
+        set => Internal[1] = Convert.ToUInt64(value);
     }
 
     public UPLAY_Overlapped()

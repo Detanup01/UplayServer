@@ -22,7 +22,7 @@ internal class User
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_USER_GetAccountId", CallConvs = [typeof(CallConvCdecl)])]
     public static IntPtr UPLAY_USER_GetAccountId(IntPtr aOutAccountId)
     {
-        Basics.Log(nameof(UPLAY_USER_GetAccountId), []);
+        Basics.Log(nameof(UPLAY_USER_GetAccountId), [aOutAccountId]);
         return 0;
     }
 

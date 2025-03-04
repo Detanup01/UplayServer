@@ -5,12 +5,8 @@ using System.Net.Security;
 
 namespace ServerCore.HTTP;
 
-internal class TestServer : WSS_Server
+internal class TestServer(SslContext context, IPAddress address, int port) : WSS_Server(context, address, port)
 {
-    public TestServer(SslContext context, IPAddress address, int port) : base(context, address, port)
-    {
-    }
-
     protected override void OnHandshaking(SslSession session)
     {
         Console.WriteLine("OnHandshaking");

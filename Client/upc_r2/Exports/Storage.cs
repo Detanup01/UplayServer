@@ -6,13 +6,13 @@ namespace upc_r2.Exports;
 
 internal class Storage
 {
-    static Dictionary<int, string> PtrToFilePath = [];
+    static readonly Dictionary<int, string> PtrToFilePath = [];
 
     [UnmanagedCallersOnly(EntryPoint = "UPC_StorageFileListGet", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_StorageFileListGet(IntPtr inContext, IntPtr outStorageFileList)
     {
         Log(nameof(UPC_StorageFileListGet), [inContext, outStorageFileList]);
-        List<UPC_StorageFile> storageFiles = new();
+        List<UPC_StorageFile> storageFiles = [];
         Log(nameof(UPC_StorageFileListGet), [Main.GlobalContext.Config.Saved.savePath]);
         if (!Directory.Exists(Main.GlobalContext.Config.Saved.savePath))
             Directory.CreateDirectory(Main.GlobalContext.Config.Saved.savePath);
@@ -23,11 +23,13 @@ internal class Storage
                 continue;
 
             FileInfo info = new(item);
-            UPC_StorageFile storageFile = new();
-            storageFile.fileNameUtf8 = info.Name;
-            storageFile.legacyNameUtf8 = info.Name;
-            storageFile.size = (uint)info.Length;
-            storageFile.lastModifiedMs = (ulong)(info.LastWriteTime - new DateTime(1970, 1, 1)).TotalMilliseconds;
+            UPC_StorageFile storageFile = new()
+            {
+                fileNameUtf8 = info.Name,
+                legacyNameUtf8 = info.Name,
+                size = (uint)info.Length,
+                lastModifiedMs = (ulong)(info.LastWriteTime - new DateTime(1970, 1, 1)).TotalMilliseconds
+            };
             storageFiles.Add(storageFile);
         }
         Log(nameof(UPC_StorageFileListGet), ["storageFiles Count: ", storageFiles.Count]);

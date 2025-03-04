@@ -90,52 +90,23 @@ internal class Other
     public static IntPtr UPC_ErrorToString(int error)
     {
         string switch_ret = "get";
-        switch (error)
+        switch_ret = error switch
         {
-            default:
-                switch_ret = "Unknown error";
-                break;
-            case -14:
-                switch_ret = "Unavailable";
-                break;
-            case -13:
-                switch_ret = "Failed precondition";
-                break;
-            case -11:
-                switch_ret = "Operation aborted";
-                break;
-            case -10:
-                switch_ret = "Internal error";
-                break;
-            case -9:
-                switch_ret = "Unauthorized action";
-                break;
-            case -8:
-                switch_ret = "Limit reached";
-                break;
-            case -7:
-                switch_ret = "End of file";
-                break;
-            case -6:
-                switch_ret = "Not found";
-                break;
-            case -5:
-                switch_ret = "Memory error";
-                break;
-            case -4:
-                switch_ret = "Communication error";
-                break;
-            case -3:
-                switch_ret = "Uninitialized subsystem";
-                break;
-            case -2:
-                switch_ret = "Invalid arguments";
-                break;
-            case -1:
-                switch_ret = "Declined";
-                break;
-        }
-
+            -14 => "Unavailable",
+            -13 => "Failed precondition",
+            -11 => "Operation aborted",
+            -10 => "Internal error",
+            -9 => "Unauthorized action",
+            -8 => "Limit reached",
+            -7 => "End of file",
+            -6 => "Not found",
+            -5 => "Memory error",
+            -4 => "Communication error",
+            -3 => "Uninitialized subsystem",
+            -2 => "Invalid arguments",
+            -1 => "Declined",
+            _ => "Unknown error",
+        };
         var ret = Marshal.StringToHGlobalAnsi(switch_ret);
         Basics.Log(nameof(UPC_ErrorToString), [error, switch_ret]);
         return ret;

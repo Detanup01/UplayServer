@@ -12,24 +12,23 @@ namespace ServerCore.HTTP.V1;
 internal class Profiles
 {
     [HTTP("GET", "/v1/profiles/{userid}/entities?{args}")]
-    public static bool ConfigsEvents(HttpRequest request, ServerStruct serverStruct)
+    public static bool ConfigsEvents(HttpRequest _, ServerStruct serverStruct)
     {
         string userId = serverStruct.Parameters["userid"];
-        if (!serverStruct.Parameters.ContainsKey("spaceId"))
+        if (!serverStruct.Parameters.TryGetValue("spaceId", out string? spaceId))
         {
             Console.WriteLine("no spaceId");
             serverStruct.Response.MakeErrorResponse("no spaceId", "text/html; charset=UTF-8");
             serverStruct.SendResponse();
             return true;
         }
-        string spaceId = serverStruct.Parameters["spaceId"];
 
         string path = $"{ServerConfig.Instance.Demux.ServerFilesPath}Saves/{userId}/{spaceId}";
         var profileEntities = new ProfileEntities()
         {
             entities = []
         };
-        if (!serverStruct.Parameters.ContainsKey("name"))
+        if (!serverStruct.Parameters.TryGetValue("name", out string? filepath_name))
         {
             // send all from this space
             foreach (var item in Directory.GetFiles(path))
@@ -56,7 +55,6 @@ internal class Profiles
         }
         else
         {
-            string filepath_name = serverStruct.Parameters["name"];
             Console.WriteLine(filepath_name);
             var files = Directory.GetFiles(path);
             if (files.Any(x=>x.Contains(filepath_name)))
@@ -110,7 +108,7 @@ internal class Profiles
     public static bool PlaySession(HttpRequest request, ServerStruct serverStruct)
     {
         // body is {"productId":568} we currently dont care
-        PlaySessionResponse playSessionResponse = new PlaySessionResponse()
+        PlaySessionResponse playSessionResponse = new()
         { 
             createdAt = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
             expiresAt = DateTime.Now.AddHours(1).ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
@@ -162,8 +160,8 @@ internal class Profiles
     [HTTP("GET", "/v1/profiles/{userid}/global/ubiconnect/challenges/api?{args}")]
     public static bool Challenges(HttpRequest request, ServerStruct serverStruct)
     {
-        string userId = serverStruct.Parameters["userid"];
-        string spaceId = serverStruct.Parameters["spaceId"];
+        //string userId = serverStruct.Parameters["userid"];
+        //string spaceId = serverStruct.Parameters["spaceId"];
         ChallengesResponse challenges = new()
         {
             challenges = []
@@ -176,8 +174,8 @@ internal class Profiles
     [HTTP("GET", "/v1/profiles/{userid}/global/ubiconnect/rewards/api?{args}")]
     public static bool Rewards(HttpRequest request, ServerStruct serverStruct)
     {
-        string userId = serverStruct.Parameters["userid"];
-        string spaceId = serverStruct.Parameters["spaceId"];
+        //string userId = serverStruct.Parameters["userid"];
+        //string spaceId = serverStruct.Parameters["spaceId"];
         RewardsResponse rewardsResponse = new()
         {
             rewards = []

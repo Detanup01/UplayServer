@@ -6,23 +6,18 @@ internal class CloudSave
 {
     public static (string returnString, byte[] byteArray) GET(string URL, Dictionary<string, string> headers, out string contentType)
     {
-        var nullbytes = new byte[0] { };
+        var nullbytes = Array.Empty<byte>();
         contentType = "application/json; charset=UTF-8";
-        var userId = Guid.Parse(headers["UserId"]);
-        if (URL.StartsWith("/"))
-            URL = URL.Replace("/cloudsave/", "");
-        else
-            URL = URL.Replace("cloudsave/", "");
+        //var userId = Guid.Parse(headers["UserId"]);
+        URL = URL.StartsWith('/') ? URL.Replace("/cloudsave/", "") : URL.Replace("cloudsave/", "");
 
         var urlsplit = URL.Split("/");
         var uplayid = urlsplit[0];
         var itemOrAll = urlsplit[1];
-        uint prodId = 0;
-        if (!uint.TryParse(uplayid, out prodId))
+        if (!uint.TryParse(uplayid, out uint prodId))
         {
             return ("{\"error\":\"Error while parsing UplayID!\"}", nullbytes);
         }
-
         else
         {
             return ("{\"error\":\"User doesnt own the game!\"}", nullbytes);
@@ -33,16 +28,12 @@ internal class CloudSave
     {
         contentType = "text/plain; charset=utf-8";
         var userId = headers["UserId"];
-        if (URL.StartsWith("/"))
-            URL = URL.Replace("/cloudsave/", "");
-        else
-            URL = URL.Replace("cloudsave/", "");
+        URL = URL.StartsWith('/') ? URL.Replace("/cloudsave/", "") : URL.Replace("cloudsave/", "");
 
         var urlsplit = URL.Split("/");
         var uplayid = urlsplit[0];
         var itemOrName = urlsplit[1];
-        uint prodId = 0;
-        if (!uint.TryParse(uplayid, out prodId))
+        if (!uint.TryParse(uplayid, out uint prodId))
         {
             return "Error while parsing UplayID!";
         }
@@ -54,16 +45,12 @@ internal class CloudSave
     {
         errorRSP = "General Error";
         var userId = headers["UserId"];
-        if (URL.StartsWith("/"))
-            URL = URL.Replace("/cloudsave/", "");
-        else
-            URL = URL.Replace("cloudsave/", "");
+        URL = URL.StartsWith('/') ? URL.Replace("/cloudsave/", "") : URL.Replace("cloudsave/", "");
 
         var urlsplit = URL.Split("/");
         var uplayid = urlsplit[0];
         var itemIdString = urlsplit[1];
-        uint prodId = 0;
-        if (!uint.TryParse(uplayid, out prodId))
+        if (!uint.TryParse(uplayid, out uint prodId))
         {
             errorRSP = "Error while parsing UplayID";
             return true;

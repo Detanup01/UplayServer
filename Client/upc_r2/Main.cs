@@ -7,10 +7,10 @@ namespace upc_r2;
 
 public class Main
 {
-    public static Stopwatch Stopwatch = new Stopwatch();
-    public static Context GlobalContext = new Context();
-    public static IntPtr FakeContextPTR = IntPtr.Zero;
-    private static Lock lockObject = new Lock();
+    internal static Stopwatch Stopwatch = new();
+    internal static Context GlobalContext = new();
+    internal static IntPtr FakeContextPTR = IntPtr.Zero;
+    private readonly static Lock lockObject = new();
 
     [UnmanagedCallersOnly(EntryPoint = "UPC_ContextCreate", CallConvs = [typeof(CallConvCdecl)])]
     public static IntPtr UPC_ContextCreate(uint inVersion, IntPtr inOptSetting)
@@ -38,7 +38,7 @@ public class Main
                 {
                     ApiVersion = inVersion,
                     UplayId = GlobalContext.Config.ProductId,
-                    ProcessId = (uint)Process.GetCurrentProcess().Id,
+                    ProcessId = (uint)Environment.ProcessId,
                     SubSystemFriend = contextSettings.subsystems.HasFlag(UPC_ContextSubsystem.UPC_ContextSubsystem_Friend),
                     SubSystemInstall = contextSettings.subsystems.HasFlag(UPC_ContextSubsystem.UPC_ContextSubsystem_Install),
                     SubSystemMultiplayer = contextSettings.subsystems.HasFlag(UPC_ContextSubsystem.UPC_ContextSubsystem_Multiplayer),
@@ -183,7 +183,7 @@ public class Main
         Basics.Log(nameof(UPC_EventRegisterHandler), [inContext, inType, inHandler, inOptData]);
         var eventType = (UPC_EventType)inType;
         Basics.Log(nameof(UPC_EventRegisterHandler), ["EventType: ", eventType]);
-        GlobalContext.Events.Append(new Event(eventType, inHandler, inOptData));
+        GlobalContext.Events.Add(new Event(eventType, inHandler, inOptData));
         return (int)UPC_Result.UPC_Result_Ok;
     }
 
@@ -202,12 +202,16 @@ public class Main
     [UnmanagedCallersOnly(EntryPoint = "UPC_Init", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_Init(uint inVersion, int productId)
     {
-        GlobalContext = new Context();
-        GlobalContext.Config = new();
-        GlobalContext.Config.Saved = new();
-        GlobalContext.Callbacks = new();
-        GlobalContext.Events = new();
-        GlobalContext.Config.ProductId = (uint)productId;
+        GlobalContext = new()
+        {
+            Config = new()
+            {
+                Saved = new(),
+                ProductId = (uint)productId
+            },
+            Callbacks = [],
+            Events = []
+        };
         Basics.Log(nameof(UPC_Init), [inVersion, productId]);
         try
         {
@@ -220,7 +224,7 @@ public class Main
                         ApiVersion = inVersion,
                         UplayEnvIsSet = false,
                         UplayId = (uint)productId,
-                        ProcessId = (uint)Process.GetCurrentProcess().Id
+                        ProcessId = (uint)Environment.ProcessId
                     }
                 }, out Response);
             else
@@ -231,7 +235,7 @@ public class Main
                     {
                         OverlayEnabled = false,
                         Devmode = true,
-                        UplayPID = (uint)Process.GetCurrentProcess().Id,
+                        UplayPID = (uint)Environment.ProcessId,
                         OverlayInjectionMethod = OverlayInjectionMethod.None,
                         Result = InitResult.Success,
                         SdkMonitoringConfig = new()
@@ -243,19 +247,14 @@ public class Main
             }
             LoadPlugins.LoadR2Plugins();
             Basics.Log(nameof(UPC_Init), [Response.InitProcessRsp.Result]);
-            switch (Response.InitProcessRsp.Result)
+            return Response.InitProcessRsp.Result switch
             {
-                case InitResult.Success:
-                    return (int)UPC_InitResult.UPC_InitResult_Ok;
-                case InitResult.Failure:
-                    return (int)UPC_InitResult.UPC_InitResult_Failed;
-                case InitResult.ReconnectRequired:
-                    return (int)UPC_InitResult.UPC_InitResult_DesktopInteractionRequired;
-                case InitResult.RestartWithGameLauncherRequired:
-                    return (int)UPC_InitResult.UPC_InitResult_ExitProcessRequired;
-                default:
-                    return (int)UPC_InitResult.UPC_InitResult_Failed;
-            }
+                InitResult.Success => (int)UPC_InitResult.UPC_InitResult_Ok,
+                InitResult.Failure => (int)UPC_InitResult.UPC_InitResult_Failed,
+                InitResult.ReconnectRequired => (int)UPC_InitResult.UPC_InitResult_DesktopInteractionRequired,
+                InitResult.RestartWithGameLauncherRequired => (int)UPC_InitResult.UPC_InitResult_ExitProcessRequired,
+                _ => (int)UPC_InitResult.UPC_InitResult_Failed,
+            };
         }
         catch (Exception ex)
         {
@@ -276,7 +275,7 @@ public class Main
                 InitProcessReq = new()
                 {
                     ApiVersion = uint.MaxValue,
-                    ProcessId = (uint)Process.GetCurrentProcess().Id
+                    ProcessId = (uint)Environment.ProcessId
                 }
             }, out _);
     }

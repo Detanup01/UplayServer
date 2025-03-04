@@ -11,6 +11,7 @@ internal class Products
     public static int UPC_ProductListGet(IntPtr inContext, IntPtr inOptUserIdUtf8, uint inFilter, [Out] IntPtr outProductList, IntPtr inCallback, IntPtr inOptCallbackData)
     {
         Log(nameof(UPC_ProductListGet), [inContext, inOptUserIdUtf8, inFilter, outProductList, inCallback, inOptCallbackData]);
+        // Zero Means ourself
         if (inOptUserIdUtf8 != IntPtr.Zero)
         {
             string? userId = Marshal.PtrToStringAnsi(inOptUserIdUtf8);
@@ -21,10 +22,10 @@ internal class Products
         }
 
         // We adding or own product (So the productId as App [Required]) then DLC/Items/Others.
-        List<UPC_Product> products = new()
-        {
+        List<UPC_Product> products =
+        [
             new(Main.GlobalContext.Config.ProductId, 1)
-        };
+        ];
         foreach (var item in UPC_Json.GetRoot().Products)
         {
             products.Add(new(item.ProductId, item.Type));

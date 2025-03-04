@@ -63,7 +63,7 @@ public class App
     #region AppAPI
     public static Guid GetSpaceId(Guid AppId)
     {
-        using (var db = new LiteDatabase(DBName))
+        using (LiteDatabase db = new(DBName))
         {
             var col = db.GetCollection<AppAPI>(AppAPI);
 
@@ -76,21 +76,19 @@ public class App
     }
     public static void AddAppPI(AppAPI jAppAPI)
     {
-        using (var db = new LiteDatabase(DBName))
-        {
-            var col = db.GetCollection<AppAPI>(AppAPI);
+        using LiteDatabase db = new(DBName);
+        var col = db.GetCollection<AppAPI>(AppAPI);
 
-            if (!col.Exists(X => X == jAppAPI))
-            {
-                col.Insert(jAppAPI);
-            }
+        if (!col.Exists(X => X == jAppAPI))
+        {
+            col.Insert(jAppAPI);
         }
     }
     #endregion
     #region AppConfig
     public static void AddAppConfig(AppConfig jAppConfig)
     {
-        using var db = new LiteDatabase(DBName);
+        using LiteDatabase db = new(DBName);
         var col = db.GetCollection<AppConfig>(AppConfig);
 
         if (!col.Exists(X => X.ProductId == jAppConfig.ProductId))
@@ -101,21 +99,21 @@ public class App
 
     public static void EditAppConfig(AppConfig jAppConfig)
     {
-        using var db = new LiteDatabase(DBName);
+        using LiteDatabase db = new(DBName);
         var col = db.GetCollection<AppConfig>(AppConfig);
         col.Update(jAppConfig);
     }
 
     public static AppConfig? GetAppConfig(uint productId)
     {
-        using var db = new LiteDatabase(DBName);
+        using LiteDatabase db = new(DBName);
         var col = db.GetCollection<AppConfig>(AppConfig);
         return col.FindOne(x => x.ProductId == productId);
     }
 
     public static void DeleteAppConfig(uint productId)
     {
-        using var db = new LiteDatabase(DBName);
+        using LiteDatabase db = new(DBName);
         var col = db.GetCollection<AppConfig>(AppConfig);
 
         col.Delete((int)productId);
@@ -125,7 +123,7 @@ public class App
     #region AppBranches
     public static void AddAppBranches(AppBranches appBranches)
     {
-        using var db = new LiteDatabase(DBName);
+        using LiteDatabase db = new(DBName);
         var col = db.GetCollection<AppBranches>(AppBranches);
 
         if (!col.Exists(X => X.ProductId == appBranches.ProductId))
@@ -136,28 +134,28 @@ public class App
 
     public static void EditAppBranches(AppBranches appBranches)
     {
-        using var db = new LiteDatabase(DBName);
+        using LiteDatabase db = new(DBName);
         var col = db.GetCollection<AppBranches>(AppBranches);
         col.Update(appBranches);
     }
 
     public static AppBranches? GetAppBranch(uint productId, uint branchId)
     {
-        using var db = new LiteDatabase(DBName);
+        using LiteDatabase db = new(DBName);
         var col = db.GetCollection<AppBranches>(AppBranches);
         return col.FindOne(x => x.ProductId == productId && x.BranchId == branchId);
     }
 
     public static List<AppBranches>? GetAppBranches(uint productId)
     {
-        using var db = new LiteDatabase(DBName);
+        using LiteDatabase db = new(DBName);
         var col = db.GetCollection<AppBranches>(AppBranches);
         return col.Find(x => x.ProductId == productId).ToList();
     }
 
     public static void DeleteAppBranches(uint productId)
     {
-        using var db = new LiteDatabase(DBName);
+        using LiteDatabase db = new(DBName);
         var col = db.GetCollection<AppBranches>(AppBranches);
 
         col.Delete((int)productId);

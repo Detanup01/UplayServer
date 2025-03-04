@@ -24,7 +24,7 @@ public class DeComp
                 decompressorZstd.Dispose();
                 return returner;
             case "Deflate":
-                InflaterInputStream decompressor = new InflaterInputStream(new MemoryStream(bytesToDecompress), new(false));
+                InflaterInputStream decompressor = new(new MemoryStream(bytesToDecompress), new(false));
                 MemoryStream ms = new((int)outputsize);
                 decompressor.CopyTo(ms);
                 decompressor.Dispose();
@@ -39,7 +39,7 @@ public class DeComp
                         UpdateRate = LzhamWrapper.Enums.TableUpdateRate.Default
                     };
                     MemoryStream mem = new((int)outputsize);
-                    LzhamStream lzhamStream = new LzhamStream(new MemoryStream(bytesToDecompress), d);
+                    LzhamStream lzhamStream = new(new MemoryStream(bytesToDecompress), d);
                     lzhamStream.CopyTo(mem);
                     lzhamStream.Dispose();
                     return mem.ToArray();
@@ -53,15 +53,15 @@ public class DeComp
                         UpdateRate = LzhamWrapper.Enums.TableUpdateRate.Default
                     };
                     MemoryStream mem = new((int)outputsize);
-                    LzhamStream lzhamStream = new LzhamStream(new MemoryStream(bytesToDecompress), d);
+                    LzhamStream lzhamStream = new(new MemoryStream(bytesToDecompress), d);
                     lzhamStream.CopyTo(mem);
                     lzhamStream.Dispose();
                     return mem.ToArray();
                 }
             case "Lzo":
                 {
-                    using var mem = new MemoryStream();
-                    using var decompressed = new LzoStream(new MemoryStream(bytesToDecompress), CompressionMode.Decompress);
+                    using MemoryStream mem = new();
+                    using LzoStream decompressed = new(new MemoryStream(bytesToDecompress), CompressionMode.Decompress);
                     decompressed.CopyTo(mem);
                     return mem.ToArray();
                 }
@@ -84,8 +84,8 @@ public class DeComp
                 return returner;
             case "Deflate":
                 MemoryStream ms = new();
-                var defl = new Deflater(Deflater.BEST_COMPRESSION, false);
-                Stream deflate = new DeflaterOutputStream(ms, defl);
+                Deflater defl = new(Deflater.BEST_COMPRESSION, false);
+                DeflaterOutputStream deflate = new(ms, defl);
                 deflate.Write(bytesToCompress);
                 deflate.Close();
                 return ms.ToArray();

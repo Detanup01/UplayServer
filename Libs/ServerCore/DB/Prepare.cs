@@ -41,9 +41,9 @@ public class Prepare
         Store.Add(new()
         { 
             ProductId = 0,
-            Associations = new() { 0 },
+            Associations = [0],
             Configuration = "",
-            OwnershipAssociations = new() { 0 },
+            OwnershipAssociations = [0],
             Partner = 0,
             Reference = "0",
             Type = 1,

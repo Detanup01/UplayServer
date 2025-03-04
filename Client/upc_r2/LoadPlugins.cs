@@ -2,15 +2,16 @@
 
 namespace upc_r2;
 
-public class LoadPlugins
+public partial class LoadPlugins
 {
-    [DllImport("kernel32.dll")]
-    public static extern IntPtr LoadLibrary(string dllToLoad);
+    [LibraryImport("kernel32.dll", StringMarshalling = StringMarshalling.Utf8)]
+    internal static partial IntPtr LoadLibrary(string dllToLoad);
 
-    [DllImport("kernel32.dll")]
-    public static extern bool FreeLibrary(IntPtr hModule);
+    [LibraryImport("kernel32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool FreeLibrary(IntPtr hModule);
 
-    static Dictionary<string, IntPtr> FileToModule = [];
+    static readonly Dictionary<string, IntPtr> FileToModule = [];
 
     public static void LoadR2Plugins()
     {

@@ -17,23 +17,16 @@ public class Context
 }
 
 [StructLayout(LayoutKind.Sequential)]
-public struct Callback
+public struct Callback(IntPtr fn, IntPtr contextdata, int result)
 {
-    public Callback(IntPtr fn, IntPtr contextdata, int result)
-    {
-        context_data = contextdata;
-        Result = result;
-        fun = fn;
-    }
-
     [MarshalAs(UnmanagedType.SysInt)]
-    public IntPtr fun;
+    public IntPtr fun = fn;
     [MarshalAs(UnmanagedType.I4)]
-    public int Result;
+    public int Result = result;
     [MarshalAs(UnmanagedType.SysInt)]
-    public IntPtr context_data;
+    public IntPtr context_data = contextdata;
 
-    public override string ToString()
+    public override readonly string ToString()
     {
         return $"FunctionPtr: {fun} Result: {Result} Data: {context_data}";
     }
@@ -54,18 +47,11 @@ public struct InitSaved
 }
 
 [StructLayout(LayoutKind.Sequential)]
-public struct Event
+public struct Event(UPC_EventType eventType, IntPtr handler, IntPtr optdata)
 {
-    public Event(UPC_EventType eventType, IntPtr handler, IntPtr optdata)
-    {
-        EventType = eventType;
-        Handler = handler;
-        OptData = optdata;
-    }
-
-    public UPC_EventType EventType;
-    public IntPtr Handler;
-    public IntPtr OptData;
+    public UPC_EventType EventType = eventType;
+    public IntPtr Handler = handler;
+    public IntPtr OptData = optdata;
 }
 
 
@@ -93,39 +79,29 @@ public struct BasicList
         list = _list;
     }
 
-    public override string ToString()
+    public override readonly string ToString()
     {
         return $"ListPtr: {list} Count: {count}";
     }
 }
 
 [StructLayout(LayoutKind.Sequential)]
-public struct UPC_Product
+public struct UPC_Product(uint _id, uint _type)
 {
     [MarshalAs(UnmanagedType.U4)]
-    public uint id;
+    public uint id = _id;
     [MarshalAs(UnmanagedType.U4)]
-    public Uplay.Uplaydll.ProductType type;
+    public Uplay.Uplaydll.ProductType type = (Uplay.Uplaydll.ProductType)_type;
     [MarshalAs(UnmanagedType.U4)]
-    public Uplay.Uplaydll.ProductOwnership ownership;
+    public Uplay.Uplaydll.ProductOwnership ownership = Uplay.Uplaydll.ProductOwnership.Owned;
     [MarshalAs(UnmanagedType.U4)]
-    public Uplay.Uplaydll.ProductState state;
+    public Uplay.Uplaydll.ProductState state = Uplay.Uplaydll.ProductState.Playable;
     [MarshalAs(UnmanagedType.U4)]
-    public uint balance;
+    public uint balance = 0;
     [MarshalAs(UnmanagedType.U4)]
-    public Uplay.Uplaydll.ProductActivation activation;
+    public Uplay.Uplaydll.ProductActivation activation = Uplay.Uplaydll.ProductActivation.Purchased;
 
-    public UPC_Product(uint _id, uint _type)
-    {
-        id = _id;
-        type = (Uplay.Uplaydll.ProductType)_type;
-        balance = 0;
-        ownership = Uplay.Uplaydll.ProductOwnership.Owned;
-        state = Uplay.Uplaydll.ProductState.Playable;
-        activation = Uplay.Uplaydll.ProductActivation.Purchased;
-    }
-
-    public override string ToString()
+    public override readonly string ToString()
     {
         return $"ProductId: {id} ProductType: {type} ProductOwnership: {ownership} ProductState: {state} Balance: {balance} ProductActivation: {activation}";
     }
@@ -154,7 +130,7 @@ public struct UPC_UserImpl
     public uint relationship;
     public IntPtr presence;
 
-    public override string ToString()
+    public override readonly string ToString()
     {
         return $"id: {idUtf8}, name: {nameUtf8}, rel: {relationship}, presence: {presence}";
     }
@@ -186,7 +162,7 @@ public struct UPC_RichPresenceToken
 
     }
 
-    public override string ToString()
+    public override readonly string ToString()
     {
         return $"Id: {idUtf8} Value: {valueIdUtf8}";
     }

@@ -9,8 +9,8 @@
 
   <ItemGroup>
     <PackageReference Include="UbiServices" Version="24.9.8" />
-    <PackageReference Include="Uplay-Protobufs" Version="158.0.11194" />
-    <PackageReference Include="UplayKit" Version="0.0.2.7" />
+    <PackageReference Include="Uplay-Protobufs" Version="161.1.11646" />
+    <PackageReference Include="UplayKit" Version="0.0.3" />
   </ItemGroup>
 
   <ItemGroup>

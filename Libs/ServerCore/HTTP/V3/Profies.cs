@@ -37,9 +37,9 @@ internal class Profies
         }
 
         Guid SessionId = Guid.NewGuid();
-        if (serverStruct.Headers.ContainsKey("ubi-sessionid"))
+        if (serverStruct.Headers.TryGetValue("ubi-sessionid", out string? value))
         {
-            SessionId = Guid.Parse(serverStruct.Headers["ubi-sessionid"]);
+            SessionId = Guid.Parse(value);
         }
 
         var token = JWTController.CreateAuthToken(id, SessionId, appId);

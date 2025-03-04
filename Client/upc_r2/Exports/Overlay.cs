@@ -64,7 +64,7 @@ internal class Overlay
     [UnmanagedCallersOnly(EntryPoint = "UPC_OverlayNotificationShow_Extended", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_OverlayNotificationShow_Extended(IntPtr inContext, uint inId, IntPtr unk1, IntPtr unk2)
     {
-        Basics.Log(nameof(UPC_OverlayNotificationShow_Extended), [inContext, inId]);
+        Basics.Log(nameof(UPC_OverlayNotificationShow_Extended), [inContext, inId, unk1, unk2]);
         return 0;
     }
 

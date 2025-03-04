@@ -9,8 +9,7 @@ public class ServerConfig
     {
         get
         {
-            if (_Instance == null)
-                _Instance = LoadConfig();
+            _Instance ??= LoadConfig();
             return _Instance;
         }
         set { _Instance = value; }

@@ -16,7 +16,7 @@ public class dbdataExport
     public delegate IntPtr RegularDelegate(IntPtr IGameTokenInterface, IntPtr a2);
 
     [UnmanagedCallersOnly(EntryPoint = "?getGameTokenInterface@@YAPEAVIGameTokenInterface@@PEAX_K@Z", CallConvs = [typeof(CallConvCdecl)])]
-    public static IntPtr getGameTokenInterface(IntPtr appid_ptr, int always8)
+    public static IntPtr getGameTokenInterface(IntPtr appid_ptr, int _ /* always8 */)
     {
         AppId = (uint)Marshal.ReadInt32(appid_ptr);
         Log(nameof(getGameTokenInterface), ["Appid ",AppId]);
@@ -70,11 +70,11 @@ public class dbdataExport
     public static bool GetCachedOrFreshToken(IntPtr IGameTokenInterface, IntPtr tokenBuffer, int len)
     {
         var b64Request = Marshal.PtrToStringAnsi(tokenBuffer);
-        Log(nameof(GetCachedOrFreshToken), [b64Request == null ? "" : b64Request]);
+        Log(nameof(GetCachedOrFreshToken), [b64Request ?? ""]);
         if (b64Request != null)
         {
             File.WriteAllText(Path.Combine(GetCuPath(), "token_req.txt"), b64Request);
-            File.WriteAllText(Path.Combine(GetCuPath(), $"token_req_{AppId}.txt"), b64Request);
+            File.WriteAllText(Path.Combine(GetCuPath(), $"token_req_{AppId}.txt"), $"{b64Request}|{AppId}");
 
             // Should we return false if we dont have the token?
         }  

@@ -5,13 +5,13 @@ namespace upc_r1.Exports;
 
 internal class Save
 {
-    static Dictionary<int, string> PtrToFilePath = [];
+    static readonly Dictionary<int, string> PtrToFilePath = [];
 
     [UnmanagedCallersOnly(EntryPoint = "UPLAY_SAVE_Close", CallConvs = [typeof(CallConvCdecl)])]
     public static bool UPLAY_SAVE_Close(IntPtr aOutSaveHandle)
     {
         Basics.Log(nameof(UPLAY_SAVE_Close), [aOutSaveHandle]);
-        PtrToFilePath.Remove((int)aOutSaveHandle);
+        PtrToFilePath.Remove(aOutSaveHandle.ToInt32());
         return true;
     }
 
@@ -25,7 +25,7 @@ internal class Save
         if (!Directory.Exists(savepath))
             Directory.CreateDirectory(savepath);
         var files = Directory.GetFiles(savepath);
-        List<UPLAY_SAVE_Game> saves = new();
+        List<UPLAY_SAVE_Game> saves = [];
         uint i = 1;
         foreach (var item in files)
         {
@@ -33,10 +33,12 @@ internal class Save
                 continue;
 
             FileInfo info = new(item);
-            UPLAY_SAVE_Game saveGame = new();
-            saveGame.nameUtf8 = info.Name;
-            saveGame.id = i;
-            saveGame.size = (uint)info.Length;
+            UPLAY_SAVE_Game saveGame = new()
+            {
+                nameUtf8 = info.Name,
+                id = i,
+                size = (uint)info.Length
+            };
             saves.Add(saveGame);
             i++;
         }

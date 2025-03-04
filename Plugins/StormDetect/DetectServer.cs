@@ -3,14 +3,9 @@ using System.Net;
 
 namespace StormDetect;
 
-public class DetectServer : UdpServer
+public class DetectServer(string address, int port, string detectServerName) : UdpServer(address, port)
 {
-    public readonly string DetectServerName;
-    public DetectServer(string address, int port, string detectServerName) : base(address, port)
-    {
-
-        DetectServerName = detectServerName;
-    }
+    public readonly string DetectServerName = detectServerName;
 
     protected override void OnStarted()
     {

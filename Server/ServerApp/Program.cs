@@ -22,10 +22,10 @@ internal class Program
         CoreRun.Start();
         
         string endCheck = "not";
-        while (endCheck.ToLower() != "exit")
+        while (!endCheck.Equals("exit", StringComparison.CurrentCultureIgnoreCase))
         {
             endCheck = Console.ReadLine()!;
-            if (endCheck.StartsWith("!"))
+            if (endCheck.StartsWith('!'))
             {
                 CommandHandler.Run(endCheck);
             }
