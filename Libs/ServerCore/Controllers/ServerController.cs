@@ -1,45 +1,50 @@
 ﻿using ModdableWebServer.Attributes;
 using ModdableWebServer.Helper;
-using ModdableWebServer.Servers;
 using NetCoreServer;
+using ServerCore.HTTP;
 using ServerCore.Models;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Security.Authentication;
 
-namespace ServerCore.HTTP;
+namespace ServerCore.Controllers;
 
-public class ServerManager
+internal static class ServerController
 {
-    static WSS_Server? WSS_Server = null;
+    static NewServer? server;
     static Dictionary<string, Dictionary<HTTPAttribute, MethodInfo>> HTTP_Plugins = [];
     static Dictionary<string, Dictionary<string, MethodInfo>> WS_Plugins = [];
     static Dictionary<HTTPAttribute, MethodInfo> Main_HTTP = [];
     static Dictionary<string, MethodInfo> Main_WS = [];
-
     public static void Start()
     {
+        Directory.CreateDirectory("logs");
         DebugPrinter.EnableLogs = true;
         //DebugPrinter.PrintToConsole = true;
         var ServerManagerAssembly = Assembly.GetAssembly(typeof(ServerManager));
         ArgumentNullException.ThrowIfNull(ServerManagerAssembly, nameof(ServerManagerAssembly));
-        SslContext? context = CertHelper.GetContextNoValidate(System.Security.Authentication.SslProtocols.Tls12, $"cert/services.pfx", ServerConfig.Instance.CERT.ServicesCertPassword);
-        //WSS_Server = new NewServer(context, IPAddress.Parse(ServerConfig.Instance.HTTPS_Ip), ServerConfig.Instance.HTTPS_Port);
+        SslContext? context = CertHelper.GetContextNoValidate(SslProtocols.Tls12, $"cert/services.pfx", ServerConfig.Instance.CERT.ServicesCertPassword);
+        server = new NewServer(context, IPAddress.Any, 443);
         Main_HTTP = AttributeMethodHelper.UrlHTTPLoader(ServerManagerAssembly);
         Main_WS = AttributeMethodHelper.UrlWSLoader(ServerManagerAssembly);
         AddRoutes(ServerManagerAssembly);
-        WSS_Server.DoReturn404IfFail = false;
-        WSS_Server.ReceivedFailed += Failed;
-        WSS_Server.OnSocketError += OnSocketError;
-        WSS_Server.ReceivedRequestError += RecvReqError;
-        WSS_Server.Context.ClientCertificateRequired = false;
-        WSS_Server.Start();
-        Console.WriteLine("Server started on " + WSS_Server.Address);
+        server.DoReturn404IfFail = false;
+        server.ReceivedFailed += Failed;
+        server.OnSocketError += OnSocketError;
+        server.ReceivedRequestError += RecvReqError;
+        server.Context.ClientCertificateRequired = false;
+        server.Start();
+        Console.WriteLine("Server started on " + server.Address);
+    }
+    public static NewServer? GetServer()
+    {
+        return server;
     }
 
     private static void RecvReqError(object? sender, (HttpRequest request, string error) e)
     {
-        Console.WriteLine("RecvReqError " + e.request.Url + " "  + e.error);
+        Console.WriteLine("RecvReqError " + e.request.Url + " " + e.error);
     }
 
     private static void OnSocketError(object? sender, SocketError e)
@@ -55,10 +60,10 @@ public class ServerManager
 
     public static void Stop()
     {
-        if (WSS_Server != null)
+        if (server != null)
         {
-            WSS_Server.Stop();
-            WSS_Server = null;
+            server.Stop();
+            server = null;
         }
 
         Console.WriteLine("Server stopped.");
@@ -66,14 +71,13 @@ public class ServerManager
 
     public static void AddRoutes(Assembly assembly)
     {
-        if (WSS_Server != null)
-        {
-            var name = assembly.GetName().FullName;
-            HTTP_Plugins.Add(name, AttributeMethodHelper.UrlHTTPLoader(assembly));
-            WS_Plugins.Add(name, AttributeMethodHelper.UrlWSLoader(assembly));
-            WSS_Server.MergeWSAttribute(assembly);
-            WSS_Server.MergeAttribute(assembly);
-        }
+        if (server == null)
+            return;
+        var name = assembly.GetName().FullName;
+        HTTP_Plugins.Add(name, AttributeMethodHelper.UrlHTTPLoader(assembly));
+        WS_Plugins.Add(name, AttributeMethodHelper.UrlWSLoader(assembly));
+        server.MergeWSAttribute(assembly);
+        server.MergeAttribute(assembly);
     }
 
     public static void RemoveRoutes(Assembly assembly)
@@ -81,10 +85,10 @@ public class ServerManager
         var name = assembly.GetName().FullName;
         HTTP_Plugins.Remove(name);
         WS_Plugins.Remove(name);
-        if (WSS_Server == null)
+        if (server == null)
             return;
-        WSS_Server.HTTP_AttributeToMethods = Main_HTTP;
-        WSS_Server.WS_AttributeToMethods = Main_WS;
+        server.HTTP_AttributeToMethods = Main_HTTP;
+        server.WS_AttributeToMethods = Main_WS;
         foreach (var plugin in HTTP_Plugins)
         {
             if (plugin.Key == name)
@@ -92,7 +96,7 @@ public class ServerManager
 
             foreach (var item in plugin.Value)
             {
-                WSS_Server.HTTP_AttributeToMethods.TryAdd(item.Key, item.Value);
+                server.HTTP_AttributeToMethods.TryAdd(item.Key, item.Value);
             }
         }
         foreach (var plugin in WS_Plugins)
@@ -102,7 +106,7 @@ public class ServerManager
 
             foreach (var item in plugin.Value)
             {
-                WSS_Server.WS_AttributeToMethods.TryAdd(item.Key, item.Value);
+                server.WS_AttributeToMethods.TryAdd(item.Key, item.Value);
             }
         }
     }

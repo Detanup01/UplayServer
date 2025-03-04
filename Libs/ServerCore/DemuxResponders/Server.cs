@@ -16,12 +16,12 @@ public class DemuxServer
 {
     #region DemuxServer
     public static ConcurrentDictionary<Guid, DMXSession> DMXSessions = new ConcurrentDictionary<Guid, DMXSession>();
-    static DMXServer? server;
+    static NewServer? server;
     public static void Start()
     {
         Directory.CreateDirectory("logs");
         SslContext context = CertHelper.GetContextNoValidate(SslProtocols.Tls12, $"cert/services.pfx", ServerConfig.Instance.CERT.ServicesCertPassword);
-        server = new DMXServer(context, IPAddress.Parse(ServerConfig.Instance.DemuxIp), ServerConfig.Instance.DemuxPort);
+        //server = new NewServer(context, IPAddress.Parse(ServerConfig.Instance.DemuxIp), ServerConfig.Instance.DemuxPort);
         Console.WriteLine("[DMX] Server Started");
         server.Start();
     }
@@ -32,7 +32,7 @@ public class DemuxServer
         Console.WriteLine("[DMX] Server Stopped");
     }
 
-    public static DMXServer? GetServer()
+    public static NewServer? GetServer()
     {
         return server;
     }
@@ -135,9 +135,9 @@ public class DemuxServer
         public List<Guid> ConnectedIds { get; set; } = new();
         public DMXServer(SslContext context, IPAddress address, int port) : base(context, address, port) { }
 
-        protected override SslSession CreateSession() { return new DMXSession(this); }
+        public override SslSession CreateSession() { return new DMXSession(this); }
 
-        protected override void OnError(SocketError error)
+        public override void OnError(SocketError error)
         {
             Console.WriteLine($"Chat SSL server caught an error with code {error}");
         }
@@ -153,7 +153,7 @@ public class DemuxServer
             Server = server;
         }
 
-        protected override void OnConnected()
+        public override void OnConnected()
         {
             File.AppendAllText($"logs/client_{Id}.log", "Socket Connected: " + Socket.RemoteEndPoint + " | " + Socket.LocalEndPoint + "\n");
             DMXSessions.TryAdd(Id, this);
@@ -162,7 +162,7 @@ public class DemuxServer
             IsClosed = false;
         }
 
-        protected override void OnDisconnected()
+        public override void OnDisconnected()
         {
             File.AppendAllText($"logs/client_{Id}.log", "Socket Disconnected: \n");
             DMXSessions.Remove(Id, out _);
@@ -172,7 +172,7 @@ public class DemuxServer
             IsClosed = true;
         }
 
-        protected override void OnReceived(byte[] buffer, long offset, long size)
+        public override void OnReceived(byte[] buffer, long offset, long size)
         {
             File.AppendAllText($"logs/client_{Id}.log", "bufferl: " + buffer.Length + " offset: " + offset + " size: " + size + "\n");
             Debug.PWDebug($"SSL session with Id {Id} received!");
@@ -246,7 +246,7 @@ public class DemuxServer
             }
         }
 
-        protected override void OnError(SocketError error) => Console.WriteLine($"SSL session caught an error with code {error}");
+        public override void OnError(SocketError error) => Console.WriteLine($"SSL session caught an error with code {error}");
     }
     #endregion
 }

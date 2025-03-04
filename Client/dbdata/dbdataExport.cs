@@ -15,6 +15,7 @@ public class dbdataExport
     public delegate void InvalidateCacheTokenDelegate(IntPtr IGameTokenInterface);
     public delegate IntPtr RegularDelegate(IntPtr IGameTokenInterface, IntPtr a2);
 
+    //?getGameTokenInterface@@YAPEAVIGameTokenInterface@@PEAX_K@Z
     [UnmanagedCallersOnly(EntryPoint = "?getGameTokenInterface@@YAPEAVIGameTokenInterface@@PEAX_K@Z", CallConvs = [typeof(CallConvCdecl)])]
     public static IntPtr getGameTokenInterface(IntPtr appid_ptr, int _ /* always8 */)
     {

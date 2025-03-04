@@ -7,6 +7,8 @@ internal class Program
 {
     static void Main(string[] args)
     {
+        Serilog.Log.Logger = UplayKit.Logs.CreateMixedLog();
+        UplayKit.Logs.Mixed_Log_Switch.MinimumLevel = Serilog.Events.LogEventLevel.Verbose;
         ServiceTester.Run();
         var reg = V3.CreateAccount("publictester@test.com", "publictester", "2000-01-01", "publictester", "EU", "US", "-");
         if (reg != null)

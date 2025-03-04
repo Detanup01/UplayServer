@@ -15,15 +15,8 @@ public class ServerConfig
         set { _Instance = value; }
     }
 
-    public string DemuxIp = "127.0.0.1";
-    public int DemuxPort = 443;
     public string DemuxUrl = $"dmx.local.upc.ubisoft.com:443";
-    public bool DemuxHOST = true;
-    public bool DemuxLocal = true;
-    public string HTTPS_Ip = "127.0.0.1";
-    public int HTTPS_Port = 7777;
-    public string HTTPS_Url = $"https://local-ubiservices.ubi.com:7777";
-    public bool HTTPSHOST = true;
+    public string HTTPS_Url = $"https://local-ubiservices.ubi.com:443";
 
     public Cert CERT = new();
     public class Cert
