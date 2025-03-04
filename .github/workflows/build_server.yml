@@ -27,7 +27,7 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet publish Server/Server.sln -r win-x64 -c:Release -p:Platform=x64 -o:Server
+      run: dotnet publish Server/Server.sln -c:Release -o:Server
 
     - name : Upload artifacts
       uses: actions/upload-artifact@v4.3.5
