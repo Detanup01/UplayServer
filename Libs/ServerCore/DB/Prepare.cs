@@ -28,6 +28,18 @@ public class Prepare
         Auth.AddUA(Guid.Parse("ea66fece-ccce-4fe4-ad60-45298a0ac92a"), "MjA1anpTNmdlbnZveE1ZR0lLby8xT3REcWt3cjhibGcrc2hKRnZkK3JaRT0=");
         Auth.AddCurrent(Guid.Parse("ea66fece-ccce-4fe4-ad60-45298a0ac92a"), "MjA1anpTNmdlbnZveE1ZR0lLby8xT3REcWt3cjhibGcrc2hKRnZkK3JaRT0=", TokenType.Ticket);
 
+
+        DBUser.Add(new UserLogin()
+        {
+            UserId = Guid.Parse("ea66fece-ccce-4fe4-ad60-45298a0ac92a"),
+            Password = "user",
+            Country = "EU",
+            DateOfBirth = "2000-01-01",
+            Email = "user@uplayemu.com",
+            LegalOptinsKey = "-",
+            NameOnPlatform = "user",
+            PreferredLanguage = "US"
+        });
         DBUser.Add(new UserCommon()
         { 
             Name = "user",

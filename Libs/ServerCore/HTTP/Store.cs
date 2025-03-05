@@ -29,7 +29,7 @@ internal class Store
         return true;
     }
 
-    [HTTP("GET", "/store/?{args}")]
+    [HTTP("GET", "/storebrowse/?{args}")]
     public static bool StoreArgs(HttpRequest request, ServerStruct serverStruct)
     {
         Console.WriteLine("STOOOOOREEEE");

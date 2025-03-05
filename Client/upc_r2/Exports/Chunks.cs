@@ -29,9 +29,11 @@ internal class Chunks
         if (inContext == IntPtr.Zero || inChunkList == IntPtr.Zero)
             return (int)UPC_Result.UPC_Result_FailedPrecondition;
         var chunkptr = Marshal.AllocHGlobal(sizeof(BasicList));
-        BasicList chunk = new();
-        chunk.count = 0;
-        chunk.list = IntPtr.Zero;
+        BasicList chunk = new()
+        {
+            count = 0,
+            list = IntPtr.Zero
+        };
         Marshal.StructureToPtr(chunk, chunkptr, false);
         Marshal.WriteIntPtr(inChunkList, chunkptr);
         return (int)UPC_Result.UPC_Result_Ok;

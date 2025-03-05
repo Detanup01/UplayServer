@@ -309,6 +309,7 @@ public class NewWssSession : NewHttpsSession, IWebSocket
         // Check for WebSocket handshaked status
         if (WebSocket.WsHandshaked)
         {
+            Console.WriteLine("WebSocket.WsHandshaked");
             // Prepare receive frame from the remaining request body
             var body = Request.Body;
             var data = Encoding.UTF8.GetBytes(body);

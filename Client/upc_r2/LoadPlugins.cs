@@ -15,6 +15,8 @@ public partial class LoadPlugins
 
     public static void LoadR2Plugins()
     {
+        if (!Directory.Exists(Path.Combine(Basics.GetCuPath(), "r2")))
+            return;
         var files = Directory.GetFiles(Path.Combine(Basics.GetCuPath(), "r2"), "*.dll");
         foreach (var file in files)
         {

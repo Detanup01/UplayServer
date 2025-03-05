@@ -3,66 +3,8 @@ using System.Runtime.InteropServices;
 
 namespace upc_r2.Exports;
 
-internal unsafe class User
+internal class User
 {
-    #region Stuff
-
-    public class UPC_Presence
-    {
-        public Uplay.Uplaydll.OnlineStatusV2 onlineStatus;
-        public string detailsUtf8 = string.Empty;
-        public uint titleId;
-        public string titleNameUtf8 = string.Empty;
-        public string multiplayerId = string.Empty;
-        public int multiplayerJoinable;
-        public uint multiplayerSize;
-        public uint multiplayerMaxSize;
-        public byte[] multiplayerInternalData = [];
-    }
-
-    public class UPC_User
-    {
-        public string idUtf8 = string.Empty;
-        public string nameUtf8 = string.Empty;
-        public Uplay.Uplaydll.Relationship relationship;
-        public UPC_Presence presence = new();
-    }
-
-    public static UPC_PresenceImpl BuildFrom(UPC_Presence presence)
-    {
-        UPC_PresenceImpl impl = new()
-        {
-            onlineStatus = (uint)presence.onlineStatus,
-            detailsUtf8 = Marshal.StringToHGlobalAnsi(presence.detailsUtf8),
-            titleId = presence.titleId,
-            titleNameUtf8 = Marshal.StringToHGlobalAnsi(presence.titleNameUtf8),
-            multiplayerId = Marshal.StringToHGlobalAnsi(presence.multiplayerId),
-            multiplayerJoinable = presence.multiplayerJoinable,
-            multiplayerSize = presence.multiplayerSize,
-            multiplayerMaxSize = presence.multiplayerMaxSize,
-            multiplayerInternalDataSize = (uint)presence.multiplayerInternalData.Length
-        };
-        var ptr = Marshal.AllocHGlobal(sizeof(byte) * (int)presence.multiplayerInternalData.Length);
-        Marshal.Copy(presence.multiplayerInternalData, 0, ptr, presence.multiplayerInternalData.Length);
-        impl.multiplayerInternalData = ptr;
-        return impl;
-    }
-    public static UPC_UserImpl BuildFrom(UPC_User upc_User)
-    {
-        UPC_UserImpl impl = new()
-        {
-            idUtf8 = Marshal.StringToHGlobalAnsi(upc_User.idUtf8),
-            nameUtf8 = Marshal.StringToHGlobalAnsi(upc_User.nameUtf8),
-            relationship = (uint)upc_User.relationship
-        };
-        var presetimpl = BuildFrom(upc_User.presence);
-        IntPtr ptr = Marshal.AllocHGlobal(Marshal.SizeOf(impl));
-        Marshal.StructureToPtr(presetimpl, ptr, false);
-        impl.presence = ptr;
-        return impl;
-    }
-    #endregion
-
     [UnmanagedCallersOnly(EntryPoint = "UPC_UserGet", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_UserGet(IntPtr inContext, IntPtr inOptUserIdUtf8, IntPtr outUser, IntPtr inCallback, IntPtr inCallbackData)
     {
@@ -73,38 +15,36 @@ internal unsafe class User
         {
             idUtf8 = Main.GlobalContext.Config.Saved.account.AccountId,
             nameUtf8 = Main.GlobalContext.Config.Saved.account.NameOnPlatform,
-            relationship = Uplay.Uplaydll.Relationship.Friend,
+            relationship = Uplay.Uplaydll.Relationship.None,
             presence = new()
             {
                 onlineStatus = Uplay.Uplaydll.OnlineStatusV2.OnlineStatusOnline,
-                multiplayerSize = 0,
-                multiplayerMaxSize = 0,
-                detailsUtf8 = "yeet",
-                multiplayerId = "yeet",
-                multiplayerInternalData = [0x0, 0x1, 0x00, 0xAA],
-                multiplayerJoinable = 1,
-                titleId = 0,
-                titleNameUtf8 = "yeet"
+                multiplayerSize = 1,
+                multiplayerMaxSize = 1,
+                detailsUtf8 = $"Playing {Main.GlobalContext.Config}",
+                multiplayerId = Guid.NewGuid().ToString(),
+                multiplayerInternalData = [],
+                multiplayerJoinable = 0, // Disable joinable lobbies
+                titleId = Main.GlobalContext.Config.ProductId,
+                titleNameUtf8 = $"Product {Main.GlobalContext.Config}"
             }
         };
-        var impl = BuildFrom(user);
+        var impl = UPC_UserImpl.BuildFrom(user);
         IntPtr ptr = Marshal.AllocHGlobal(Marshal.SizeOf<UPC_UserImpl>());
         Marshal.StructureToPtr(impl, ptr, false);
         Marshal.WriteIntPtr(outUser, ptr);
-        return 1000;
+        return 0x10000;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPC_UserFree", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_UserFree(IntPtr inContext, IntPtr inUser)
     {
         Basics.Log(nameof(UPC_UserFree), [inContext, inUser]);
+        if (inUser == IntPtr.Zero)
+            return 0;
         var user = Marshal.PtrToStructure<UPC_UserImpl>(inUser);
-        var pers = Marshal.PtrToStructure<UPC_PresenceImpl>(user.presence);
-        Marshal.FreeHGlobal(pers.multiplayerInternalData);
-        Marshal.DestroyStructure<UPC_PresenceImpl>(user.presence);
-        Marshal.FreeHGlobal(user.presence);
+        UPC_UserImpl.Free(user);
         Marshal.DestroyStructure<UPC_UserImpl>(inUser);
-        Marshal.FreeHGlobal(inUser);
         return 0;
     }
 

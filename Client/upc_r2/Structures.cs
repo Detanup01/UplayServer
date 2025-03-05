@@ -120,6 +120,34 @@ public struct UPC_PresenceImpl
     public uint multiplayerMaxSize;
     public IntPtr multiplayerInternalData;
     public uint multiplayerInternalDataSize;
+
+    public static UPC_PresenceImpl BuildFrom(UPC_Presence presence)
+    {
+        UPC_PresenceImpl impl = new()
+        {
+            onlineStatus = (uint)presence.onlineStatus,
+            detailsUtf8 = Marshal.StringToHGlobalAnsi(presence.detailsUtf8),
+            titleId = presence.titleId,
+            titleNameUtf8 = Marshal.StringToHGlobalAnsi(presence.titleNameUtf8),
+            multiplayerId = Marshal.StringToHGlobalAnsi(presence.multiplayerId),
+            multiplayerJoinable = presence.multiplayerJoinable,
+            multiplayerSize = presence.multiplayerSize,
+            multiplayerMaxSize = presence.multiplayerMaxSize,
+            multiplayerInternalDataSize = (uint)presence.multiplayerInternalData.Length
+        };
+        var ptr = Marshal.AllocHGlobal(sizeof(byte) * presence.multiplayerInternalData.Length);
+        Marshal.Copy(presence.multiplayerInternalData, 0, ptr, presence.multiplayerInternalData.Length);
+        impl.multiplayerInternalData = ptr;
+        return impl;
+    }
+
+    public static void Free(UPC_PresenceImpl impl)
+    {
+        Marshal.FreeHGlobal(impl.detailsUtf8);
+        Marshal.FreeHGlobal(impl.titleNameUtf8);
+        Marshal.FreeHGlobal(impl.multiplayerId);
+        Marshal.FreeHGlobal(impl.multiplayerInternalData);
+    }
 }
 
 [StructLayout(LayoutKind.Sequential, Size = 32, Pack = 8)]
@@ -133,6 +161,30 @@ public struct UPC_UserImpl
     public override readonly string ToString()
     {
         return $"id: {idUtf8}, name: {nameUtf8}, rel: {relationship}, presence: {presence}";
+    }
+
+    public static UPC_UserImpl BuildFrom(UPC_User upc_User)
+    {
+        UPC_UserImpl impl = new()
+        {
+            idUtf8 = Marshal.StringToHGlobalAnsi(upc_User.idUtf8),
+            nameUtf8 = Marshal.StringToHGlobalAnsi(upc_User.nameUtf8),
+            relationship = (uint)upc_User.relationship
+        };
+        var presetimpl = UPC_PresenceImpl.BuildFrom(upc_User.presence);
+        IntPtr ptr = Marshal.AllocHGlobal(Marshal.SizeOf(impl));
+        Marshal.StructureToPtr(presetimpl, ptr, false);
+        impl.presence = ptr;
+        return impl;
+    }
+
+    public static void Free(UPC_UserImpl impl)
+    {
+        Marshal.FreeHGlobal(impl.idUtf8);
+        Marshal.FreeHGlobal(impl.nameUtf8);
+        var presence = Marshal.PtrToStructure<UPC_PresenceImpl>(impl.presence);
+        UPC_PresenceImpl.Free(presence);
+        Marshal.DestroyStructure<UPC_PresenceImpl>(impl.presence);
     }
 }
 
@@ -166,4 +218,25 @@ public struct UPC_RichPresenceToken
     {
         return $"Id: {idUtf8} Value: {valueIdUtf8}";
     }
+}
+
+public class UPC_Presence
+{
+    public Uplay.Uplaydll.OnlineStatusV2 onlineStatus = Uplay.Uplaydll.OnlineStatusV2.OnlineStatusOnline;
+    public string detailsUtf8 = string.Empty;
+    public uint titleId;
+    public string titleNameUtf8 = string.Empty;
+    public string multiplayerId = string.Empty;
+    public int multiplayerJoinable;
+    public uint multiplayerSize;
+    public uint multiplayerMaxSize;
+    public byte[] multiplayerInternalData = [];
+}
+
+public class UPC_User
+{
+    public string idUtf8 = string.Empty;
+    public string nameUtf8 = string.Empty;
+    public Uplay.Uplaydll.Relationship relationship;
+    public UPC_Presence presence = new();
 }

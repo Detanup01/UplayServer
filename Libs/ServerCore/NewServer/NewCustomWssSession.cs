@@ -1,15 +1,9 @@
 ﻿using ModdableWebServer;
 using ModdableWebServer.Helper;
-using ModdableWebServer.Servers;
 using NetCoreServer;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ServerCore.NewServer;
+namespace ServerCore;
 
 internal class NewCustomWssSession : NewWssSession
 {
@@ -29,7 +23,7 @@ internal class NewCustomWssSession : NewWssSession
                 this.SendAsync(cache.Item2);
         }
 
-        ServerStruct serverStruct = new ServerStruct()
+        ServerStruct serverStruct = new()
         {
             WSS_Session = this,
             Response = this.Response,

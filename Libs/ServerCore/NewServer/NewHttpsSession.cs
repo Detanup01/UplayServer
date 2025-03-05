@@ -12,11 +12,14 @@ public class NewHttpsSession : SslSession
     /// Checks if the Session is SSL Based
     /// </summary>
     public bool IsSSLConnection { get; protected set; }
+
+    public NewServer NewServer { get; }
     public NewHttpsSession(NewServer server) : base(server)
     {
         Cache = server.Cache;
         Request = new HttpRequest();
         Response = new HttpResponse();
+        NewServer = server;
     }
     #region Copy from NetCoreServer
     /// <summary>
@@ -134,7 +137,9 @@ public class NewHttpsSession : SslSession
     public override void OnReceived(byte[] buffer, long offset, long size)
     {
         var buf = buffer.Take((int)size).Skip((int)offset).ToArray();
-        if ((Request.IsPendingHeader() || Request.IsPendingBody() || Request.IsEmpty) && !Request.IsErrorSet)
+        var is_ascii = char.IsAsciiLetterUpper((char)buf[0]);
+        Console.WriteLine("OnReceived!! " + is_ascii);
+        if ((Request.IsPendingHeader() || Request.IsPendingBody() || Request.IsEmpty) && !Request.IsErrorSet && is_ascii)
         {
             HTTPReceivedInternal(buffer);
         }
@@ -171,13 +176,13 @@ public class NewHttpsSession : SslSession
                 return;
             }
         }
-
         // Process the request
         OnReceivedRequest(request);
     }
 
     private void HTTPReceivedInternal(byte[] buffer)
     {
+        
         // Receive HTTP request header
         if (Request.IsPendingHeader())
         {
@@ -215,7 +220,6 @@ public class NewHttpsSession : SslSession
 
     private void SSLReceivedInternal(byte[] buffer)
     {
-        Console.WriteLine("SSLReceived!");
         OnSSLReceived(buffer);
         IsSSLConnection = true;
     }

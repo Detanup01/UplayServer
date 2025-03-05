@@ -1,8 +1,6 @@
 ﻿using ModdableWebServer.Servers;
 using NetCoreServer;
 using System.Net;
-using System.Net.Sockets;
-using System.Text;
 
 namespace ServerCore;
 
@@ -14,6 +12,6 @@ public class NewServer : WSS_Server
 
     protected override SslSession CreateSession()
     {
-        return new NewWssSession(this);
+        return new NewCustomSession(this);
     }
 }
