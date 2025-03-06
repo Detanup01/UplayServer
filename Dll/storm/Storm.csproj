@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFramework>net9.0</TargetFramework>
+	  <ImplicitUsings>enable</ImplicitUsings>
+	  <Nullable>enable</Nullable>
+	  <Platforms>AnyCPU;x86;x64</Platforms>
+	  <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+	  <IsAotCompatible>True</IsAotCompatible>
+	  <PublishAot>true</PublishAot>
+	  <AssemblyVersion>$(Version)</AssemblyVersion>
+	  <FileVersion>$(Version)</FileVersion>
+	  <Description>Storm - Multiplayer Engine</Description>
+	  <Product>Ubisoft - Storm Multiplayer Engine</Product>
+	  <Copyright>(c) Ubisoft</Copyright>
+	  <NeutralLanguage>en-US</NeutralLanguage>
+	  <Version>2.5.6</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="System.Runtime.InteropServices" />
+  </ItemGroup>
+	
+</Project>
