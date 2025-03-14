@@ -6,7 +6,7 @@ using System.Text;
 
 namespace ServerCore.Controllers;
 
-public class CloudSaveController
+public static class CloudSaveController
 {
 
     public static byte[] GetSave(Guid UserId, string itemOrName, uint productId, out bool UseBinaryOctetStream)

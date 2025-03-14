@@ -5,7 +5,7 @@ using lzo.net;
 using System.IO.Compression;
 using ZstdNet;
 
-namespace SharedLib.Shared;
+namespace SharedLib;
 
 public class DeComp
 {
@@ -108,7 +108,7 @@ public class DeComp
                     return output.Take(outsize).ToArray();
                 }
                 else
-                { 
+                {
                     //return nothing to indicate we have issues!
                     return [];
                 }

@@ -1,4 +1,4 @@
-﻿using ServerCore.DemuxResponders;
+﻿using ServerCore.Controllers;
 using ServerCore.Models;
 
 namespace ServerCore.Commands;
@@ -16,7 +16,7 @@ public class Reloader
     {
         Console.WriteLine("CleanServer Started");
 
-        DemuxServer.SendToAllClient(new Uplay.Demux.Downstream()
+        DemuxController.SendToAllClient(new Uplay.Demux.Downstream()
         {
             Push = new()
             {

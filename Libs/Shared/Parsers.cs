@@ -1,7 +1,7 @@
 ﻿using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using System.Text;
 
-namespace SharedLib.Shared;
+namespace SharedLib;
 
 public class Parsers
 {
@@ -55,7 +55,7 @@ public class Parsers
             inputStream.Close();
             return byteString;
         }
-        
+
     }
 
     public static Uplay.Download.Manifest ParseManifestFile(string FileInput)

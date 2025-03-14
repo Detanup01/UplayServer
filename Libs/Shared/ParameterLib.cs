@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace SharedLib.Shared;
+namespace SharedLib;
 
 public static class ParameterLib
 {
@@ -23,7 +23,7 @@ public static class ParameterLib
     {
         var index = IndexOfParam(args, param);
 
-        if (index == -1 || index == (args.Length - 1))
+        if (index == -1 || index == args.Length - 1)
             return defaultValue;
 
         var strParam = args[index + 1];

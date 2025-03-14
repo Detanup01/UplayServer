@@ -15,16 +15,15 @@ public class CoreRun
         JWTController.CreateRSA();
         PluginHandle.LoadPlugins();
         ServerController.Start();
+        DemuxController.Start();
         Console.WriteLine(ServerConfig.Instance.DemuxUrl);
         Console.WriteLine(ServerConfig.Instance.HTTPS_Url);
-        //DemuxServer.Start();
-
     }
 
     public static void Stop()
     {
         PluginHandle.UnloadPlugins();
-        //DemuxServer.Stop();
+        DemuxController.Stop();
         ServerController.Stop();
     }
 }

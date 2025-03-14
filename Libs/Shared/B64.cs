@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace SharedLib.Shared;
+namespace SharedLib;
 
 public static class B64
 {

@@ -5,7 +5,7 @@ namespace ServerCore.DB;
 
 public class Auth
 {
-    public readonly static string DBName = Prepare.DatabasePath + "Auth.db";
+    public readonly static string DBName = Path.Combine(Prepare.DatabasePath, "Auth.db");
     public readonly static string UA = "UA"; // (User Auth)
     public readonly static string U2S = "U2S"; // (User To Session)
     public readonly static string DMX = "DMX"; // (Demux)
@@ -190,10 +190,10 @@ public class Auth
                 var conList = toGet.ToList().OrderBy(x => x.ConnectionId).ToList();
                 return conList.First().ConnectionId;
             }
-            return 0;
+            return uint.MaxValue;
         }
         else
-            return 0;
+            return uint.MaxValue;
     }
     public static string GetConNameByUserAndId(Guid userId, uint conId)
     {
@@ -223,10 +223,10 @@ public class Auth
                 var conList = toGet.ToList().OrderBy(x => x.ConnectionId).ToList();
                 return conList.First().ConnectionId;
             }
-            return 0;
+            return uint.MaxValue;
         }
         else
-            return 0;
+            return uint.MaxValue;
     }
 
     public static void DeleteDMXWithUserId(Guid userId)

@@ -10,9 +10,9 @@ using System.Security.Authentication;
 
 namespace ServerCore.Controllers;
 
-internal static class ServerController
+public static class ServerController
 {
-    static NewServer? server;
+    static UplayServer? server;
     static Dictionary<string, Dictionary<HTTPAttribute, MethodInfo>> HTTP_Plugins = [];
     static Dictionary<string, Dictionary<string, MethodInfo>> WS_Plugins = [];
     static Dictionary<HTTPAttribute, MethodInfo> Main_HTTP = [];
@@ -22,10 +22,10 @@ internal static class ServerController
         Directory.CreateDirectory("logs");
         DebugPrinter.EnableLogs = true;
         //DebugPrinter.PrintToConsole = true;
-        var ServerManagerAssembly = Assembly.GetAssembly(typeof(ServerManager));
+        var ServerManagerAssembly = Assembly.GetAssembly(typeof(ServerController));
         ArgumentNullException.ThrowIfNull(ServerManagerAssembly, nameof(ServerManagerAssembly));
         SslContext? context = CertHelper.GetContextNoValidate(SslProtocols.Tls12, $"cert/services.pfx", ServerConfig.Instance.CERT.ServicesCertPassword);
-        server = new NewServer(context, IPAddress.Any, 443);
+        server = new UplayServer(context, IPAddress.Any, 443);
         Main_HTTP = AttributeMethodHelper.UrlHTTPLoader(ServerManagerAssembly);
         Main_WS = AttributeMethodHelper.UrlWSLoader(ServerManagerAssembly);
         AddRoutes(ServerManagerAssembly);
@@ -37,7 +37,7 @@ internal static class ServerController
         server.Start();
         Console.WriteLine("Server started on " + server.Address);
     }
-    public static NewServer? GetServer()
+    public static UplayServer? GetServer()
     {
         return server;
     }

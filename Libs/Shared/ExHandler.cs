@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace SharedLib.Shared;
+namespace SharedLib;
 
 public static class Ex
 {

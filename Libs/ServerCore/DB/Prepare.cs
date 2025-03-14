@@ -5,12 +5,12 @@ namespace ServerCore.DB;
 public class Prepare
 {
     private static readonly string extractPath = Directory.GetCurrentDirectory();
-    public static readonly string DatabasePath = extractPath + "\\DataBase\\";
+    public static readonly string DatabasePath = Path.Combine(extractPath, "DataBase");
     public static void MakeAll()
     {
-        if (!Directory.Exists(extractPath + "\\Database"))
+        if (!Directory.Exists(DatabasePath))
         {
-            Directory.CreateDirectory(extractPath + "\\Database");
+            Directory.CreateDirectory(DatabasePath);
         }
 
         //  Other DB Init

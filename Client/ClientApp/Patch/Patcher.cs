@@ -1,7 +1,7 @@
 ﻿using Google.Protobuf;
 using ICSharpCode.SharpZipLib.Checksum;
 using RestSharp;
-using SharedLib.Shared;
+using SharedLib;
 using System.Text;
 
 namespace Client.Patch

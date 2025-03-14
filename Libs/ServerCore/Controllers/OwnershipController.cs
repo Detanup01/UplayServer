@@ -6,7 +6,7 @@ using Uplay.Ownership;
 
 namespace ServerCore.Controllers;
 
-public class OwnershipController
+public static class OwnershipController
 {
 
     public static bool IsOwned(Guid UserId, uint ProductId)
@@ -91,8 +91,9 @@ public class OwnershipController
             }
         }
 
-        if (File.Exists("ServerFiles/ProductConfigs/" + app.Configuration))
-            app.Configuration = File.ReadAllText("ServerFiles/ProductConfigs/" + app.Configuration);
+        var conf = Path.Combine("ServerFiles","ProductConfigs",app.Configuration);
+        if (File.Exists(conf))
+            app.Configuration = File.ReadAllText(conf);
 
         var og = new OwnedGame()
         {
@@ -173,7 +174,7 @@ public class OwnershipController
             if (currentbrach != null)
                 branchname = currentbrach.BranchName;
 
-            File.WriteAllText($"ServerFiles/ProductConfigs/{games.ProductId}.yml", games.Configuration, System.Text.Encoding.UTF8);
+            File.WriteAllText(Path.Combine("ServerFiles", "ProductConfigs", $"{games.ProductId}.yml"), games.Configuration, System.Text.Encoding.UTF8);
 
 
             App.AddAppBranches(new AppBranches()

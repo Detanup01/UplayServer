@@ -6,7 +6,7 @@ namespace ServerCore.DB;
 
 public class DBUser
 {
-    readonly static string DBName = Prepare.DatabasePath + "User.db";
+    readonly static string DBName = Path.Combine(Prepare.DatabasePath, "User.db");
     readonly static string USER = "User";
     readonly static string OwnershipBasic = "OwnershipBasic";
     readonly static string Ownership = "Ownership";

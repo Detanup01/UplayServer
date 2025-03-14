@@ -5,7 +5,7 @@ using ServerCore.Models;
 using ModdableWebServer.Helper;
 using ServerCore.Models.Responses;
 using Newtonsoft.Json;
-using SharedLib.Shared;
+using SharedLib;
 
 namespace ServerCore.HTTP.V1;
 

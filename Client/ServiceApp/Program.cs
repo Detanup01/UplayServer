@@ -1,5 +1,5 @@
 ﻿using ServiceApp.NPHELPER;
-using SharedLib.Shared;
+using SharedLib;
 
 namespace ServiceApp
 {

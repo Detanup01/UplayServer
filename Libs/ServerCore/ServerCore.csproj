@@ -28,4 +28,8 @@
     <ProjectReference Include="..\Shared\SharedLib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DMX\Services\" />
+  </ItemGroup>
+
 </Project>

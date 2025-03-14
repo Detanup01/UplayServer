@@ -1,6 +1,6 @@
 ﻿using Google.Protobuf;
 
-namespace SharedLib.Shared;
+namespace SharedLib;
 
 public class Formatters
 {
@@ -83,7 +83,7 @@ public class Formatters
         }
         catch (Exception ex)
         {
-            Ex.Handler(ex,"Shared_Formatter");
+            ex.Handler("Shared_Formatter");
             return default;
         }
     }
@@ -106,7 +106,7 @@ public class Formatters
         }
         catch (Exception ex)
         {
-            Ex.Handler(ex, "Shared_Formatter");
+            ex.Handler("Shared_Formatter");
             return default;
         }
     }

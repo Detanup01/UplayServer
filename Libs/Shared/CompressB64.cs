@@ -4,7 +4,7 @@ using System.Text;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using ICSharpCode.SharpZipLib.Zip.Compression;
 
-namespace SharedLib.Shared;
+namespace SharedLib;
 
 public class CompressB64
 {

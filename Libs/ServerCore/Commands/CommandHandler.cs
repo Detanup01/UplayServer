@@ -2,7 +2,7 @@
 
 public class CommandHandler
 {
-    public static Dictionary<string, Action<object>> Commands = new()
+    public static Dictionary<string, Action<string[]>> Commands = new()
     {            
         { "help" , Help },
         { "reload" , Reloader.ReloadAll },
@@ -23,25 +23,24 @@ public class CommandHandler
         }
     }
 
-    public static void Nothing(object obj)
+    public static void Nothing(string[] obj)
     {
 
     }
 
-    public static void Help(object obj)
+    public static void Help(string[] obj)
     {
         Console.WriteLine("Commands: " + string.Join(", ", Commands.Keys.ToList()));
     }
 
-    public static void CalculateLogin(object obj)
+    public static void CalculateLogin(string[] obj)
     {
-        var args = (string[])obj;
-        if (args.Length == 0)
+        if (obj.Length == 0)
         {
             Console.WriteLine("Use as: !calculatelogin {auth}\t(Auth must be email:password)");
             return;
         }
-        var auth = args[0];
+        var auth = obj[0];
         var toauth = Utils.MakeAuth(auth);
         Console.WriteLine($"Auth for {auth} is:\n{toauth}");
     }

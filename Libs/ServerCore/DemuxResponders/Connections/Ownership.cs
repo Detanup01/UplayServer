@@ -2,12 +2,12 @@
 using Newtonsoft.Json;
 using System.Text;
 using Uplay.Ownership;
-using SharedLib.Shared;
 using ServerCore.DB;
 using ServerCore;
 using ServerCore.Models;
 using ServerCore.Models.User;
 using ServerCore.Controllers;
+using SharedLib;
 
 namespace ServerCore.DemuxResponders;
 
@@ -618,7 +618,7 @@ public class Ownership
             uint userCon = Auth.GetConIdByUserAndName(username, Name);
             var bstr = OwnedGamePusher.ToByteString();
 
-            DemuxServer.SendToClient(ClientNumb, bstr, userCon);
+            DemuxController.SendToClient(ClientNumb, bstr, userCon);
         }
 
         public static void UplayCoreGameInitializedPusher(Guid ClientNumb, UplayCoreGameInitializedPush UplayCoreGameInitializedPusher)
@@ -627,7 +627,7 @@ public class Ownership
             uint userCon = Auth.GetConIdByUserAndName(username, Name);
             var bstr = UplayCoreGameInitializedPusher.ToByteString();
 
-            DemuxServer.SendToClient(ClientNumb, bstr, userCon);
+            DemuxController.SendToClient(ClientNumb, bstr, userCon);
         }
 
         public static void SubscriptionPusher(Guid ClientNumb, SubscriptionPush SubscriptionPusher)
@@ -636,7 +636,7 @@ public class Ownership
             uint userCon = Auth.GetConIdByUserAndName(username, Name);
             var bstr = SubscriptionPusher.ToByteString();
 
-            DemuxServer.SendToClient(ClientNumb, bstr, userCon);
+            DemuxController.SendToClient(ClientNumb, bstr, userCon);
         }
     }
 }

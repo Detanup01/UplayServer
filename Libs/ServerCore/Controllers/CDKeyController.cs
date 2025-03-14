@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json;
+using Serilog;
 using ServerCore.Models;
-using SharedLib.Shared;
 
 namespace ServerCore.Controller;
 
-public class CDKeyController
+public static class CDKeyController
 {
     public static string GenerateKey(uint productId, bool isUsed = true)
     {
@@ -18,7 +18,8 @@ public class CDKeyController
             if (i == 10)
             {
                 //10 time it generated shit, we make an error
-                Debug.PWDebug("We tried generating keys 10 times and we still failed!", "GenerateKey");
+                Log.Debug("We tried generating keys 10 times and we still failed!", "GenerateKey");
+                return string.Empty;
             }
 
             gen = Generate();

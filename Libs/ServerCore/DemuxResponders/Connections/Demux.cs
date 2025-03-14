@@ -1,9 +1,9 @@
 ﻿using Google.Protobuf;
 using Newtonsoft.Json.Linq;
 using ServerCore.DB;
-using SharedLib.Shared;
 using Uplay.Demux;
 using ServerCore.Models;
+using SharedLib;
 
 namespace ServerCore.DemuxResponders;
 
@@ -323,7 +323,7 @@ public static class Demux
                     uint LatestCon = Auth.GetLatestConIdByUser(id);
                     uint con = Auth.GetConIdByUserAndName(id, OpenConnection.ServiceName);
 
-                    if (LatestCon == 0 && con == 0)
+                    if (LatestCon == uint.MaxValue && con == uint.MaxValue)
                     {
                         Auth.AddDMX(id, Id, OpenConnection.ServiceName);
                     }

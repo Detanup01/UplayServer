@@ -4,8 +4,8 @@ using UplayKit;
 using UplayKit.Connection;
 using UbiServices.Public;
 using Google.Protobuf;
-using SharedLib.Shared;
 using Newtonsoft.Json;
+using SharedLib;
 
 namespace ClientApp;
 
@@ -16,7 +16,6 @@ internal class Program
 
     static void Main(string[] args)
     {
-        Debug.IsDebug = true;
         pipeServer = new PipeServer();
         pipeServer.Readed += PipeServer_Readed;
         var pipeThread = new Thread(pipeServer.Start);
@@ -138,8 +137,8 @@ internal class Program
 
     private static void PipeServer_Readed(object? sender, byte[] e)
     {
-        var req = SharedLib.Shared.Formatters.FormatDataNoLength<Uplay.Demux.Upstream>(e);
+        var req = SharedLib.Formatters.FormatDataNoLength<Uplay.Demux.Upstream>(e);
         var rsp = Socket!.SendUpstream(req!);
-        pipeServer!.Send(SharedLib.Shared.Formatters.FormatUpstream(rsp.ToByteArray()));
+        pipeServer!.Send(SharedLib.Formatters.FormatUpstream(rsp.ToByteArray()));
     }
 }

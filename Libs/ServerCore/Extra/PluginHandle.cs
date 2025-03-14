@@ -1,5 +1,6 @@
-﻿using ServerCore.Extra.Interfaces;
-using SharedLib.Shared;
+﻿using Serilog;
+using ServerCore.Extra.Interfaces;
+using SharedLib;
 using System.Reflection;
 
 namespace ServerCore.Extra;
@@ -103,7 +104,7 @@ public class PluginHandle
     private static void PluginInit(IPlugin iPlugin)
     {
         iPlugin.Initialize();
-        Debug.PrintDebug("New Plugin Loaded" +
+        Log.Debug("New Plugin Loaded" +
             "\nPlugin Name: " + iPlugin.Name +
             "\nPlugin Priority: " + iPlugin.Priority);
     }

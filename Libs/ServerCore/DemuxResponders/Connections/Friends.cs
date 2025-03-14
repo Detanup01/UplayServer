@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf;
+using ServerCore.Controllers;
 using ServerCore.DB;
 using ServerCore.Models.User;
 using Uplay.Friends;
@@ -895,7 +896,7 @@ public class Friends
                 uint userCon = Auth.GetConIdByUserAndName(username, Name);
                 var bstr = pushUpdatedRelationship.ToByteString();
 
-                DemuxServer.SendToClient(ClientNumb, bstr, userCon);
+                DemuxController.SendToClient(ClientNumb, bstr, userCon);
             }
         }
 
@@ -906,7 +907,7 @@ public class Friends
                 uint userCon = Auth.GetConIdByUserAndName(username, Name);
                 var bstr = pushUpdatedStatus.ToByteString();
 
-                DemuxServer.SendToClient(ClientNumb, bstr, userCon);
+                DemuxController.SendToClient(ClientNumb, bstr, userCon);
             }
         }
 
@@ -917,7 +918,7 @@ public class Friends
                 uint userCon = Auth.GetConIdByUserAndName(username, Name);
                 var bstr = pushJoinGameInvitation.ToByteString();
 
-                DemuxServer.SendToClient(ClientNumb, bstr, userCon);
+                DemuxController.SendToClient(ClientNumb, bstr, userCon);
             }
         }
 
@@ -928,7 +929,7 @@ public class Friends
                 uint userCon = Auth.GetConIdByUserAndName(username, Name);
                 var bstr = pushRecentlyMetPlayers.ToByteString();
 
-                DemuxServer.SendToClient(ClientNumb, bstr, userCon);
+                DemuxController.SendToClient(ClientNumb, bstr, userCon);
             }
         }
 
@@ -939,7 +940,7 @@ public class Friends
                 uint userCon = Auth.GetConIdByUserAndName(username, Name);
                 var bstr = pushGameInviteDeclined.ToByteString();
 
-                DemuxServer.SendToClient(ClientNumb, bstr, userCon);
+                DemuxController.SendToClient(ClientNumb, bstr, userCon);
             }
         }
 
@@ -950,7 +951,7 @@ public class Friends
                 uint userCon = Auth.GetConIdByUserAndName(username, Name);
                 var bstr = pushNicknameUpdate.ToByteString();
 
-                DemuxServer.SendToClient(ClientNumb, bstr, userCon);
+                DemuxController.SendToClient(ClientNumb, bstr, userCon);
             }
         }
 
@@ -961,7 +962,7 @@ public class Friends
                 uint userCon = Auth.GetConIdByUserAndName(username, Name);
                 var bstr = pushIsFavoriteUpdate.ToByteString();
 
-                DemuxServer.SendToClient(ClientNumb, bstr, userCon);
+                DemuxController.SendToClient(ClientNumb, bstr, userCon);
             }
         }
     }

@@ -1,7 +1,7 @@
 ﻿using ModdableWebServer.Helper;
 using ServerCore;
 using ServerCore.Commands;
-using SharedLib.Shared;
+using SharedLib;
 
 namespace ServerApp;
 
@@ -21,7 +21,6 @@ internal class Program
         }
         if (args.Contains("debug"))
         {
-            Debug.IsDebug = true;
             DebugPrinter.EnableLogs = true;
             DebugPrinter.PrintToConsole = true;
         }

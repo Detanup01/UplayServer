@@ -1,7 +1,7 @@
 ﻿using Google.Protobuf;
 using ICSharpCode.SharpZipLib.Zip.Compression;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
-using SharedLib.Shared;
+using SharedLib;
 using System.Security.Cryptography;
 using System.Text;
 

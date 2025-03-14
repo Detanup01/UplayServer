@@ -1,7 +1,7 @@
 ﻿using Google.Protobuf;
 using System.IO.Pipes;
-using SharedLib.Shared;
 using static upc_r2.Basics;
+using SharedLib;
 
 namespace upc_r2;
 
