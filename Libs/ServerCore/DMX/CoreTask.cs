@@ -1,49 +1,66 @@
 ﻿using Uplay.Demux;
 using ServerCore.Extra;
+using Google.Protobuf;
 
 namespace ServerCore.DMX;
 
 public static class CoreTask
 {
-    public static Task<Downstream?> RunTask(Guid id, byte[] Data)
+    public static Task<ByteString> ReturnEmptyByteString()
+    {
+        return Task.FromResult(ByteString.Empty);
+    }
+
+    public static Task<Downstream?> ReturnDownstream()
+    {
+        return Task.FromResult<Downstream?>(null);
+    }
+
+    public static Task<Downstream?> RunTask(DmxSession dmxSession, byte[] Data)
     {
         Upstream? upstream = null;
         switch (Data[0])
         {
             case 0x12:
                 upstream = Upstream.Parser.ParseFrom(Data);
-                return RunPushTask(id, upstream.Push);
+                return RunPushTask(dmxSession, upstream.Push);
             case 0x0A:
                 upstream = Upstream.Parser.ParseFrom(Data);
-                return RunRequestTask(id, upstream.Request);
+                return RunRequestTask(dmxSession, upstream.Request);
             case 0x5F:
-                return RunCustomTask(id, Data);
+                return RunCustomTask(dmxSession, Data);
             default:
-                return Task.FromResult<Downstream?>(null);
+                return ReturnDownstream();
         }
     }
 
-    public static Task<Downstream?> RunRequestTask(Guid id, Req req)
+    public static Task<Downstream?> RunRequestTask(DmxSession dmxSession, Req req)
     {
         //if (req?.ClientIpOverride != null) { Console.WriteLine(req.ClientIpOverride); }
         if (req?.GetPatchInfoReq != null)
-            return DemuxTasks.GetPatchInfo(req.RequestId, id, req.GetPatchInfoReq);
+            return DemuxTasks.GetPatchInfo(req.RequestId, dmxSession, req.GetPatchInfoReq);
         if (req?.AuthenticateReq != null)
-            return DemuxTasks.Authenticate(req.RequestId, id, req.AuthenticateReq);
-        return Task.FromResult<Downstream?>(null);
+            return DemuxTasks.Authenticate(req.RequestId, dmxSession, req.AuthenticateReq);
+        if (req?.OpenConnectionReq != null)
+            return DemuxTasks.OpenConnection(req.RequestId, dmxSession, req.OpenConnectionReq);
+        if (req?.ServiceRequest != null)
+            return DemuxTasks.Service(req.RequestId, dmxSession, req.ServiceRequest);
+        return ReturnDownstream();
     }
 
-    public static Task<Downstream?> RunPushTask(Guid id, Push push)
+    public static Task<Downstream?> RunPushTask(DmxSession dmxSession, Push push)
     {
         if (push.ClientVersion != null)
-            return DemuxTasks.ClientVersion(id, push.ClientVersion);
-        return Task.FromResult<Downstream?>(null);
+            return DemuxTasks.ClientVersion(dmxSession, push.ClientVersion);
+        if (push.ClientVersion != null)
+            return DemuxTasks.PushMessage(dmxSession, push.Data);
+        return ReturnDownstream();
     }
 
-    public static Task<Downstream?> RunCustomTask(Guid id, byte[] Data)
+    public static Task<Downstream?> RunCustomTask(DmxSession dmxSession, byte[] Data)
     {
-        var customproto = Utils.GetCustomProto(id, Data);
-        PluginHandle.DemuxDataReceivedCustom(id, customproto.buffer, customproto.protoname);
-        return Task.FromResult<Downstream?>(null);
+        var customproto = Utils.GetCustomProto(Data);
+        PluginHandle.DemuxDataReceivedCustom(dmxSession, customproto.buffer, customproto.protoname);
+        return ReturnDownstream();
     }
 }

@@ -1,16 +1,30 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Google.Protobuf;
+using Newtonsoft.Json.Linq;
 using Serilog;
 using ServerCore.DB;
 using ServerCore.DemuxResponders;
+using ServerCore.DMX.Connections;
+using ServerCore.DMX.Services;
 using ServerCore.Models;
-using System.Runtime.CompilerServices;
 using Uplay.Demux;
 
 namespace ServerCore.DMX;
 
 public static class DemuxTasks
 {
-    public static Task<Downstream?> Empty(uint reqId, Guid id, Req req)
+    private static Dictionary<string /* ServiceName */, Func<DmxSession /* dmxSession */, ByteString /* RequestData */,Task<ByteString> /* Result */ > /* ServiceRunner */ > ServiceToRunner = new()
+    {
+        { "utility_service", UtilityServiceTask.RunService },
+        { "client_configuration_service", ClientConfigurationServiceTask.RunService },
+    };
+
+    private static Dictionary<string /* ConnectionName */, Func<DmxSession /* dmxSession */, ByteString /* RequestData */, Task<ByteString> /* Result */ > /* ConnectionRunner */ > ConnectionRunner = new()
+    {
+        { "playtime_service", PlaytimeTask.RunConnection },
+    };
+
+
+    public static Task<Downstream?> Empty(uint reqId, DmxSession dmxSession, Req req)
     {
         return Task.FromResult<Downstream?>(new()
         {
@@ -21,7 +35,7 @@ public static class DemuxTasks
         });
     }
     #region Requests
-    public static Task<Downstream?> GetPatchInfo(uint reqId, Guid id, GetPatchInfoReq req)
+    public static Task<Downstream?> GetPatchInfo(uint reqId, DmxSession dmxSession, GetPatchInfoReq req)
     {
         return Task.FromResult<Downstream?>(new()
         {
@@ -58,7 +72,7 @@ public static class DemuxTasks
         });
     }
 
-    public static Task<Downstream?> Authenticate(uint reqId, Guid id, AuthenticateReq authenticateReq)
+    public static Task<Downstream?> Authenticate(uint reqId, DmxSession dmxSession, AuthenticateReq authenticateReq)
     {
         bool IsSuccess = false;
         bool IsBanned = false;
@@ -97,8 +111,7 @@ public static class DemuxTasks
         }
         else
         {
-            Globals.IdToUser.Add(id, UserId);
-            Globals.UserToId.Add(UserId, id);
+            dmxSession.UserId = UserId;
             IsSuccess = true;
         }
 
@@ -117,24 +130,24 @@ public static class DemuxTasks
         });
     }
 
-    public static Task<Downstream?> OpenConnection(uint reqId, Guid demux_id, OpenConnectionReq openConnection)
+    public static Task<Downstream?> OpenConnection(uint reqId, DmxSession dmxSession, OpenConnectionReq openConnection)
     {
         uint Id = 0;
         bool IsSucces = false;
 
-        if (Globals.Connections.Contains(openConnection.ServiceName) && Globals.IdToUser.TryGetValue(demux_id, out var user_id))
+        if (ConnectionRunner.ContainsKey(openConnection.ServiceName) && dmxSession.IsLoggedIn)
         {
             IsSucces = true;
-            uint LatestCon = Auth.GetLatestConIdByUser(user_id);
-            uint con = Auth.GetConIdByUserAndName(user_id, openConnection.ServiceName);
+            uint LatestCon = Auth.GetLatestConIdByUser(dmxSession.UserId);
+            uint con = Auth.GetConIdByUserAndName(dmxSession.UserId, openConnection.ServiceName);
 
             if (LatestCon == uint.MaxValue && con == uint.MaxValue)
             {
-                Auth.AddDMX(user_id, Id, openConnection.ServiceName);
+                Auth.AddDMX(dmxSession.UserId, Id, openConnection.ServiceName);
             }
             if (LatestCon != 0)
             {
-                Auth.AddDMX(user_id, LatestCon + 1, openConnection.ServiceName);
+                Auth.AddDMX(dmxSession.UserId, LatestCon + 1, openConnection.ServiceName);
                 Id = LatestCon + 1;
             }
         }
@@ -152,23 +165,84 @@ public static class DemuxTasks
             }
         });
     }
+
+    public static Task<Downstream?> Service(uint reqId, DmxSession dmxSession, ServiceReq req)
+    {
+        bool IsSucces = false;
+        ByteString returnData = ByteString.Empty;
+        if (ServiceToRunner.TryGetValue(req.Service, out var func) && dmxSession.IsLoggedIn)
+        {
+            returnData = func(dmxSession, req.Data).Result;
+            if (returnData != ByteString.Empty)
+                IsSucces = true;
+        }
+        return Task.FromResult<Downstream?>(new()
+        {
+            Response = new()
+            {
+                RequestId = reqId,
+                ServiceRsp = new()
+                {
+                    Success = IsSucces,
+                    Data = returnData
+                }
+            }
+        });
+    }
     #endregion
     #region Push
-    public static Task<Downstream?> ClientVersion(Guid id, ClientVersionPush versionPush)
+    public static Task<Downstream?> ClientVersion(DmxSession dmxSession, ClientVersionPush versionPush)
     {
-        Log.Information("{Id} has been using version: {Version}", id, versionPush.Version);
+        Log.Information("{Session} has been using version: {Version}", dmxSession, versionPush.Version);
         if (!Globals.AcceptVersions.Contains(versionPush.Version))
         {
             return Task.FromResult<Downstream?>(new()
             {
                 Push = new()
                 {
-
                     ClientOutdated = new()
                 }
             });
         }
-        return Task.FromResult<Downstream?>(null);
+        return CoreTask.ReturnDownstream();
+    }
+
+    public static Task<Downstream?> SendClose(DmxSession dmxSession, uint connectionId, ConnectionClosedPush.Types.Connection_ErrorCode errorCode = ConnectionClosedPush.Types.Connection_ErrorCode.ConnectionForceQuit)
+    {
+        return Task.FromResult<Downstream?>(new()
+        {
+            Push = new()
+            {
+                ConnectionClosed = new()
+                {
+                    ConnectionId = connectionId,
+                    ErrorCode = errorCode
+                }
+            }
+        });
+    }
+
+    public static Task<Downstream?> PushMessage(DmxSession dmxSession, DataMessage dataMessage)
+    {
+        ByteString returnData = ByteString.Empty;
+        if (dmxSession.IsLoggedIn)
+        {
+            var ConnectName = Auth.GetConNameByUserAndId(dmxSession.UserId, dataMessage.ConnectionId);
+            if (!ConnectionRunner.TryGetValue(ConnectName, out var connectionRunner))
+                return SendClose(dmxSession, dataMessage.ConnectionId);
+            returnData = connectionRunner(dmxSession, dataMessage.Data).Result;
+        }
+        return Task.FromResult<Downstream?>(new()
+        {
+            Push = new()
+            {
+                Data = new()
+                {
+                    ConnectionId = dataMessage.ConnectionId,
+                    Data = returnData
+                }
+            }
+        });
     }
     #endregion
 }

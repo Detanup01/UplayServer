@@ -34,10 +34,9 @@ public class Utils
         return cert;
     }
 
-    public static (string protoname, byte[] buffer) GetCustomProto(Guid Id, byte[] buffer)
+    public static (string protoname, byte[] buffer) GetCustomProto(byte[] buffer)
     {
-        Log.Debug($"{Id}: Custom Request Received!", "DMXSERVER");
-        int ReqNameLenght = int.Parse(Encoding.UTF8.GetString(new byte[] { buffer[1] }));
+        int ReqNameLenght = int.Parse(Encoding.UTF8.GetString([buffer[1]]));
         var bytename = buffer.Skip(2).Take(ReqNameLenght).ToArray();
         string protoname = Encoding.UTF8.GetString(bytename);
         Log.Debug($"[DMXSERVER] Request Name: {protoname}");

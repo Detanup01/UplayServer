@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf;
+using ServerCore.DMX;
 using ServerCore.ServerAndSession;
 using SharedLib;
 using Uplay.Demux;
@@ -7,6 +8,8 @@ namespace ServerCore.Controllers;
 
 public static class DemuxController
 {
+    private static List<DmxSession> DmxSessions = [];
+
     public static void Start()
     {
         UplaySession.OnSSLReceived += UplaySession_OnSSLReceived;
@@ -21,10 +24,18 @@ public static class DemuxController
     {
         UplaySession session = (UplaySession)sender!;
         var buffer = buf.Skip(4).ToArray();
-        var resul = DMX.CoreTask.RunTask(session.Id, buffer).Result;
-        if (resul == null)
+        DmxSession? dmxSession = null;
+        if (DmxSessions.Any(x => x.Session == session))
+            dmxSession = DmxSessions.First(x => x.Session == session);
+        else
+        {
+            dmxSession = new DmxSession(session);
+            DmxSessions.Add(dmxSession);
+        }
+        var result = DMX.CoreTask.RunTask(session.Id, buffer).Result;
+        if (result == null)
             return;
-        session.Send(Formatters.FormatUpstream(resul.ToByteArray()));
+        session.Send(Formatters.FormatUpstream(result.ToByteArray()));
     }
 
     #region SendtoClients
