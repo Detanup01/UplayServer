@@ -18,7 +18,7 @@ public static class CoreTask
 
     public static Task<Downstream?> RunTask(DmxSession dmxSession, byte[] Data)
     {
-        Upstream? upstream = null;
+        Upstream? upstream;
         switch (Data[0])
         {
             case 0x12:
@@ -59,8 +59,8 @@ public static class CoreTask
 
     public static Task<Downstream?> RunCustomTask(DmxSession dmxSession, byte[] Data)
     {
-        var customproto = Utils.GetCustomProto(Data);
-        PluginHandle.DemuxDataReceivedCustom(dmxSession, customproto.buffer, customproto.protoname);
+        var (protoname, buffer) = Utils.GetCustomProto(Data);
+        PluginHandle.DemuxDataReceivedCustom(dmxSession, buffer, protoname);
         return ReturnDownstream();
     }
 }

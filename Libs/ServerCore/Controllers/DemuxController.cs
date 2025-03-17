@@ -8,7 +8,7 @@ namespace ServerCore.Controllers;
 
 public static class DemuxController
 {
-    private static List<DmxSession> DmxSessions = [];
+    private readonly static List<DmxSession> DmxSessions = [];
 
     public static void Start()
     {
@@ -32,13 +32,26 @@ public static class DemuxController
             dmxSession = new DmxSession(session);
             DmxSessions.Add(dmxSession);
         }
-        var result = DMX.CoreTask.RunTask(session.Id, buffer).Result;
+        var result = CoreTask.RunTask(dmxSession, buffer).Result;
         if (result == null)
             return;
         session.Send(Formatters.FormatUpstream(result.ToByteArray()));
     }
 
     #region SendtoClients
+
+    /// <summary>
+    /// Demux Sent To Client
+    /// </summary>
+    /// <param name="ClientNumber">SSL Client Number</param>
+    /// <param name="down">Uplay.Demux Downstream data</param>
+    public static void SendToClient(Func<DmxSession, bool> predicate, Downstream down)
+    {
+        var first_or_def = DmxSessions.FirstOrDefault(predicate);
+        if (first_or_def != null && !first_or_def.Session.IsClosed && first_or_def.Session.IsSSL)
+            first_or_def.Session.Send(Formatters.FormatUpstream(down.ToByteArray()));
+    }
+
     /// <summary>
     /// Demux Sent To Client
     /// </summary>
@@ -46,7 +59,7 @@ public static class DemuxController
     /// <param name="down">Uplay.Demux Downstream data</param>
     public static void SendToClient(Guid ClientNumber, Downstream down)
     {
-        if (UplayServer.UplaySessions.TryGetValue(ClientNumber, out var session) && !session.IsClosed && !session.IsSSL)
+        if (UplayServer.UplaySessions.TryGetValue(ClientNumber, out var session) && !session.IsClosed && session.IsSSL)
         {
             session.Send(Formatters.FormatUpstream(down.ToByteArray()));
         }
@@ -59,7 +72,7 @@ public static class DemuxController
     /// <param name="message">Push DataMessage</param>
     public static void SendToClient(Guid ClientNumber, DataMessage message)
     {
-        if (UplayServer.UplaySessions.TryGetValue(ClientNumber, out var session) && !session.IsClosed && !session.IsSSL)
+        if (UplayServer.UplaySessions.TryGetValue(ClientNumber, out var session) && !session.IsClosed && session.IsSSL)
         {
             Downstream downstream = new()
             {
@@ -80,7 +93,7 @@ public static class DemuxController
     /// <param name="conId">ConnectionId</param>
     public static void SendToClient(Guid ClientNumber, ByteString bstr, uint conId)
     {
-        if (UplayServer.UplaySessions.TryGetValue(ClientNumber, out var session) && !session.IsClosed && !session.IsSSL)
+        if (UplayServer.UplaySessions.TryGetValue(ClientNumber, out var session) && !session.IsClosed && session.IsSSL)
         {
             Downstream downstream = new()
             {

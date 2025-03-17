@@ -16,6 +16,10 @@ public static class ClientConfigurationServiceTask
             return CoreTask.ReturnEmptyByteString();
         if (upstream.Request.GetStatisticsStatusReq != null)
             return StatisticStatus(dmxSession, upstream.Request.RequestId, upstream.Request.GetStatisticsStatusReq);
+        if (upstream.Request.GetPatchInfoReq != null)
+            return DMX_PatchInfo(dmxSession, upstream.Request.RequestId, upstream.Request.GetPatchInfoReq);
+        if (upstream.Request.GetPatchInfoReqV2 != null)
+            return PatchInfo(dmxSession, upstream.Request.RequestId, upstream.Request.GetPatchInfoReqV2);
         return CoreTask.ReturnEmptyByteString();
     }
 
@@ -23,9 +27,9 @@ public static class ClientConfigurationServiceTask
     {
         // ?? Store User Build Version ??
 
-        List<BuildVersion> buildVersions = new();
+        List<BuildVersion> buildVersions = [];
 
-        foreach (var ver in Globals.AcceptVersions)
+        foreach (var ver in DemuxTasks.AcceptVersions)
         {
             buildVersions.Add(new() { VersionNumber = ver });
         }
@@ -56,7 +60,7 @@ public static class ClientConfigurationServiceTask
                     TrackType = getPatchInfo.TrackType,
                     TestConfig = getPatchInfo.TestConfig,
                     Success = true,
-                    LatestVersion = Globals.AcceptVersions.Last(),
+                    LatestVersion = DemuxTasks.AcceptVersions.Last(),
                     PatchTrackId = getPatchInfo.PatchTrackId,
                     PatchBaseUrl = ServerConfig.Instance.HTTPS_Url + "/patch/"
                 }
@@ -77,7 +81,7 @@ public static class ClientConfigurationServiceTask
                     TrackType = getPatchInfo.TrackType,
                     TestConfig = getPatchInfo.TestConfig,
                     Success = true,
-                    LatestVersion = Globals.AcceptVersions.Last(),
+                    LatestVersion = DemuxTasks.AcceptVersions.Last(),
                     PatchTrackId = getPatchInfo.PatchTrackId,
                     PatchBaseUrl = ServerConfig.Instance.HTTPS_Url + "/patch/"
                 }

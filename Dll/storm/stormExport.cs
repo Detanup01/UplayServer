@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace Storm;
 
@@ -69,7 +68,7 @@ public class stormExport
 
             // Example: Call the local peer descriptor updated handler
             // This is just a simulated call, actual implementation may vary
-            localPeerDescriptorUpdatedHandler(IntPtr.Zero);
+            //localPeerDescriptorUpdatedHandler(IntPtr.Zero);
 
             // If all steps succeed, set initializationSuccess to true
             initializationSuccess = true;

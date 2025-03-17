@@ -150,7 +150,7 @@ public class App
     {
         using LiteDatabase db = new(DBName);
         var col = db.GetCollection<AppBranches>(AppBranches);
-        return col.Find(x => x.ProductId == productId).ToList();
+        return [.. col.Find(x => x.ProductId == productId)];
     }
 
     public static void DeleteAppBranches(uint productId)
