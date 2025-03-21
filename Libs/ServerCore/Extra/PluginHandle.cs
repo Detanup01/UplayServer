@@ -1,7 +1,6 @@
 ﻿using Serilog;
 using ServerCore.DMX;
 using ServerCore.Extra.Interfaces;
-using SharedLib;
 using System.Reflection;
 
 namespace ServerCore.Extra;
@@ -40,16 +39,6 @@ public class PluginHandle
                 pluginsList.Add(iPlugin.Name, iPlugin);
             }
         }
-    }
-
-    public static List<bool> DemuxDataReceived(DmxSession dmxSession, byte[] receivedData)
-    {
-        List<bool> boolret = [];
-        foreach (var plugin in pluginsList)
-        {
-            boolret.Add(plugin.Value.DemuxDataReceived(dmxSession, receivedData));
-        }
-        return boolret;
     }
 
     public static List<bool> DemuxDataReceivedCustom(DmxSession dmxSession, byte[] receivedData, string Protoname)

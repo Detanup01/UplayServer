@@ -45,11 +45,6 @@ public class Plugin : IPlugin, IDisposable
         Console.WriteLine("Goodbye!");
     }
 
-    public bool DemuxDataReceived(DmxSession dmxSession, byte[] receivedData)
-    {
-        return false;
-    }
-
     public bool DemuxDataReceivedCustom(DmxSession dmxSession, byte[] receivedData, string Protoname)
     {
         return false;

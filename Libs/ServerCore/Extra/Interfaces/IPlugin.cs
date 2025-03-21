@@ -1,5 +1,4 @@
-﻿using NetCoreServer;
-using ServerCore.DMX;
+﻿using ServerCore.DMX;
 
 namespace ServerCore.Extra.Interfaces
 {
@@ -19,14 +18,6 @@ namespace ServerCore.Extra.Interfaces
         /// Initalize the Plugin
         /// </summary>
         void Initialize();
-
-        /// <summary>
-        /// Receiving Data from Demux connection
-        /// </summary>
-        /// <param name="dmxSession">Client session</param>
-        /// <param name="receivedData">Recieved Data</param>
-        /// <returns>If data sent to client</returns>
-        bool DemuxDataReceived(DmxSession dmxSession, byte[] receivedData);
 
         /// <summary>
         /// Receiving Custom Proto from Demux connection

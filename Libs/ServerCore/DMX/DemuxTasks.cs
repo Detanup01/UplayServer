@@ -2,7 +2,6 @@
 using Newtonsoft.Json.Linq;
 using Serilog;
 using ServerCore.DB;
-using ServerCore.DemuxResponders;
 using ServerCore.DMX.Connections;
 using ServerCore.DMX.Services;
 using ServerCore.Models;
@@ -33,12 +32,10 @@ public static class DemuxTasks
         { "download_service", DownloadTask.RunConnection },
         { "ach_frontend", AchievementTask.RunConnection }, // waiting for actual implementation
         { "cloudsave_service", CloudSaveTask.RunConnection },
-        { "friends_service", FriendsTask.RunConnection }, // waiting for actual implementation
+        { "friends_service", FriendsTask.RunConnection },
         { "store_service", StoreTask.RunConnection },
         { "party_service", PartyTask.RunConnection }, // waiting for actual implementation
-        /*
-        { "denuvo_service", DownloadTask.RunConnection }, // idk how to yet. probably just return a stored token, so no generation.
-        */
+        { "denuvo_service", DenuvoTask.RunConnection }, // idk how to yet. probably just return a stored token, so no generation.
     };
 
 

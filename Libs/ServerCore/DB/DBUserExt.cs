@@ -101,6 +101,6 @@ public class DBUserExt : DBUser
         session.Joinable = game.GameSession.Joinable;
         session.Size = game.GameSession.Size;
         session.MaxSize = game.GameSession.MaxSize;
-        Edit<UserGameSession>(session);
+        Edit(session);
     }
 }

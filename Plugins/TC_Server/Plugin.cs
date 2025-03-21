@@ -35,11 +35,6 @@ public class Plugin : IPlugin, IDisposable
         Console.WriteLine($"Initialize {Name} {Servers != null} !");
     }
 
-    public bool DemuxDataReceived(DmxSession dmxSession, byte[] receivedData)
-    {
-        return false;
-    }
-
     public bool DemuxDataReceivedCustom(DmxSession dmxSession, byte[] receivedData, string Protoname)
     {
         return false;
