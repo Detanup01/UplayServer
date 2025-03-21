@@ -1,6 +1,7 @@
 ﻿using UplayKit.Connection;
-using SharedLib.Shared;
 using UplayKit;
+using SharedLib;
+using Serilog;
 
 namespace ClientTester.DMX_Test;
 
@@ -136,6 +137,6 @@ internal class OwnershipTest
     private void OwnershipConnection_PushEvent(object? sender, Uplay.Ownership.Push e)
     {
         Console.WriteLine("OwnershipConnection_PushEvent fired!");
-        Debug.WriteDebug(e.ToString(), "[OwnershipConnection_PushEvent]");
+        Log.Debug(e.ToString(), "[OwnershipConnection_PushEvent]");
     }
 }

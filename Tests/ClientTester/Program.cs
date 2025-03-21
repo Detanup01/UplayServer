@@ -7,8 +7,11 @@ internal class Program
 {
     static void Main(string[] args)
     {
-        ServiceTester.Run();
+        Serilog.Log.Logger = UplayKit.Logs.CreateMixedLog();
+        UplayKit.Logs.Mixed_Log_Switch.MinimumLevel = Serilog.Events.LogEventLevel.Verbose;
+        //ServiceTester.Run();
         var reg = V3.CreateAccount("publictester@test.com", "publictester", "2000-01-01", "publictester", "EU", "US", "-");
+        Console.WriteLine("CreateAccount!");
         if (reg != null)
         {
             Console.WriteLine("OK! " + JsonConvert.SerializeObject(reg));
@@ -17,7 +20,8 @@ internal class Program
         {
             Console.WriteLine("Register was not success!");
         }
-        var login = V3.Login("publictester", "publictester");
+        Console.WriteLine("Login!");
+        var login = V3.Login("publictester@test.com", "publictester");
         if (login != null)
         {
             Console.WriteLine("OK! Ticket");

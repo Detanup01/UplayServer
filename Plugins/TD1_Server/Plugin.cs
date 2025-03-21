@@ -1,4 +1,5 @@
 ﻿using ModdableWebServer.Helper;
+using ServerCore.DMX;
 using ServerCore.Extra.Interfaces;
 using ServerCore.Models;
 using System.Composition;
@@ -41,12 +42,7 @@ public class Plugin : IPlugin, IDisposable
         ProxyCore?.Start();
     }
 
-    public bool DemuxDataReceived(Guid ClientNumb, byte[] receivedData)
-    {
-        return false;
-    }
-
-    public bool DemuxDataReceivedCustom(Guid ClientNumb, byte[] receivedData, string Protoname)
+    public bool DemuxDataReceivedCustom(DmxSession dmxSession, byte[] receivedData, string Protoname)
     {
         return false;
     }

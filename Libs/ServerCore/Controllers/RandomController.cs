@@ -1,16 +1,17 @@
 ﻿namespace ServerCore.Controller;
 
-public class RandomController
+public static class RandomController
 {
+    public static Random RNG = new();
+
     public static string RandomString(int lenght)
     {
-        Random random = new Random();
         string str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         string ran = string.Empty;
 
         for (int i = 0; i < lenght; i++)
         {
-            int x = random.Next(str.Length);
+            int x = RNG.Next(str.Length);
             ran = ran + str[x];
         }
 

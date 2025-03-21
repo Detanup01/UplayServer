@@ -5,7 +5,7 @@ namespace ServerCore.DB;
 
 public class App
 {
-    public readonly static string DBName = Prepare.DatabasePath + "App.db";
+    public readonly static string DBName = Path.Combine(Prepare.DatabasePath, "App.db");
     public readonly static string AppAPI = "AppAPI";
     public readonly static string AppConfig = "AppConfig"; 
     public readonly static string AppBranches = "AppBranches";
@@ -150,7 +150,7 @@ public class App
     {
         using LiteDatabase db = new(DBName);
         var col = db.GetCollection<AppBranches>(AppBranches);
-        return col.Find(x => x.ProductId == productId).ToList();
+        return [.. col.Find(x => x.ProductId == productId)];
     }
 
     public static void DeleteAppBranches(uint productId)

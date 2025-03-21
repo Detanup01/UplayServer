@@ -1,6 +1,6 @@
 ﻿namespace ServerCore.Controllers;
 
-public class SessionController
+public static class SessionController
 {
     public static TokenType GetTokenTypeFromAuth(string Auth)
     {

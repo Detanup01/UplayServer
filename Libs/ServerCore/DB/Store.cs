@@ -5,7 +5,7 @@ namespace ServerCore.DB;
 
 public class Store
 {
-    public readonly static string DBName = Prepare.DatabasePath + "Store.db";
+    public readonly static string DBName = Path.Combine(Prepare.DatabasePath, "Store.db");
     public readonly static string StoreBDB = "Store";
     #region Store
     public static void Add(StoreCore store)

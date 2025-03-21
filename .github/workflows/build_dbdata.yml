@@ -27,7 +27,7 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet publish Client/dbdata/dbdata.csproj -r win-x64 -c:Release -p:Platform=x64 -o:dbdata
+      run: dotnet publish Dll/dbdata/dbdata.csproj -r win-x64 -c:Release -p:Platform=x64 -o:dbdata
 
     - name : Upload artifacts
       uses: actions/upload-artifact@v4.3.5

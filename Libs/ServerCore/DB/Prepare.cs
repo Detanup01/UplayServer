@@ -5,12 +5,12 @@ namespace ServerCore.DB;
 public class Prepare
 {
     private static readonly string extractPath = Directory.GetCurrentDirectory();
-    public static readonly string DatabasePath = extractPath + "\\DataBase\\";
+    public static readonly string DatabasePath = Path.Combine(extractPath, "DataBase");
     public static void MakeAll()
     {
-        if (!Directory.Exists(extractPath + "\\Database"))
+        if (!Directory.Exists(DatabasePath))
         {
-            Directory.CreateDirectory(extractPath + "\\Database");
+            Directory.CreateDirectory(DatabasePath);
         }
 
         //  Other DB Init
@@ -28,6 +28,18 @@ public class Prepare
         Auth.AddUA(Guid.Parse("ea66fece-ccce-4fe4-ad60-45298a0ac92a"), "MjA1anpTNmdlbnZveE1ZR0lLby8xT3REcWt3cjhibGcrc2hKRnZkK3JaRT0=");
         Auth.AddCurrent(Guid.Parse("ea66fece-ccce-4fe4-ad60-45298a0ac92a"), "MjA1anpTNmdlbnZveE1ZR0lLby8xT3REcWt3cjhibGcrc2hKRnZkK3JaRT0=", TokenType.Ticket);
 
+
+        DBUser.Add(new UserLogin()
+        {
+            UserId = Guid.Parse("ea66fece-ccce-4fe4-ad60-45298a0ac92a"),
+            Password = "user",
+            Country = "EU",
+            DateOfBirth = "2000-01-01",
+            Email = "user@uplayemu.com",
+            LegalOptinsKey = "-",
+            NameOnPlatform = "user",
+            PreferredLanguage = "US"
+        });
         DBUser.Add(new UserCommon()
         { 
             Name = "user",

@@ -1,5 +1,6 @@
-﻿using ServerCore.Models;
-using SharedLib.Shared;
+﻿using Serilog;
+using ServerCore.Models;
+using SharedLib;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -28,18 +29,17 @@ public class Utils
 
     public static X509Certificate GetCert(string certname, string? password)
     {
-        Debug.PWDebug($"[GetCert] {certname} {password}");
+        Log.Debug($"[GetCert] {certname} {password}");
         X509Certificate2 cert = X509CertificateLoader.LoadPkcs12FromFile($"cert/{certname}.pfx", password);
         return cert;
     }
 
-    public static (string protoname, byte[] buffer) GetCustomProto(Guid Id, byte[] buffer)
+    public static (string protoname, byte[] buffer) GetCustomProto(byte[] buffer)
     {
-        Debug.PWDebug($"{Id}: Custom Request Received!", "DMXSERVER");
-        int ReqNameLenght = int.Parse(Encoding.UTF8.GetString(new byte[] { buffer[1] }));
+        int ReqNameLenght = int.Parse(Encoding.UTF8.GetString([buffer[1]]));
         var bytename = buffer.Skip(2).Take(ReqNameLenght).ToArray();
         string protoname = Encoding.UTF8.GetString(bytename);
-        Debug.PrintDebug($"[DMXSERVER] Request Name: {protoname}");
+        Log.Debug($"[DMXSERVER] Request Name: {protoname}");
         var bytes = buffer.Skip(2 + ReqNameLenght).ToArray();
         return (protoname, bytes);
 

@@ -6,7 +6,7 @@ namespace ServerCore.DB;
 
 public class DBUser
 {
-    readonly static string DBName = Prepare.DatabasePath + "User.db";
+    readonly static string DBName = Path.Combine(Prepare.DatabasePath, "User.db");
     readonly static string USER = "User";
     readonly static string OwnershipBasic = "OwnershipBasic";
     readonly static string Ownership = "Ownership";
@@ -15,6 +15,7 @@ public class DBUser
     readonly static string Playtime = "Playtime";
     readonly static string GameSession = "GameSession";
     readonly static string CloudSave = "CloudSave";
+    readonly static string Login = "Login";
 
     #region JUser
     public static void Add<T>(T user) where T : UserBase
@@ -52,6 +53,17 @@ public class DBUser
         var col = db.GetCollection<T>(collectionName);
 
         return col.FindOne(X => X.UserId == UserId);
+    }
+
+    public static T? Get<T>(Expression<Func<T, bool>> predicate) where T : UserBase
+    {
+        string collectionName = GetCollectionName<T>();
+        if (string.IsNullOrEmpty(collectionName))
+            return default;
+        using var db = new LiteDatabase(DBName);
+        var col = db.GetCollection<T>(collectionName);
+
+        return col.FindOne(predicate);
     }
 
     public static T? Get<T>(Guid UserId, Func<T, bool> expression) where T : UserBase
@@ -128,6 +140,8 @@ public class DBUser
                 return GameSession;
             case "UserCloudSave":
                 return CloudSave;
+            case "UserLogin":
+                return Login;
             default:
                 return string.Empty;
         }

@@ -1,4 +1,4 @@
-﻿using SharedLib.Shared;
+﻿using SharedLib;
 
 namespace SharedTest;
 

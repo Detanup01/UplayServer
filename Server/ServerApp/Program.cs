@@ -1,6 +1,7 @@
-﻿using ServerCore;
+﻿using ModdableWebServer.Helper;
+using ServerCore;
 using ServerCore.Commands;
-using SharedLib.Shared;
+using SharedLib;
 
 namespace ServerApp;
 
@@ -18,7 +19,13 @@ internal class Program
             }
             Directory.Delete("Database", true);
         }
-        Debug.IsDebug = args.Contains("debug");
+        if (args.Contains("debug"))
+        {
+            DebugPrinter.EnableLogs = true;
+            DebugPrinter.PrintToConsole = true;
+        }
+        
+
         CoreRun.Start();
         
         string endCheck = "not";

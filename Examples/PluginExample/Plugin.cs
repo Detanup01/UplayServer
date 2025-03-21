@@ -1,4 +1,5 @@
-﻿using ServerCore.Extra.Interfaces;
+﻿using ServerCore.DMX;
+using ServerCore.Extra.Interfaces;
 using System.Composition;
 
 #pragma warning disable IDE0130 // Namespace does not match folder structure
@@ -27,12 +28,7 @@ public class Plugin : IPlugin, IDisposable
 
     }
 
-    public bool DemuxDataReceived(Guid ClientNumb, byte[] receivedData)
-    {
-        return false;
-    }
-
-    public bool DemuxDataReceivedCustom(Guid ClientNumb, byte[] receivedData, string Protoname)
+    public bool DemuxDataReceivedCustom(DmxSession dmxSession, byte[] receivedData, string Protoname)
     {
         return false;
     }

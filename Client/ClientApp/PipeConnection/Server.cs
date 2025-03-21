@@ -1,5 +1,6 @@
 ﻿using System.IO.Pipes;
-using SharedLib.Shared;
+using Serilog;
+using SharedLib;
 
 namespace ClientApp.PipeConnection
 {
@@ -59,7 +60,7 @@ namespace ClientApp.PipeConnection
 
         public void Stop()
         {
-            Debug.PWDebug("Closed.", "PipeServer");
+            Log.Debug("Closed.");
             Cancel = true;
             Thread.Sleep(10);
             if (pipeServer.IsConnected)
