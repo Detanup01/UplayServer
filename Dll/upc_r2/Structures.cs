@@ -8,7 +8,6 @@ public struct FakeContext
     public int FakeContextInt;
 }
 
-
 public class Context
 {
     public List<Callback> Callbacks = [];
@@ -239,4 +238,19 @@ public class UPC_User
     public string nameUtf8 = string.Empty;
     public Uplay.Uplaydll.Relationship relationship;
     public UPC_Presence presence = new();
+}
+
+[StructLayout(LayoutKind.Sequential)]
+public struct ChunkId
+{
+    public uint Id;
+    public int IsInstalled;
+    [MarshalAs(UnmanagedType.LPUTF8Str)]
+    public string Tag;
+
+    public ChunkId()
+    {
+        IsInstalled = 1;
+        Tag = string.Empty;
+    }
 }

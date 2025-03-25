@@ -12,13 +12,7 @@ internal class Chunks
         Basics.Log(nameof(UPC_InstallChunkListFree), [inContext, inChunkList]);
         if (inContext == IntPtr.Zero || inChunkList == IntPtr.Zero)
             return (int)UPC_Result.UPC_Result_FailedPrecondition;
-        var chunk = Marshal.PtrToStructure<BasicList>(inChunkList);
-        if (chunk.list != IntPtr.Zero)
-        {
-            Marshal.FreeHGlobal(chunk.list);
-        }
-        Marshal.DestroyStructure<BasicList>(inChunkList);
-        Marshal.FreeHGlobal(inChunkList);
+        Basics.FreeList(inChunkList);
         return (int)UPC_Result.UPC_Result_Ok;
     }
 
@@ -28,14 +22,12 @@ internal class Chunks
         Basics.Log(nameof(UPC_InstallChunkListGet), [inContext, inChunkList]);
         if (inContext == IntPtr.Zero || inChunkList == IntPtr.Zero)
             return (int)UPC_Result.UPC_Result_FailedPrecondition;
-        var chunkptr = Marshal.AllocHGlobal(sizeof(BasicList));
-        BasicList chunk = new()
+        List<ChunkId> chunkIds = [];
+        foreach (var item in UPC_Json.GetRoot().ChunkIds)
         {
-            count = 0,
-            list = IntPtr.Zero
-        };
-        Marshal.StructureToPtr(chunk, chunkptr, false);
-        Marshal.WriteIntPtr(inChunkList, chunkptr);
+            chunkIds.Add(new() { Id = item.ChunkId, IsInstalled = 1, Tag = item.ChunkTag });
+        }
+        Basics.WriteOutList(inChunkList, chunkIds);
         return (int)UPC_Result.UPC_Result_Ok;
     }
 

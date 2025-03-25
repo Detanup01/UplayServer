@@ -61,6 +61,12 @@ public class UPC_Json
         public uint Type { get; set; }
     }
 
+    public class ChunkIds
+    {
+        public uint ChunkId { get; set; }
+        public string ChunkTag { get; set; } = String.Empty;
+    }
+
     public class Root
     {
         public BasicLog BasicLog { get; set; } = new();
@@ -69,6 +75,7 @@ public class UPC_Json
         public Others Others { get; set; } = new();
         public List<Product> Products { get; set; } = [new() { ProductId = 0, Type = 4 }];
         public List<uint> AutoProductIds { get; set; } = [];
+        public List<ChunkIds> ChunkIds { get; set; } = [];
     }
 
 }
