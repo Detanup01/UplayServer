@@ -12,13 +12,36 @@
     "Name": "user",
     "Password": "user",
     "Country": "en-US",
-    "Ticket": ""
+    "Ticket": "",
+    "UseTicket": false
   },
   "Save": {
-    "Path": "G:\\UplayServer\\R2",
-    "UseAppIdInName": false
+    "Path": "upc_save",
+    "UseAppIdInName": false,
+    "EnableFileDelete": false
   },
   "Others": {
-    "ApplicationId": "ea66fece-ccce-4fe4-ad60-45298a0ac92a"
-  }
+    "ApplicationId": "ea66fece-ccce-4fe4-ad60-45298a0ac92a",
+    "EnableCrossBoot": false
+  },
+  "Products": [
+    {
+      "ProductId": 666,
+      "Type": 2
+    },
+    {
+      "ProductId": 665,
+      "Type": 4
+    }
+  ],
+  "AutoProductIds": [
+    667,
+    668
+  ],
+  "ChunkIds": [
+    {
+      "ChunkId": 230,
+      "ChunkTag": "Optional"
+    }
+  ]
 }

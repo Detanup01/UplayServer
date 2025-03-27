@@ -64,7 +64,7 @@ public class UPC_Json
     public class ChunkIds
     {
         public uint ChunkId { get; set; }
-        public string ChunkTag { get; set; } = String.Empty;
+        public string ChunkTag { get; set; } = string.Empty;
     }
 
     public class Root

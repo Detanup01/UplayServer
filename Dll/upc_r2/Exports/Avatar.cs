@@ -12,7 +12,12 @@ internal class Avatar
     public static int UPC_AvatarFree(IntPtr inContext, IntPtr inImageRGBA)
     {
         Basics.Log(nameof(UPC_AvatarFree), [inContext, inImageRGBA]);
-        int size = PtrToSize[inImageRGBA];
+        if (inImageRGBA == IntPtr.Zero)
+            return 0;
+        if (PtrToSize.TryGetValue(inImageRGBA, out int size))
+        {
+
+        }
         return 0;
     }
 

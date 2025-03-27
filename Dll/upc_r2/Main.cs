@@ -84,6 +84,7 @@ public class Main
         FakeContext fc = new();
         FakeContextPTR = Marshal.AllocHGlobal(Marshal.SizeOf(fc));
         Marshal.StructureToPtr(fc, FakeContextPTR, false);
+        Basics.Log(nameof(UPC_ContextCreate), ["Context ",FakeContextPTR]);
         return FakeContextPTR;
 
     }
@@ -91,7 +92,7 @@ public class Main
     [UnmanagedCallersOnly(EntryPoint = "UPC_ContextFree", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_ContextFree(IntPtr inContext)
     {
-        Basics.Log(nameof(UPC_ContextFree), [inContext]);
+        Basics.Log(nameof(UPC_ContextFree), ["Freeing context", inContext]);
         Marshal.DestroyStructure<FakeContext>(inContext);
         Marshal.FreeHGlobal(inContext);
         GlobalContext = new();
