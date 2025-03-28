@@ -65,10 +65,12 @@ public class Basics
     public static IntPtr GetListPtr<T>(List<T> values) where T : struct
     {
         IntPtr main_ptr = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>() * values.Count);
+        Log(nameof(GetListPtr), ["mainptr", main_ptr]);
         int indx = 0;
         foreach (var item in values)
         {
             IntPtr iptr = Marshal.AllocHGlobal(Marshal.SizeOf<T>());
+            Log(nameof(GetListPtr), ["PtrForList", iptr, "index ", indx, "offsett", (indx * Marshal.SizeOf<IntPtr>())]);
             Marshal.StructureToPtr(item, iptr, false);
             Marshal.WriteIntPtr(main_ptr, indx * Marshal.SizeOf<IntPtr>(), iptr);
             indx++;

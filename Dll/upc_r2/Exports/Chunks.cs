@@ -12,7 +12,8 @@ internal class Chunks
         Basics.Log(nameof(UPC_InstallChunkListFree), [inContext, inChunkList]);
         if (inContext == IntPtr.Zero || inChunkList == IntPtr.Zero)
             return (int)UPC_Result.UPC_Result_FailedPrecondition;
-        Basics.FreeList(inChunkList);
+        //Basics.FreeList(inChunkList);
+        Marshal.FreeHGlobal(inChunkList);
         return (int)UPC_Result.UPC_Result_Ok;
     }
 
