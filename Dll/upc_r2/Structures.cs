@@ -254,3 +254,21 @@ public struct ChunkId
         Tag = string.Empty;
     }
 }
+
+[StructLayout(LayoutKind.Sequential)]
+public class UPC_StoreProduct
+{
+    public uint id;
+    public string titleUtf8;
+    public string descriptionUtf8;
+    [MarshalAs(UnmanagedType.LPUTF8Str)]
+    public string imageUrlUtf8;
+    public byte isOwned;
+    public float price;
+    public float priceOriginal;
+    [MarshalAs(UnmanagedType.LPUTF8Str)]
+    public string currencyUtf8;
+    [MarshalAs(UnmanagedType.LPUTF8Str)]
+    public string userBlobUtf8 = string.Empty;
+    public UPC_StoreTag[] tags ;
+}
