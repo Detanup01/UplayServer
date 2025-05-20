@@ -3,26 +3,6 @@
 namespace upc_r1;
 
 [StructLayout(LayoutKind.Sequential)]
-public struct BasicList
-{
-    [MarshalAs(UnmanagedType.I4)]
-    public int count;
-    [MarshalAs(UnmanagedType.SysInt)]
-    public IntPtr list;
-
-    public BasicList()
-    {
-
-    }
-
-    public BasicList(int _count, IntPtr _list)
-    {
-        count = _count;
-        list = _list;
-    }
-}
-
-[StructLayout(LayoutKind.Sequential)]
 public struct UPLAY_Overlapped
 {
     [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]

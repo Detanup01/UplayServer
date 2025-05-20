@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using DllLib;
+using System.Text.Json;
 
 namespace upc_r2;
 
@@ -6,13 +7,14 @@ public class UPC_Json
 {
     public static Root GetRoot()
     {
-        if (!File.Exists(Basics.GetCuPath() + "\\upc.json"))
+        string file = Path.Combine(PathHelper.CurrentPath, "upc.json");
+        if (!File.Exists(file))
         {
             Root root = new();
-            File.WriteAllText(Basics.GetCuPath() + "\\upc.json", JsonSerializer.Serialize(root, JsonSourceGen.Default.Root));
+            File.WriteAllText(file, JsonSerializer.Serialize(root, JsonSourceGen.Default.Root));
             return root;
         }
-        Root? data = JsonSerializer.Deserialize(File.ReadAllText(Basics.GetCuPath() + "\\upc.json"), JsonSourceGen.Default.Root);
+        Root? data = JsonSerializer.Deserialize(File.ReadAllText(file), JsonSourceGen.Default.Root);
         data ??= new();
         return data;
     }

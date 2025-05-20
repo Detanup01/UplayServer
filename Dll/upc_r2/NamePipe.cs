@@ -1,10 +1,9 @@
 ﻿using Google.Protobuf;
 using System.IO.Pipes;
-using static upc_r2.Basics;
 using SharedLib;
 
 namespace upc_r2;
-
+/*
 public class NamePipe
 {
 
@@ -59,3 +58,4 @@ public class NamePipe
 
     }
 }
+*/

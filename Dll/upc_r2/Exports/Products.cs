@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using static upc_r2.Basics;
 
 namespace upc_r2.Exports;
 

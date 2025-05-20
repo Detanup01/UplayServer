@@ -32,11 +32,21 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Libs\Shared\SharedLib.csproj" />
+		<ProjectReference Include="..\DllLib\DllLib.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<None Update="upc.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Using Include="DllLib.Logs">
+	    <Static>True</Static>
+	  </Using>
+	  <Using Include="DllLib.MarshalHelper">
+	    <Static>True</Static>
+	  </Using>
 	</ItemGroup>
 </Project>

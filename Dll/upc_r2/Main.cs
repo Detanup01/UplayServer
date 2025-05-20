@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using DllLib;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Uplay.Uplaydll;
@@ -15,7 +16,7 @@ public class Main
     [UnmanagedCallersOnly(EntryPoint = "UPC_ContextCreate", CallConvs = [typeof(CallConvCdecl)])]
     public static IntPtr UPC_ContextCreate(uint inVersion, IntPtr inOptSetting)
     {
-        Basics.Log(nameof(UPC_ContextCreate), [inVersion, inOptSetting]);
+        Log(nameof(UPC_ContextCreate), [inVersion, inOptSetting]);
 
         if (FakeContextPTR != IntPtr.Zero)
             return FakeContextPTR;
@@ -28,8 +29,32 @@ public class Main
         {
             contextSettings = Marshal.PtrToStructure<UPC_ContextSettings>(inOptSetting);
         }
-        Basics.Log(nameof(UPC_ContextCreate), ["Subsystems: ", contextSettings.subsystems]);
-        Rsp Response = new();
+        Log(nameof(UPC_ContextCreate), ["Subsystems: ", contextSettings.subsystems]);
+        Rsp Response = new()
+        {
+            InitRsp = new()
+            {
+                Account = new()
+                {
+                    AccountId = UPC_Json.GetRoot().Account.AccountId,
+                    Country = UPC_Json.GetRoot().Account.Country,
+                    Email = UPC_Json.GetRoot().Account.Email,
+                    NameOnPlatform = UPC_Json.GetRoot().Account.Name,
+                    Username = UPC_Json.GetRoot().Account.Name,
+                    Password = UPC_Json.GetRoot().Account.Password
+                },
+                UpcTicket = UPC_Json.GetRoot().Account.Ticket,
+                Storage = new()
+                {
+                    SavegameStoragePath = UPC_Json.GetRoot().Save.Path
+                },
+                UbiServices = new()
+                {
+                    AppId = UPC_Json.GetRoot().Others.ApplicationId,
+                }
+            }
+        };
+        /*
         if (UPC_Json.GetRoot().BasicLog.UseNamePipeClient)
         {
             Basics.SendReq(new Req()
@@ -52,29 +77,10 @@ public class Main
         }
         else
         {
-            Response.InitRsp = new()
-            { 
-                Account = new()
-                { 
-                    AccountId = UPC_Json.GetRoot().Account.AccountId,
-                    Country = UPC_Json.GetRoot().Account.Country,
-                    Email = UPC_Json.GetRoot().Account.Email,
-                    NameOnPlatform = UPC_Json.GetRoot().Account.Name,
-                    Username = UPC_Json.GetRoot().Account.Name,
-                    Password = UPC_Json.GetRoot().Account.Password
-                },
-                UpcTicket = UPC_Json.GetRoot().Account.Ticket,
-                Storage = new()
-                { 
-                    SavegameStoragePath = UPC_Json.GetRoot().Save.Path
-                },
-                UbiServices = new()
-                {
-                    AppId = UPC_Json.GetRoot().Others.ApplicationId,
-                }
-            };
+            
         }
-        Basics.Log(nameof(UPC_ContextCreate), [Response]);
+        */
+        Log(nameof(UPC_ContextCreate), [Response]);
         var initRsp = Response.InitRsp;
         GlobalContext.Config.Saved.account = initRsp.Account;
         GlobalContext.Config.Saved.savePath = initRsp.Storage.SavegameStoragePath;
@@ -84,7 +90,7 @@ public class Main
         FakeContext fc = new();
         FakeContextPTR = Marshal.AllocHGlobal(Marshal.SizeOf(fc));
         Marshal.StructureToPtr(fc, FakeContextPTR, false);
-        Basics.Log(nameof(UPC_ContextCreate), ["Context ",FakeContextPTR]);
+        Log(nameof(UPC_ContextCreate), ["Context ",FakeContextPTR]);
         return FakeContextPTR;
 
     }
@@ -92,7 +98,7 @@ public class Main
     [UnmanagedCallersOnly(EntryPoint = "UPC_ContextFree", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_ContextFree(IntPtr inContext)
     {
-        Basics.Log(nameof(UPC_ContextFree), ["Freeing context", inContext]);
+        Log(nameof(UPC_ContextFree), ["Freeing context", inContext]);
         Marshal.DestroyStructure<FakeContext>(inContext);
         Marshal.FreeHGlobal(inContext);
         GlobalContext = new();
@@ -110,28 +116,23 @@ public class Main
             Stopwatch.Start();
             return 0;
         }
-        Basics.Log(nameof(UPC_Update), [Stopwatch.ElapsedTicks, UPC_Json.GetRoot().BasicLog.WaitBetweebUpdate]);
+        Log(nameof(UPC_Update), [Stopwatch.ElapsedTicks, UPC_Json.GetRoot().BasicLog.WaitBetweebUpdate]);
         Stopwatch.Restart();
-        Rsp Response = new();
-        if (UPC_Json.GetRoot().BasicLog.UseNamePipeClient)
-            Basics.SendReq(new Req(), out Response);
-        else
-        {
-            Response = new();
-        }
-        Basics.Log(nameof(UPC_Update), [GlobalContext.Callbacks.Count]);
+        Log(nameof(UPC_Update), [GlobalContext.Callbacks.Count]);
         foreach (var cb in GlobalContext.Callbacks)
         {
             if (cb.fun != IntPtr.Zero)
             {
-                Basics.Log(nameof(UPC_Update), ["Callback run with: ", cb.fun, cb.Result, cb.context_data]);
+                Log(nameof(UPC_Update), ["Callback run with: ", cb.fun, cb.Result, cb.context_data]);
                 delegate* unmanaged<int, void*, void> @Callback = (delegate* unmanaged<int, void*, void>)cb.fun;
-                Basics.Log(nameof(UPC_Update), [cb.fun, "Is Calling!"]);
+                Log(nameof(UPC_Update), [cb.fun, "Is Calling!"]);
                 @Callback(cb.Result, (void*)cb.context_data);
             }
         }
-        Basics.Log(nameof(UPC_Update), ["Cleared Callbacks"]);
+        Log(nameof(UPC_Update), ["Cleared Callbacks"]);
         GlobalContext.Callbacks.Clear();
+        /*
+         * Rsp Response = new();
         foreach (var ev in GlobalContext.Events)
         {
             if (ev.Handler != IntPtr.Zero)
@@ -154,36 +155,38 @@ public class Main
                 }
             }
         }
+        GlobalContext.Events.Clear();
+        */
         return (int)UPC_Result.UPC_Result_Ok;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPC_Cancel", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_Cancel(IntPtr inContext, IntPtr inHandler)
     {
-        Basics.Log(nameof(UPC_Cancel), [inContext, inHandler]);
+        Log(nameof(UPC_Cancel), [inContext, inHandler]);
         return (int)UPC_Result.UPC_Result_Ok;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPC_EventNextPeek", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_EventNextPeek(IntPtr inContext, IntPtr outEvent)
     {
-        //Basics.Log(nameof(UPC_EventNextPeek), new object[] { inContext, outEvent });
+        //Log(nameof(UPC_EventNextPeek), new object[] { inContext, outEvent });
         return (int)UPC_Result.UPC_Result_Ok;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPC_EventNextPoll", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_EventNextPoll(IntPtr inContext, IntPtr outEvent)
     {
-        //Basics.Log(nameof(UPC_EventNextPoll), new object[] { inContext, outEvent });
+        //Log(nameof(UPC_EventNextPoll), new object[] { inContext, outEvent });
         return (int)UPC_Result.UPC_Result_NotFound;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPC_EventRegisterHandler", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_EventRegisterHandler(IntPtr inContext, uint inType, IntPtr inHandler, IntPtr inOptData)
     {
-        Basics.Log(nameof(UPC_EventRegisterHandler), [inContext, inType, inHandler, inOptData]);
+        Log(nameof(UPC_EventRegisterHandler), [inContext, inType, inHandler, inOptData]);
         var eventType = (UPC_EventType)inType;
-        Basics.Log(nameof(UPC_EventRegisterHandler), ["EventType: ", eventType]);
+        Log(nameof(UPC_EventRegisterHandler), ["EventType: ", eventType]);
         GlobalContext.Events.Add(new Event(eventType, inHandler, inOptData));
         return (int)UPC_Result.UPC_Result_Ok;
     }
@@ -191,7 +194,7 @@ public class Main
     [UnmanagedCallersOnly(EntryPoint = "UPC_EventUnregisterHandler", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_EventUnregisterHandler(IntPtr inContext, uint inType)
     {
-        Basics.Log(nameof(UPC_EventUnregisterHandler), [inContext, inType]);
+        Log(nameof(UPC_EventUnregisterHandler), [inContext, inType]);
         var eventRemove = GlobalContext.Events.Where(x=>x.EventType == (UPC_EventType)inType);
         if (eventRemove.Any())
         {
@@ -213,41 +216,27 @@ public class Main
             Callbacks = [],
             Events = []
         };
-        Basics.Log(nameof(UPC_Init), [inVersion, productId]);
+        Log(nameof(UPC_Init), [inVersion, productId]);
         try
         {
             Rsp Response = new();
-            if (UPC_Json.GetRoot().BasicLog.UseNamePipeClient)
-                Basics.SendReq(new Req()
-                {
-                    InitProcessReq = new()
-                    {
-                        ApiVersion = inVersion,
-                        UplayEnvIsSet = false,
-                        UplayId = (uint)productId,
-                        ProcessId = (uint)Environment.ProcessId
-                    }
-                }, out Response);
-            else
+            Response = new()
             {
-                Response = new()
+                InitProcessRsp = new()
                 {
-                    InitProcessRsp = new()
+                    OverlayEnabled = false,
+                    Devmode = true,
+                    UplayPID = (uint)Environment.ProcessId,
+                    OverlayInjectionMethod = OverlayInjectionMethod.None,
+                    Result = InitResult.Success,
+                    SdkMonitoringConfig = new()
                     {
-                        OverlayEnabled = false,
-                        Devmode = true,
-                        UplayPID = (uint)Environment.ProcessId,
-                        OverlayInjectionMethod = OverlayInjectionMethod.None,
-                        Result = InitResult.Success,
-                        SdkMonitoringConfig = new()
-                        {
-                            SdkMonitoringEnabled = false
-                        }
+                        SdkMonitoringEnabled = false
                     }
-                };
-            }
-            LoadPlugins.LoadR2Plugins();
-            Basics.Log(nameof(UPC_Init), [Response.InitProcessRsp.Result]);
+                }
+            };
+            LoadDll.LoadPlugins();
+            Log(nameof(UPC_Init), [Response.InitProcessRsp.Result]);
             return Response.InitProcessRsp.Result switch
             {
                 InitResult.Success => (int)UPC_InitResult.UPC_InitResult_Ok,
@@ -259,7 +248,7 @@ public class Main
         }
         catch (Exception ex)
         {
-            Basics.Log(nameof(UPC_Init), [ex.ToString()]);
+            Log(nameof(UPC_Init), [ex.ToString()]);
         }
         return 1;
     }
@@ -267,17 +256,7 @@ public class Main
     [UnmanagedCallersOnly(EntryPoint = "UPC_Uninit", CallConvs = [typeof(CallConvCdecl)])]
     public static void UPC_Uninit()
     {
-        Basics.Log(nameof(UPC_Uninit));
-        LoadPlugins.FreeR2Plugins();
-        //  We dont need to send any req or wait for response, this just to make sure we dont update our stuff!
-        if (UPC_Json.GetRoot().BasicLog.UseNamePipeClient)
-            Basics.SendReq(new Req()
-            {
-                InitProcessReq = new()
-                {
-                    ApiVersion = uint.MaxValue,
-                    ProcessId = (uint)Environment.ProcessId
-                }
-            }, out _);
+        Log(nameof(UPC_Uninit));
+        LoadDll.FreePlugins();
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using static upc_r2.Basics;
 
 namespace upc_r2.Exports;
 
@@ -45,10 +44,7 @@ internal class Storage
         Log(nameof(UPC_StorageFileListFree), [inContext, inStorageFileList]);
         if (inStorageFileList == IntPtr.Zero)
             return -0xd;
-        var list = Marshal.PtrToStructure<BasicList>(inStorageFileList);
-        if (list.count > 0)
-            FreeListPtr(list.count, list.list);
-        Marshal.FreeHGlobal(inStorageFileList);
+        FreeList(inStorageFileList);
         return 0;
     }
 
@@ -56,10 +52,6 @@ internal class Storage
     public static int UPC_StorageFileOpen(IntPtr inContext, IntPtr inFileNameUtf8, uint inFlags, IntPtr outHandle)
     {
         Log(nameof(UPC_StorageFileOpen), [inContext, inFileNameUtf8, inFlags, outHandle]);
-        UPC_FileOpenMode mode = (UPC_FileOpenMode)inFlags;
-        FileMode oflag = FileMode.OpenOrCreate;
-        if (mode == UPC_FileOpenMode.UPC_FileOpenMode_Write)
-            oflag |= FileMode.Truncate;
         string? filename = Marshal.PtrToStringUTF8(inFileNameUtf8);
         if (filename == null)
             return (int)UPC_Result.UPC_Result_CommunicationError;
@@ -68,8 +60,6 @@ internal class Storage
             file = Path.Combine(Main.GlobalContext.Config.Saved.savePath, Main.GlobalContext.Config.ProductId.ToString(), filename);
         else
             file = Path.Combine(Main.GlobalContext.Config.Saved.savePath, filename);
-        Log(nameof(UPC_StorageFileOpen), ["filename", filename,"file_withpath", file, "dirname is null?", Path.GetDirectoryName(file) == null]);
-        Log(nameof(UPC_StorageFileOpen), ["open mode", mode]);
         if (!Directory.Exists(Path.GetDirectoryName(file)))
             Directory.CreateDirectory(Path.GetDirectoryName(file)!);
         if (!File.Exists(file))

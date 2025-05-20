@@ -9,7 +9,7 @@ internal class Other
     [UnmanagedCallersOnly(EntryPoint = "UPC_CPUScoreGet", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_CPUScoreGet(IntPtr inContext, IntPtr outScore)
     {
-        Basics.Log(nameof(UPC_CPUScoreGet), [inContext, outScore]);
+        Log(nameof(UPC_CPUScoreGet), [inContext, outScore]);
         Marshal.WriteInt32(outScore, 0x1000);
         return 0;
     }
@@ -17,7 +17,7 @@ internal class Other
     [UnmanagedCallersOnly(EntryPoint = "UPC_GPUScoreGet", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_GPUScoreGet(IntPtr inContext, IntPtr outScore, IntPtr outConfidenceLevel)
     {
-        Basics.Log(nameof(UPC_GPUScoreGet), [inContext, outScore, outConfidenceLevel]);
+        Log(nameof(UPC_GPUScoreGet), [inContext, outScore, outConfidenceLevel]);
         Marshal.WriteInt32(outScore, 0x1000);
         Marshal.WriteInt64(outConfidenceLevel, (long)0.1f);
         return 0;
@@ -26,7 +26,7 @@ internal class Other
     [UnmanagedCallersOnly(EntryPoint = "UPC_ApplicationIdGet", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_ApplicationIdGet(IntPtr inContext, IntPtr outAppId)
     {
-        Basics.Log(nameof(UPC_ApplicationIdGet), [inContext]);
+        Log(nameof(UPC_ApplicationIdGet), [inContext]);
         Marshal.WriteIntPtr(outAppId, Marshal.StringToHGlobalAnsi(Main.GlobalContext.Config.Saved.ApplicationId));
         return 0;
     }
@@ -34,10 +34,10 @@ internal class Other
     [UnmanagedCallersOnly(EntryPoint = "UPC_RichPresenceSet", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_RichPresenceSet(IntPtr inContext, uint inId, IntPtr inOptTokenList)
     {
-        Basics.Log(nameof(UPC_RichPresenceSet), [inContext, inId, inOptTokenList]);
+        Log(nameof(UPC_RichPresenceSet), [inContext, inId, inOptTokenList]);
 
         var list = Marshal.PtrToStructure<BasicList>(inOptTokenList);
-        Basics.Log(nameof(UPC_RichPresenceSet), [list.ToString()]);
+        Log(nameof(UPC_RichPresenceSet), [list.ToString()]);
         try
         {
             for (int i = 0; i < list.count; i++)
@@ -45,12 +45,12 @@ internal class Other
                
                 var ptr = Marshal.ReadIntPtr(list.list, i * Marshal.SizeOf<UPC_RichPresenceToken>());
                 var token = Marshal.PtrToStructure<UPC_RichPresenceToken>(ptr);
-                Basics.Log(nameof(UPC_RichPresenceSet), [token.ToString()]);
+                Log(nameof(UPC_RichPresenceSet), [token.ToString()]);
             }
         }
         catch (Exception ex)
         {
-            Basics.Log(nameof(UPC_RichPresenceSet), [ex]);
+            Log(nameof(UPC_RichPresenceSet), [ex]);
         }
         return 0;
     }
@@ -58,10 +58,10 @@ internal class Other
     [UnmanagedCallersOnly(EntryPoint = "UPC_RichPresenceSet_Extended", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_RichPresenceSet_Extended(IntPtr inContext, uint inId, IntPtr inOptTokenList, IntPtr unk1, IntPtr unk2)
     {
-        Basics.Log(nameof(UPC_RichPresenceSet_Extended), [inContext, inId, inOptTokenList, unk1, unk2]);
+        Log(nameof(UPC_RichPresenceSet_Extended), [inContext, inId, inOptTokenList, unk1, unk2]);
 
         var list = Marshal.PtrToStructure<BasicList>(inOptTokenList);
-        Basics.Log(nameof(UPC_RichPresenceSet_Extended), [list.ToString()]);
+        Log(nameof(UPC_RichPresenceSet_Extended), [list.ToString()]);
         try
         {
             for (int i = 0; i < list.count; i++)
@@ -69,12 +69,12 @@ internal class Other
 
                 var ptr = Marshal.ReadIntPtr(list.list, i * Marshal.SizeOf<UPC_RichPresenceToken>());
                 var token = Marshal.PtrToStructure<UPC_RichPresenceToken>(ptr);
-                Basics.Log(nameof(UPC_RichPresenceSet_Extended), [token.ToString()]);
+                Log(nameof(UPC_RichPresenceSet_Extended), [token.ToString()]);
             }
         }
         catch (Exception ex)
         {
-            Basics.Log(nameof(UPC_RichPresenceSet_Extended), [ex]);
+            Log(nameof(UPC_RichPresenceSet_Extended), [ex]);
         }
         return 0;
     }
@@ -82,7 +82,7 @@ internal class Other
     [UnmanagedCallersOnly(EntryPoint = "UPC_LaunchApp", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_LaunchApp(IntPtr inContext, uint inProductId, IntPtr MustBeZero)
     {
-        Basics.Log(nameof(UPC_LaunchApp), [inContext, inProductId, MustBeZero]);
+        Log(nameof(UPC_LaunchApp), [inContext, inProductId, MustBeZero]);
         return 1;
     }
 
@@ -108,14 +108,14 @@ internal class Other
             _ => "Unknown error",
         };
         var ret = Marshal.StringToHGlobalAnsi(switch_ret);
-        Basics.Log(nameof(UPC_ErrorToString), [error, switch_ret]);
+        Log(nameof(UPC_ErrorToString), [error, switch_ret]);
         return ret;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "UPC_IsCrossBootAllowed", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_IsCrossBootAllowed(IntPtr inContext, uint inProductId, IntPtr outIsCrossBootAllowed, IntPtr unk1, IntPtr unk2)
     {
-        Basics.Log(nameof(UPC_IsCrossBootAllowed), [inContext, inProductId, outIsCrossBootAllowed, unk1, unk2]);
+        Log(nameof(UPC_IsCrossBootAllowed), [inContext, inProductId, outIsCrossBootAllowed, unk1, unk2]);
         Marshal.WriteInt32(outIsCrossBootAllowed, 0, Convert.ToInt32(UPC_Json.GetRoot().Others.EnableCrossBoot));
         return 0;
     }

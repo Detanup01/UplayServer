@@ -5,6 +5,8 @@ using SharedLib;
 
 namespace upc_r1;
 
+// TODO: Move this.
+/*
 public class NamePipe
 {
 
@@ -34,7 +36,7 @@ public class NamePipe
                         {
                             if (downstream.Response.ServiceRsp != null)
                             {
-                                Log("NamePipeReqRsp", new object[] { "Success? ", downstream.Response.ServiceRsp.Success });
+                                Log("NamePipeReqRsp", ["Success? ", downstream.Response.ServiceRsp.Success]);
                                 rsp = Uplay.Uplaydll.Rsp.Parser.ParseFrom(downstream.Response.ServiceRsp.Data.ToArray());
                             }
                             break;
@@ -44,14 +46,15 @@ public class NamePipe
             }
             else
             {
-                Log("NamePipeReqRsp", new object[] { "Socket not connected" });
+                Log("NamePipeReqRsp", ["Socket not connected"]);
             }
             pipeClient.Dispose();
         }
         catch (Exception ex)
         {
-            Log("NamePipeReqRsp", new object[] { ex.ToString() });
+            Log("NamePipeReqRsp", [ex.ToString()]);
         }
 
     }
 }
+*/

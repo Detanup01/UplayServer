@@ -259,16 +259,16 @@ public struct ChunkId
 public class UPC_StoreProduct
 {
     public uint id;
-    public string titleUtf8;
-    public string descriptionUtf8;
+    public string titleUtf8 = string.Empty;
+    public string descriptionUtf8 = string.Empty;
     [MarshalAs(UnmanagedType.LPUTF8Str)]
-    public string imageUrlUtf8;
+    public string imageUrlUtf8 = string.Empty;
     public byte isOwned;
     public float price;
     public float priceOriginal;
     [MarshalAs(UnmanagedType.LPUTF8Str)]
-    public string currencyUtf8;
+    public string currencyUtf8 = string.Empty;
     [MarshalAs(UnmanagedType.LPUTF8Str)]
     public string userBlobUtf8 = string.Empty;
-    public UPC_StoreTag[] tags ;
+    public UPC_StoreTag[] tags = [];
 }

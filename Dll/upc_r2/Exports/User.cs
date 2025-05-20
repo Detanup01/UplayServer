@@ -8,7 +8,7 @@ internal class User
     [UnmanagedCallersOnly(EntryPoint = "UPC_UserGet", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_UserGet(IntPtr inContext, IntPtr inOptUserIdUtf8, IntPtr outUser, IntPtr inCallback, IntPtr inCallbackData)
     {
-        Basics.Log(nameof(UPC_UserGet), [inContext, inOptUserIdUtf8, outUser, inCallback, inCallbackData]);
+        Log(nameof(UPC_UserGet), [inContext, inOptUserIdUtf8, outUser, inCallback, inCallbackData]);
         Main.GlobalContext.Callbacks.Add(new(inCallback, inCallbackData, 0));
 
         UPC_User user = new()
@@ -39,7 +39,7 @@ internal class User
     [UnmanagedCallersOnly(EntryPoint = "UPC_UserFree", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_UserFree(IntPtr inContext, IntPtr inUser)
     {
-        Basics.Log(nameof(UPC_UserFree), [inContext, inUser]);
+        Log(nameof(UPC_UserFree), [inContext, inUser]);
         if (inUser == IntPtr.Zero)
             return 0;
         var user = Marshal.PtrToStructure<UPC_UserImpl>(inUser);
@@ -51,7 +51,7 @@ internal class User
     [UnmanagedCallersOnly(EntryPoint = "UPC_UserPlayedWithAdd", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_UserPlayedWithAdd(IntPtr inContext, IntPtr inUserIdUtf8List, uint inListLength)
     {
-        Basics.Log(nameof(UPC_UserPlayedWithAdd), [inContext, inUserIdUtf8List, inListLength]);
+        Log(nameof(UPC_UserPlayedWithAdd), [inContext, inUserIdUtf8List, inListLength]);
         return 0;
     }
 
@@ -59,7 +59,7 @@ internal class User
     [UnmanagedCallersOnly(EntryPoint = "UPC_UserPlayedWithAdd_Extended", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_UserPlayedWithAdd_Extended(IntPtr inContext, IntPtr inUserIdUtf8List, uint inListLength, IntPtr unk1, IntPtr unk2)
     {
-        Basics.Log(nameof(UPC_UserPlayedWithAdd_Extended), [inContext, inUserIdUtf8List, inListLength, unk1, unk2]);
+        Log(nameof(UPC_UserPlayedWithAdd_Extended), [inContext, inUserIdUtf8List, inListLength, unk1, unk2]);
         return 0;
     }
 }
