@@ -3,7 +3,7 @@
 public class CommandHandler
 {
     public static Dictionary<string, Action<string[]>> Commands = new()
-    {            
+    {
         { "help" , Help },
         { "reload" , Reloader.ReloadAll },
         { "cleanserver" , Reloader.CleanServer },

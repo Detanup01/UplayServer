@@ -1,11 +1,10 @@
 ﻿using Client.Patch;
 using ClientApp.PipeConnection;
-using UplayKit;
-using UplayKit.Connection;
-using UbiServices.Public;
 using Google.Protobuf;
 using Newtonsoft.Json;
-using SharedLib;
+using UbiServices.Public;
+using UplayKit;
+using UplayKit.Connection;
 
 namespace ClientApp;
 

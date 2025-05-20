@@ -89,7 +89,7 @@ public static class DownloadTask
             foreach (var part in req.UrlRequests)
             {
                 urlresp = new()
-                { 
+                {
                     DownloadUrls = { }
                 };
                 foreach (var relative in part.RelativeFilePath)

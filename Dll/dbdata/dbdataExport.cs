@@ -20,7 +20,7 @@ public class dbdataExport
     public static IntPtr getGameTokenInterface(IntPtr appid_ptr, int _ /* always8 */)
     {
         AppId = (uint)Marshal.ReadInt32(appid_ptr);
-        Log(nameof(getGameTokenInterface), ["Appid ",AppId]);
+        Log(nameof(getGameTokenInterface), ["Appid ", AppId]);
         IGameTokenInterfaceVTable vTable = new()
         {
             IsTokenLoaded = Marshal.GetFunctionPointerForDelegate(new IsTokenLoadedDelegate(IsTokenLoaded)),
@@ -30,12 +30,12 @@ public class dbdataExport
             GetBuffer = Marshal.GetFunctionPointerForDelegate(new RegularDelegate(GetBuffer)),
             GetThread = Marshal.GetFunctionPointerForDelegate(new RegularDelegate(GetThread)),
             NewThreadGetBurnTicketResponse = Marshal.GetFunctionPointerForDelegate(new RegularDelegate(NewThreadGetBurnTicketResponse)),
-        }; 
+        };
         IGameTokenInterfaceVTable_ptr = Marshal.AllocHGlobal(Marshal.SizeOf<IGameTokenInterfaceVTable>());
         Marshal.StructureToPtr(vTable, IGameTokenInterfaceVTable_ptr, false);
         IGameTokenInterface_ptr = Marshal.AllocHGlobal(Marshal.SizeOf<IGameTokenInterface>());
         IGameTokenInterface gameTokenInterface = new()
-        { 
+        {
             IGameTokenInterfaceVTable = IGameTokenInterfaceVTable_ptr
         };
         Marshal.StructureToPtr(gameTokenInterface, IGameTokenInterface_ptr, false);
@@ -78,7 +78,7 @@ public class dbdataExport
             File.WriteAllText(Path.Combine(GetCuPath(), $"token_req_{AppId}.txt"), $"{b64Request}|{AppId}");
 
             // Should we return false if we dont have the token?
-        }  
+        }
         return true;
     }
 

@@ -1,6 +1,5 @@
 ﻿using Google.Protobuf;
 using ICSharpCode.SharpZipLib.Checksum;
-using RestSharp;
 using SharedLib;
 using System.Text;
 
@@ -60,7 +59,7 @@ namespace Client.Patch
             var dfile = Path.GetDirectoryName(filename);
             if (dfile != null && dfile.Trim() != string.Empty)
             {
-                Directory.CreateDirectory(Path.Combine("Patch",dfile));
+                Directory.CreateDirectory(Path.Combine("Patch", dfile));
             }
 
             Crc32 crc32 = new();

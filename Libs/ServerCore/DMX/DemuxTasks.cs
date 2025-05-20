@@ -16,7 +16,7 @@ public static class DemuxTasks
         uint.MinValue, 11194, 11646
     ];
 
-    private readonly static Dictionary<string /* ServiceName */, Func<DmxSession /* dmxSession */, ByteString /* RequestData */,Task<ByteString> /* Result */ > /* ServiceRunner */ > ServiceToRunner = new()
+    private readonly static Dictionary<string /* ServiceName */, Func<DmxSession /* dmxSession */, ByteString /* RequestData */, Task<ByteString> /* Result */ > /* ServiceRunner */ > ServiceToRunner = new()
     {
         { "utility_service", UtilityServiceTask.RunService },
         { "client_configuration_service", ClientConfigurationServiceTask.RunService },

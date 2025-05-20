@@ -95,7 +95,7 @@ public class DBUser
         using var db = new LiteDatabase(DBName);
         var col = db.GetCollection<T>(collectionName);
 
-        return col.Find(x=>x.UserId == UserId).ToList();
+        return col.Find(x => x.UserId == UserId).ToList();
     }
 
     public static List<T> GetList<T>(Guid UserId, Func<T, bool> expression) where T : UserBase

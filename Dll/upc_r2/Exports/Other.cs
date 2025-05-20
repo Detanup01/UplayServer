@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text.Json;
 
 namespace upc_r2.Exports;
 
@@ -30,7 +29,7 @@ internal class Other
         Marshal.WriteIntPtr(outAppId, Marshal.StringToHGlobalAnsi(Main.GlobalContext.Config.Saved.ApplicationId));
         return 0;
     }
-    
+
     [UnmanagedCallersOnly(EntryPoint = "UPC_RichPresenceSet", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_RichPresenceSet(IntPtr inContext, uint inId, IntPtr inOptTokenList)
     {
@@ -42,7 +41,7 @@ internal class Other
         {
             for (int i = 0; i < list.count; i++)
             {
-               
+
                 var ptr = Marshal.ReadIntPtr(list.list, i * Marshal.SizeOf<UPC_RichPresenceToken>());
                 var token = Marshal.PtrToStructure<UPC_RichPresenceToken>(ptr);
                 Log(nameof(UPC_RichPresenceSet), [token.ToString()]);

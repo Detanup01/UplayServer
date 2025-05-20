@@ -1,7 +1,6 @@
 ﻿using ModdableWebServer.Attributes;
 using ModdableWebServer.Helper;
 using NetCoreServer;
-using ServerCore.HTTP;
 using ServerCore.Models;
 using System.Net;
 using System.Net.Sockets;

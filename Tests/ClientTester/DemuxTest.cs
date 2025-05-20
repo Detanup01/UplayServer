@@ -1,7 +1,7 @@
-﻿using UbiServices.Records;
-using ClientTester.DMX_Test;
-using UplayKit;
+﻿using ClientTester.DMX_Test;
 using UbiServices;
+using UbiServices.Records;
+using UplayKit;
 
 namespace ClientTester;
 
@@ -20,7 +20,7 @@ internal class DemuxTest
         actions.Add(Auth);
         actions.Add(DoOwnership);
         actions.Add(VersionCheck);
-        actions.ForEach(x => x() );
+        actions.ForEach(x => x());
         socket.NewMessage -= Socket_NewMessage;
         socket.Disconnect();
         Console.WriteLine("DemuxTest Done!");

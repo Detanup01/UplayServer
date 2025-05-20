@@ -15,7 +15,7 @@ public class Utils
         if (logFileInfo.DirectoryName == null)
             return;
         DirectoryInfo logDirInfo = new DirectoryInfo(logFileInfo.DirectoryName);
-        if (!logDirInfo.Exists) 
+        if (!logDirInfo.Exists)
             logDirInfo.Create();
         using FileStream fileStream = new FileStream(FileName, FileMode.Append);
         using StreamWriter log = new StreamWriter(fileStream);

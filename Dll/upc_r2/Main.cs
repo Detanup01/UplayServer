@@ -25,7 +25,7 @@ public class Main
         {
             subsystems = UPC_ContextSubsystem.UPC_ContextSubsystem_None
         };
-        if (inOptSetting != IntPtr.Zero) 
+        if (inOptSetting != IntPtr.Zero)
         {
             contextSettings = Marshal.PtrToStructure<UPC_ContextSettings>(inOptSetting);
         }
@@ -90,7 +90,7 @@ public class Main
         FakeContext fc = new();
         FakeContextPTR = Marshal.AllocHGlobal(Marshal.SizeOf(fc));
         Marshal.StructureToPtr(fc, FakeContextPTR, false);
-        Log(nameof(UPC_ContextCreate), ["Context ",FakeContextPTR]);
+        Log(nameof(UPC_ContextCreate), ["Context ", FakeContextPTR]);
         return FakeContextPTR;
 
     }
@@ -195,7 +195,7 @@ public class Main
     public static int UPC_EventUnregisterHandler(IntPtr inContext, uint inType)
     {
         Log(nameof(UPC_EventUnregisterHandler), [inContext, inType]);
-        var eventRemove = GlobalContext.Events.Where(x=>x.EventType == (UPC_EventType)inType);
+        var eventRemove = GlobalContext.Events.Where(x => x.EventType == (UPC_EventType)inType);
         if (eventRemove.Any())
         {
             GlobalContext.Events.Remove(eventRemove.First());

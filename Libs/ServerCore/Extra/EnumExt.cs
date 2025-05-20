@@ -16,7 +16,7 @@ public static class EnumExt
             }
         }
 
-        if (slice.Length == 0) 
+        if (slice.Length == 0)
             slice = new T[n];
         Array.Copy(source, index, slice, 0, n);
         return slice;

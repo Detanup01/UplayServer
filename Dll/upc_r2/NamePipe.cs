@@ -1,8 +1,4 @@
-﻿using Google.Protobuf;
-using System.IO.Pipes;
-using SharedLib;
-
-namespace upc_r2;
+﻿namespace upc_r2;
 /*
 public class NamePipe
 {

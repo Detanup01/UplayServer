@@ -141,7 +141,7 @@ public static class StoreTask
                     Result = StoreResult.StoreResponseFailure,
                     CheckoutRsp = new()
                     {
-                        
+
                     }
                 }
             }

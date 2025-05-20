@@ -1,14 +1,13 @@
-﻿using ModdableWebServer.Attributes;
-using ModdableWebServer;
+﻿using ModdableWebServer;
+using ModdableWebServer.Attributes;
+using ModdableWebServer.Helper;
 using NetCoreServer;
 using Newtonsoft.Json;
+using ServerCore.Controllers;
 using ServerCore.DB;
+using ServerCore.Models;
 using ServerCore.Models.Responses;
 using ServerCore.Models.User;
-using ModdableWebServer.Helper;
-using ServerCore.Controllers;
-using ServerCore.Models;
-using System.Net.Http.Headers;
 using SharedLib;
 
 namespace ServerCore.HTTP.V2;
@@ -21,7 +20,7 @@ internal class Profiles
         var auth = serverStruct.Headers["authorization"];
         Guid appId = Guid.Parse(serverStruct.Headers["ubi-appid"]);
         Guid id = SessionController.GetUserFromAuth(auth);
-        Guid SessionId =  Guid.NewGuid();
+        Guid SessionId = Guid.NewGuid();
         var user = DBUser.Get<UserCommon>(id);
         if (user == null)
         {
@@ -91,12 +90,12 @@ internal class Profiles
         var userId = Guid.Parse(serverStruct.Parameters["userid"]);
         var spaceId = Guid.Parse(serverStruct.Parameters["spaceId"]);
         ClubProgressionTitleResponse clubProgressionTitleResponse = new()
-        { 
+        {
             spaceId = spaceId,
             profileId = userId,
             owned = true,
             actions = new()
-            { 
+            {
                 owned = 0,
                 available = 50
             },

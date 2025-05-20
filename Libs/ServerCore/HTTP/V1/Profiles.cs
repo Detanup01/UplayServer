@@ -1,10 +1,10 @@
-﻿using ModdableWebServer.Attributes;
-using ModdableWebServer;
-using NetCoreServer;
-using ServerCore.Models;
+﻿using ModdableWebServer;
+using ModdableWebServer.Attributes;
 using ModdableWebServer.Helper;
-using ServerCore.Models.Responses;
+using NetCoreServer;
 using Newtonsoft.Json;
+using ServerCore.Models;
+using ServerCore.Models.Responses;
 using SharedLib;
 
 namespace ServerCore.HTTP.V1;
@@ -46,7 +46,7 @@ internal class Profiles
                     spaceId = spaceId,
                     tags = [],
                     type = fileName,
-                    obj = 
+                    obj =
                     {
                         { ext, [bytes.Length, Convert.ToBase64String(bytes)] }
                     }
@@ -57,9 +57,9 @@ internal class Profiles
         {
             Console.WriteLine(filepath_name);
             var files = Directory.GetFiles(path);
-            if (files.Any(x=>x.Contains(filepath_name)))
+            if (files.Any(x => x.Contains(filepath_name)))
             {
-                string? filePath = files.FirstOrDefault(x=>x.Contains(filepath_name));
+                string? filePath = files.FirstOrDefault(x => x.Contains(filepath_name));
                 if (string.IsNullOrEmpty(filePath))
                 {
                     Console.WriteLine("File not exists");
@@ -79,7 +79,7 @@ internal class Profiles
                     default:
                         break;
                 }
-               
+
                 profileEntities.entities.Add(new ProfileEntities.Entity()
                 {
                     // Hardcoded entityId, idk if works or not.
@@ -109,7 +109,7 @@ internal class Profiles
     {
         // body is {"productId":568} we currently dont care
         PlaySessionResponse playSessionResponse = new()
-        { 
+        {
             createdAt = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
             expiresAt = DateTime.Now.AddHours(1).ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
         };
@@ -132,10 +132,10 @@ internal class Profiles
         // currently faking economy
         string userId = serverStruct.Parameters["userid"];
         EconomyUnitResponse economyUnitResponse = new()
-        { 
+        {
             profileId = userId,
             units = 0
-        }; 
+        };
         serverStruct.Response.MakeGetResponse(JsonConvert.SerializeObject(economyUnitResponse), "application/json");
         serverStruct.SendResponse();
         return true;

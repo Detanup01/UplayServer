@@ -13,7 +13,7 @@ public class Generator
             return;
         }
         var cdkey = args[0];
-        var key = CDKeyController.GenerateKey(uint.Parse(cdkey),false);
+        var key = CDKeyController.GenerateKey(uint.Parse(cdkey), false);
         Console.WriteLine($"Key for {cdkey} is: {key}");
     }
 }

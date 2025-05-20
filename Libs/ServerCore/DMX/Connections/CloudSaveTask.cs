@@ -1,7 +1,7 @@
 ﻿using Google.Protobuf;
 using ServerCore.DB;
-using ServerCore.Models.User;
 using ServerCore.Models;
+using ServerCore.Models.User;
 using Uplay.CloudsaveService;
 
 namespace ServerCore.DMX.Connections;

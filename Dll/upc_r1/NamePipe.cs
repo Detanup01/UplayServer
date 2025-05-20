@@ -1,9 +1,4 @@
-﻿using Google.Protobuf;
-using System.IO.Pipes;
-using static upc_r1.Basics;
-using SharedLib;
-
-namespace upc_r1;
+﻿namespace upc_r1;
 
 // TODO: Move this.
 /*

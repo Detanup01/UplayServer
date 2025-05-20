@@ -41,7 +41,7 @@ public class Prepare
             PreferredLanguage = "US"
         });
         DBUser.Add(new UserCommon()
-        { 
+        {
             Name = "user",
             Friends = [],
             IsBanned = false,
@@ -51,7 +51,7 @@ public class Prepare
         Console.WriteLine(DBUser.Get<UserCommon>("ea66fece-ccce-4fe4-ad60-45298a0ac92a") != null);
 
         Store.Add(new()
-        { 
+        {
             ProductId = 0,
             Associations = [0],
             Configuration = "",
@@ -59,7 +59,7 @@ public class Prepare
             Partner = 0,
             Reference = "0",
             Type = 1,
-            UserBlob = ""         
+            UserBlob = ""
         });
     }
 }

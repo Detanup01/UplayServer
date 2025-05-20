@@ -30,7 +30,7 @@ internal class Store
     [UnmanagedCallersOnly(EntryPoint = "UPC_StoreLanguageSet", CallConvs = [typeof(CallConvCdecl)])]
     public static int UPC_StoreLanguageSet(IntPtr inContext, IntPtr inLanguageCountryCode)
     {
-        Log(nameof(UPC_StoreLanguageSet), [inContext , inLanguageCountryCode]);
+        Log(nameof(UPC_StoreLanguageSet), [inContext, inLanguageCountryCode]);
         return 0;
     }
 

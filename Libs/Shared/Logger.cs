@@ -1,5 +1,5 @@
-﻿using Serilog.Core;
-using Serilog;
+﻿using Serilog;
+using Serilog.Core;
 
 namespace SharedLib;
 

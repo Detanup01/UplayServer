@@ -23,7 +23,7 @@ public class TCServer : UdpServer
         Console.WriteLine($"[TCServer] Detect Received packet from {endpoint}. Packet saved!");
         if (!Directory.Exists("DetectPackets"))
             Directory.CreateDirectory("DetectPackets");
-        File.WriteAllBytes($"DetectPackets/{endpoint.ToString()!.Replace(":","_").Replace(".","_")}_{DateTime.Now:yyy-MM-dd_HH-mm-ss}", recvBytes);
+        File.WriteAllBytes($"DetectPackets/{endpoint.ToString()!.Replace(":", "_").Replace(".", "_")}_{DateTime.Now:yyy-MM-dd_HH-mm-ss}", recvBytes);
         ReceiveAsync();
     }
 

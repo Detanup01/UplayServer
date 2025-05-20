@@ -1,10 +1,10 @@
-﻿using ModdableWebServer.Attributes;
-using ModdableWebServer;
+﻿using ModdableWebServer;
+using ModdableWebServer.Attributes;
+using ModdableWebServer.Helper;
 using NetCoreServer;
 using Newtonsoft.Json;
-using ServerCore.Models.Responses;
-using ModdableWebServer.Helper;
 using ServerCore.Models;
+using ServerCore.Models.Responses;
 
 namespace ServerCore.HTTP.V1;
 
@@ -32,16 +32,16 @@ internal class Spaces
         // currently faking economy
         string levels = serverStruct.Parameters["levels"];
         MetaprogressionLevels metaprogression = new()
-        { 
+        {
             levels = []
         };
         var split_lvl = levels.Split(",");
         int i = 0;
-        foreach ( var lvl in split_lvl)
+        foreach (var lvl in split_lvl)
         {
             int int_level = int.Parse(lvl);
             metaprogression.levels.Add(new MetaprogressionLevels.Level()
-            { 
+            {
                 level = int_level,
                 xp = 100 + i,
                 rewards = [new()]

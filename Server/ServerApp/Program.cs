@@ -1,7 +1,6 @@
 ﻿using ModdableWebServer.Helper;
 using ServerCore;
 using ServerCore.Commands;
-using SharedLib;
 
 namespace ServerApp;
 
@@ -24,10 +23,10 @@ internal class Program
             DebugPrinter.EnableLogs = true;
             DebugPrinter.PrintToConsole = true;
         }
-        
+
 
         CoreRun.Start();
-        
+
         string endCheck = "not";
         while (!endCheck.Equals("exit", StringComparison.CurrentCultureIgnoreCase))
         {

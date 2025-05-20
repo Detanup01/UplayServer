@@ -7,7 +7,7 @@ public class App
 {
     public readonly static string DBName = Path.Combine(Prepare.DatabasePath, "App.db");
     public readonly static string AppAPI = "AppAPI";
-    public readonly static string AppConfig = "AppConfig"; 
+    public readonly static string AppConfig = "AppConfig";
     public readonly static string AppBranches = "AppBranches";
 
     /// <summary>

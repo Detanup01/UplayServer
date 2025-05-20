@@ -652,7 +652,7 @@ public static class FriendsTask
             };
             uint userCon = Auth.GetConIdByUserAndName(friend.UserId, Name);
             DemuxController.SendToClient(x => x.UserId == friend.UserId, new Uplay.Demux.Downstream()
-            { 
+            {
                 Push = new()
                 {
                     Data = new()

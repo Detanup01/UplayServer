@@ -29,7 +29,7 @@ public static class DenuvoTask
                 Result = Rsp.Types.Result.ServerError,
                 GetGameTimeTokenRsp = new()
                 {
-                    
+
                 }
             }
         };

@@ -15,7 +15,7 @@ public static class OwnershipController
 
     public static bool IsOwned(Guid UserId, uint ProductId)
     {
-        return ServerConfig.Instance.Demux.GlobalOwnerShipCheck || 
+        return ServerConfig.Instance.Demux.GlobalOwnerShipCheck ||
             (DBUser.Get<UserOwnershipBasic>(UserId) != null && DBUser.Get<UserOwnershipBasic>(UserId)!.OwnedGamesIds.Contains(ProductId));
     }
 
@@ -61,7 +61,7 @@ public static class OwnershipController
         if (owbasic == null)
             return null;
 
-        var ow = DBUser.Get<UserOwnership>(UserId, x=>x.ProductId == productId);
+        var ow = DBUser.Get<UserOwnership>(UserId, x => x.ProductId == productId);
         if (ow == null)
             return null;
 
@@ -93,7 +93,7 @@ public static class OwnershipController
             }
         }
 
-        var conf = Path.Combine("ServerFiles","ProductConfigs",app.Configuration);
+        var conf = Path.Combine("ServerFiles", "ProductConfigs", app.Configuration);
         if (File.Exists(conf))
             app.Configuration = File.ReadAllText(conf);
 

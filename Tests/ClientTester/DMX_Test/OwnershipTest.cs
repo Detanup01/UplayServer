@@ -1,7 +1,6 @@
-﻿using UplayKit.Connection;
+﻿using Serilog;
 using UplayKit;
-using SharedLib;
-using Serilog;
+using UplayKit.Connection;
 
 namespace ClientTester.DMX_Test;
 
@@ -12,7 +11,7 @@ internal class OwnershipTest
     List<Action> actions = new();
     public OwnershipTest(DemuxSocket socket, OwnershipConnection ownershipConnection)
     {
-        Socket = socket; 
+        Socket = socket;
         OwnershipConnection = ownershipConnection;
         OwnershipConnection.PushEvent += OwnershipConnection_PushEvent;
         actions.Add(Init);
@@ -76,7 +75,7 @@ internal class OwnershipTest
     void ClaimKeystorageKeys()
     {
         if (!OwnershipConnection.IsConnectionClosed)
-        {                
+        {
             /*  Reason why we use this productIdList:
                     We made that ProductId 0 is already assigned by default. Ergo you cannot claim product that already owns
              */
@@ -104,7 +103,7 @@ internal class OwnershipTest
     {
         if (!OwnershipConnection.IsConnectionClosed)
         {
-            var rsp = OwnershipConnection.UnlockProductBranch(0,string.Empty);
+            var rsp = OwnershipConnection.UnlockProductBranch(0, string.Empty);
             if (rsp != null)
             {
                 Console.WriteLine("OwnershipConnection UnlockProductBranch Success!");
@@ -117,7 +116,7 @@ internal class OwnershipTest
         if (!OwnershipConnection.IsConnectionClosed)
         {
             var rsp = OwnershipConnection.SendPostRequest<Uplay.Ownership.Upstream, Uplay.Ownership.Downstream>(new Uplay.Ownership.Upstream()
-            { 
+            {
                 Request = new()
                 {
                     RequestId = Socket.RequestId,

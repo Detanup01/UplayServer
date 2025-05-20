@@ -45,7 +45,7 @@ internal class User
     {
         Log(nameof(UPLAY_USER_GetCdKeyUtf8), [aUplayId]);
         string defaultKey = "1111-2222 -3333-4444";
-        var list = UPC_Json.GetRoot().CDKey.Where(x=>x.ProductId == aUplayId);
+        var list = UPC_Json.GetRoot().CDKey.Where(x => x.ProductId == aUplayId);
         if (list.Count() == 1)
         {
             defaultKey = list.ToList()[0].Key;

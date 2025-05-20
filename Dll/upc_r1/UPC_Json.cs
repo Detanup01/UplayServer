@@ -62,7 +62,7 @@ public class UPC_Json
         public Account Account { get; set; } = new();
         public Save Save { get; set; } = new();
         public Others Others { get; set; } = new();
-        public List<CDKey> CDKey { get; set;} = [];
+        public List<CDKey> CDKey { get; set; } = [];
     }
 
 }

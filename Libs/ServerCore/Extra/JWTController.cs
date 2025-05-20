@@ -2,7 +2,6 @@
 using JWT.Builder;
 using JWT.Exceptions;
 using Newtonsoft.Json;
-using ServerCore;
 using ServerCore.Models.JWTToken;
 using System.Security.Cryptography;
 

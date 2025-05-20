@@ -117,7 +117,7 @@ internal class ToManifest
                 }
             }
             else
-            {;
+            {
                 var all = File.ReadAllBytes(filepath);
                 Creators.WriteOut((uint)all.Length, all, savetopath, sliceversion, prodid, file, out var outfile);
                 file = outfile;

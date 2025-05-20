@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace ServerCore.Models.App;
+﻿namespace ServerCore.Models.App;
 
 public class AppConfig
 {

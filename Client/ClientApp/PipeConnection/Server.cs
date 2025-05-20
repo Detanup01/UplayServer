@@ -1,6 +1,6 @@
-﻿using System.IO.Pipes;
-using Serilog;
+﻿using Serilog;
 using SharedLib;
+using System.IO.Pipes;
 
 namespace ClientApp.PipeConnection
 {
@@ -39,7 +39,7 @@ namespace ClientApp.PipeConnection
                         var length = Formatters.FormatLength(BitConverter.ToUInt32(BufferDone, 0));
                         buffer = new byte[length];
                         pipeServer.ReadExactly(buffer);
-                        Readed?.Invoke(this,buffer);
+                        Readed?.Invoke(this, buffer);
                     }
                 }
                 if (!pipeServer.IsConnected && connectedOrWaiting)
@@ -52,7 +52,7 @@ namespace ClientApp.PipeConnection
         }
 
         public void Send(byte[] buf)
-        { 
+        {
             pipeServer.Write(buf);
             pipeServer.Flush();
             pipeServer.Disconnect();

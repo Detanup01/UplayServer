@@ -157,7 +157,7 @@ public static class OwnershipTask
         if (ServerConfig.Instance.Demux.GlobalOwnerShipCheck || owbasic.OwnedGamesIds.Contains(req.ProductId))
         {
             var gameconfig = App.GetAppConfig(req.ProductId);
-            
+
             if (gameconfig == null)
                 return Task.FromResult(downstream.ToByteString());
             downstream.Response.SignOwnershipRsp.BranchId = ownership.CurrentBranchId;

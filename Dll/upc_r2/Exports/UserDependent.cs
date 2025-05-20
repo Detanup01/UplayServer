@@ -78,7 +78,7 @@ public class UserDependent
         {
             string? ticket = !string.IsNullOrEmpty(Main.GlobalContext.Config.Saved.ubiTicket) ? Main.GlobalContext.Config.Saved.ubiTicket : null;
             Log(nameof(UPC_TicketGet_Extended), [ticket == null]);
-            Marshal.WriteIntPtr(ticketPtr, 0 , Marshal.StringToHGlobalAnsi(ticket));
+            Marshal.WriteIntPtr(ticketPtr, 0, Marshal.StringToHGlobalAnsi(ticket));
         }
         else
             Marshal.WriteIntPtr(ticketPtr, 0, Marshal.StringToHGlobalAnsi(null));

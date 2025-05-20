@@ -68,7 +68,7 @@ internal class Avatar
         }
         catch (Exception ex)
         {
-            Log(nameof(UPC_AvatarGet), ["Exception: ",  ex]);
+            Log(nameof(UPC_AvatarGet), ["Exception: ", ex]);
         }
         return 0;
     }
