@@ -15,6 +15,7 @@
 	  <Copyright>(c) Ubisoft</Copyright>
 	  <NeutralLanguage>en-US</NeutralLanguage>
 	  <Version>119.0.10382</Version>
+	  <DebuggerSupport>False</DebuggerSupport>
   </PropertyGroup>
 	
 </Project>
