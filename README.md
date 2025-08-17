@@ -1,3 +1,8 @@
+# Archived
+This project is archived!\
+Moved to [ServerEmus](https://github.com/ServerEmus) and splitted between multiple repositories\
+Check out [HERE](https://github.com/ServerEmus/Release.Uplay) for some stuff.
+
 # Custom Uplay Server
 Uplay Demux/API Server Emulator.\
 I wanted to make a good emulator for uplay to play with friends on lan and launching newest games that doesnt have denuvo.
